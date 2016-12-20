@@ -1,0 +1,31 @@
+[%
+	var ds: DagSet := DagSet.allInstances().at(0);
+	var i: Integer;
+%]
+#include <stdio.h>
+#include "hgr.h"
+#include "syntethicTask.h"
+
+int main(int argc, char *argv[]){
+	int index=0;
+	
+	hgr_init_dependency(&premMutex, NULL);
+	hgr_ptask_init([%=ds.sched_alg%], [%=ds.partitioning_policy%], [%=ds.semaphore_protocol%]);
+ 	//period,deadline,priority,proccessor,task_name
+	[%i=1; for (g in ds.dagCollection){ 
+		var task: Template := TemplateFactory.load('task.egl');
+		task.populate("index",i-1);
+		task.generate('../gen/syntethicTask'+i+'.c');
+		i++;
+	%]
+	index=hgr_task_creator(tspec_from([%=g.period%], MILLI),tspec_from([%=g.deadline%], MILLI),[%=g.priority%],[%=g.processor%],NOW,[%=g.name%]);
+	[%}%]
+	
+	hgr_pthread_join(ptask_get_threadid(index));
+	hgr_destroy_dependency(&premMutex);
+
+	return 0;
+}
+
+
+

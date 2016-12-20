@@ -1,0 +1,16 @@
+digraph G2 {
+	0 [period=2000, priority=60, deadline=2000, map=1]
+	0 [label="tdg_id=0", style=invis]
+	0 [label="maxI=0", style=invis]
+	0 [label="maxT=14", style=invis]
+	1 [MIET="10.48", MEET="10.65", MAET="10.63", MEM="100", UNIT="B"]
+	2 [MIET="10.21", MEET="10.91", MAET="10.34", MEM="100", UNIT="B"]
+	3 [MIET="10.42", MEET="10.82", MAET="10.66", MEM="100", UNIT="B"]
+	4 [MIET="10.38", MEET="10.12", MAET="10.89", MEM="100", UNIT="B"]
+	5 [MIET="10.84", MEET="10.86", MAET="10.21", MEM="100", UNIT="B"]
+	1 -> 2
+	1 -> 3
+	2 -> 4
+	3 -> 4
+	5 -> 4
+}

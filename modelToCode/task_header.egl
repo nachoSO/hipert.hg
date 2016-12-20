@@ -1,0 +1,22 @@
+#include "hgr.h"
+#ifndef synth_H
+#define synth_H
+[%var gs: DagSet := DagSet.allInstances().at(0);
+var i: Integer;
+var j: Integer;
+j=0;
+for (dag in gs.dagCollection){ 
+%]
+[%i=0;for (task in dag.node){%]
+void *[%=task.name%]();
+[%i++;}%]
+
+//This function calculates
+void [%=dag.name%]_pre_load_tasks();
+void [%=dag.name%]_mutexCreate();
+void [%=dag.name%]_mutexDestroy();
+void [%=dag.name%]();
+[%j++;}%]
+
+#endif
+

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="C:/Program Files/Epsilon/plugins/org.eclipse.epsilon.egl.dt_1.4.0.201611012202.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Program Files/Epsilon/plugins/org.eclipse.epsilon.egl.engine_1.4.0.201611012202.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Program Files/Epsilon/plugins/org.eclipse.epsilon.eol.engine_1.4.0.201611012202.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Program Files/Epsilon/plugins/org.eclipse.epsilon.emc.emf_1.4.0.201611012202.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Program Files/Epsilon/plugins/org.eclipse.epsilon.common_1.4.0.201611012202.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

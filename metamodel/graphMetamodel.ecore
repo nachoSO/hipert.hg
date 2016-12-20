@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="GraphMetamodel" nsURI="GraphMetamodel" nsPrefix="GraphMetamodel">
+  <eClassifiers xsi:type="ecore:EClass" name="DagSet">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dagCollection" upperBound="-1"
+        eType="#//Dag" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="partitioning_policy" eType="#//PARTITIONING_POLICY"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="semaphore_protocol" eType="#//SEMAPHORE_PROTOCOL"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sched_alg" eType="#//SCHED_ALG"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Dag">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="node" upperBound="-1" eType="#//Node"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="edge" upperBound="-1" eType="#//Edge"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="period" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="priority" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deadline" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="processor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mem_type" eType="#//MEM_TYPE"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="step" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Edge">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="src" eType="#//Node"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trg" eType="#//Node"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ceiling" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Node">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="miet" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="meet" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maet" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+        defaultValueLiteral=""/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mem_access" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mem_unit" eType="#//MEM_UNIT"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SCHED_ALG">
+    <eLiterals name="SCHED_FIFO" literal="SCHED_FIFO"/>
+    <eLiterals name="SCHED_RR" value="1" literal="SCHED_RR"/>
+    <eLiterals name="SCHED_OTHER" value="2" literal="SCHED_OTHER"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PARTITIONING_POLICY">
+    <eLiterals name="GLOBAL"/>
+    <eLiterals name="PARTITIONED" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SEMAPHORE_PROTOCOL">
+    <eLiterals name="PRIO_INHERIT"/>
+    <eLiterals name="PRIO_CEILING" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="MEM_UNIT">
+    <eLiterals name="B"/>
+    <eLiterals name="KB" value="1"/>
+    <eLiterals name="MB" value="2"/>
+    <eLiterals name="GB" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="MEM_TYPE">
+    <eLiterals name="prem"/>
+    <eLiterals name="sparse" value="1"/>
+  </eClassifiers>
+</ecore:EPackage>

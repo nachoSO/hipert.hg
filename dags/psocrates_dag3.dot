@@ -1,0 +1,11 @@
+digraph G1 {
+	0 [period=10, priority=50, deadline=10, map=0]
+	0 [label="tdg_id=0", style=invis]
+	0 [label="maxI=0", style=invis]
+	0 [label="maxT=14", style=invis]
+	1 [MIET="5664.38", MEET="5978.41", MAET="5879.75", MEM="100", UNIT="KB"]
+	2 [MIET="5201.98", MEET="5491.00", MAET="5474.92", MEM="100", UNIT="KB"]
+	3 [MIET="912.85", MEET="1286.53", MAET="1221.66", MEM="100", UNIT="B"]
+	1 -> 2
+	1 -> 3
+}
