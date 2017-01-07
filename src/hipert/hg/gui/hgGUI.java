@@ -62,7 +62,7 @@ public class hgGUI extends javax.swing.JFrame {
         rbPrem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	txtSparse.setEnabled(false);
+            	cbMemStep.setEnabled(false);
             }
         });
         
@@ -70,12 +70,12 @@ public class hgGUI extends javax.swing.JFrame {
         rbSparse.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	txtSparse.setEnabled(true);
+            	cbMemStep.setEnabled(true);
             }
         });
         
         //txtSparse only numbers
-        txtSparse.addKeyListener(new KeyAdapter() {
+        /*txtSparse.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
               char c = e.getKeyChar();
               if (!((c >= '0') && (c <= '9') && (txtSparse.getText().length()<2) ||
@@ -85,7 +85,7 @@ public class hgGUI extends javax.swing.JFrame {
                 e.consume();
               }
             }
-          });
+          });*/
         pack();
     }
 
@@ -111,7 +111,6 @@ public class hgGUI extends javax.swing.JFrame {
         jTextField5 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         jTextField8 = new javax.swing.JTextField();
         jTextField9 = new javax.swing.JTextField();
@@ -129,7 +128,7 @@ public class hgGUI extends javax.swing.JFrame {
         txtMEET = new javax.swing.JTextField();
         txtMAET = new javax.swing.JTextField();
         txtMEM = new javax.swing.JTextField();
-        comboMem = new javax.swing.JComboBox<>();
+        cbMemUnit = new javax.swing.JComboBox<>();
         bApplyChanges = new javax.swing.JButton();
         labelDagModify = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -150,8 +149,8 @@ public class hgGUI extends javax.swing.JFrame {
         panelRadioButtons = new javax.swing.JPanel();
         rbPrem = new javax.swing.JRadioButton();
         rbSparse = new javax.swing.JRadioButton();
-        txtSparse = new javax.swing.JTextField();
         bApplyMemAccess = new javax.swing.JButton();
+        cbMemStep = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         lstReadyDAG = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
@@ -177,8 +176,6 @@ public class hgGUI extends javax.swing.JFrame {
 
         jTextField4.setColumns(8);
 
-        jTextField6.setColumns(8);
-        
         jTextField8.setColumns(8);
 
         jTextField9.setColumns(8);
@@ -198,8 +195,7 @@ public class hgGUI extends javax.swing.JFrame {
                         .addGroup(panelTextFieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelTextFieldsLayout.createSequentialGroup()
                                 .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(panelTextFieldsLayout.createSequentialGroup()
                                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -234,9 +230,7 @@ public class hgGUI extends javax.swing.JFrame {
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(panelTextFieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -247,7 +241,7 @@ public class hgGUI extends javax.swing.JFrame {
                 .addGroup(panelTextFieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panelElementsTab1Layout = new javax.swing.GroupLayout(panelElementsTab1);
@@ -321,23 +315,12 @@ public class hgGUI extends javax.swing.JFrame {
 
         txtMEM.setColumns(8);
 
-        comboMem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "B", "KB", "MB" }));
-   
+        cbMemUnit.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "B", "KB", "MB" }));
 
         bApplyChanges.setText("Apply Changes");
         bApplyChanges.setEnabled(false);
         bApplyChanges.setMaximumSize(new java.awt.Dimension(79, 23));
         bApplyChanges.setMinimumSize(new java.awt.Dimension(79, 23));
-        bApplyChanges.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-					bApplyChangesActionPerformed(evt);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            }
-        });
 
         jLabel2.setText("Period");
 
@@ -417,7 +400,7 @@ public class hgGUI extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(txtMEM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(comboMem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(cbMemUnit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(panelTabModifyLayout.createSequentialGroup()
                                 .addGap(37, 37, 37)
                                 .addComponent(jLabel11)))
@@ -451,7 +434,7 @@ public class hgGUI extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(panelTabModifyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(txtMEM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(comboMem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbMemUnit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel9))
                                 .addGap(0, 85, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -515,15 +498,14 @@ public class hgGUI extends javax.swing.JFrame {
         rbSparse.setText("Sparse");
         rbSparse.setActionCommand("");
 
-        txtSparse.setText("8");
-        txtSparse.setEnabled(false);
-
         bApplyMemAccess.setText("Apply");
         bApplyMemAccess.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bApplyMemAccessActionPerformed(evt);
             }
         });
+
+        cbMemStep.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "8", "16", "32", "64" }));
 
         javax.swing.GroupLayout panelRadioButtonsLayout = new javax.swing.GroupLayout(panelRadioButtons);
         panelRadioButtons.setLayout(panelRadioButtonsLayout);
@@ -532,15 +514,18 @@ public class hgGUI extends javax.swing.JFrame {
             .addGroup(panelRadioButtonsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelRadioButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rbPrem)
-                    .addComponent(rbSparse))
-                .addGap(18, 18, 18)
-                .addGroup(panelRadioButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtSparse, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelRadioButtonsLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(bApplyMemAccess)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                        .addComponent(rbPrem)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panelRadioButtonsLayout.createSequentialGroup()
+                        .addComponent(rbSparse)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbMemStep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRadioButtonsLayout.createSequentialGroup()
+                .addContainerGap(98, Short.MAX_VALUE)
+                .addComponent(bApplyMemAccess)
+                .addGap(85, 85, 85))
         );
         panelRadioButtonsLayout.setVerticalGroup(
             panelRadioButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -550,8 +535,8 @@ public class hgGUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(panelRadioButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rbSparse)
-                    .addComponent(txtSparse, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(cbMemStep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bApplyMemAccess)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -568,7 +553,7 @@ public class hgGUI extends javax.swing.JFrame {
             .addGroup(panelCodeGeneratorLayout.createSequentialGroup()
                 .addGroup(panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelCodeGeneratorLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(51, Short.MAX_VALUE)
                         .addComponent(scrollDagLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE))
                     .addGroup(panelCodeGeneratorLayout.createSequentialGroup()
@@ -581,10 +566,10 @@ public class hgGUI extends javax.swing.JFrame {
                             .addComponent(jLabel1)
                             .addComponent(panelRadioButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addGap(91, 91, 91))
+                        .addGap(60, 60, 60))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCodeGeneratorLayout.createSequentialGroup()
                         .addComponent(bGenerateCode)
-                        .addGap(151, 151, 151))))
+                        .addGap(121, 121, 121))))
         );
         panelCodeGeneratorLayout.setVerticalGroup(
             panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -602,7 +587,7 @@ public class hgGUI extends javax.swing.JFrame {
                 .addGroup(panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bLoadDag, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bGenerateCode, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Code Generator", panelCodeGenerator);
@@ -717,7 +702,7 @@ public class hgGUI extends javax.swing.JFrame {
 		    	txtMEET.setText(String.valueOf(this.nodes.get(index).getIwcet()));
 		    	txtMAET.setText(String.valueOf(this.nodes.get(index).getMaet()));
 		    	txtMEM.setText(String.valueOf(this.nodes.get(index).getMem_access()));
-		    	comboMem.setSelectedItem(this.nodes.get(index).getMem_unit());
+		    	cbMemUnit.setSelectedItem(this.nodes.get(index).getMem_unit());
 		    }
 	    }
 
@@ -743,24 +728,7 @@ public class hgGUI extends javax.swing.JFrame {
 		}
     }
     
-    //BUTTON SAVE DAG MODIFIED
-    private void bApplyChangesActionPerformed(java.awt.event.ActionEvent evt) throws IOException {//GEN-FIRST:event_bApplyChangesActionPerformed
-	    	DAG dag=new DAG();
-	    	if(lstDagModify.getSelectedValue()==null){
-				JOptionPane.showMessageDialog(null, "Please choose a node", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
-	    	}else{
-		    	xmlgen.modifyXML(fileModify,lstDagModify.getSelectedValue().replace("Node-", ""),
-		    					txtPeriod.getText().toString(),txtDeadline.getText().toString(),
-		    					txtPriority.getText().toString(),txtMap.getText().toString(),
-		    					txtMIET.getText().toString(),txtMEET.getText().toString(),
-		    					txtMAET.getText().toString(),txtMEM.getText().toString(),
-		    					comboMem.getSelectedItem().toString(),lstDagModify.getSelectedIndex());
-				JOptionPane.showMessageDialog(null, "File modified", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
-				//reload file
-				
-	    	}
-	    }//GEN-LAST:event_bApplyChangesActionPerformed
-	
+
     /*******************************************************************************************************************************************/
 
     /************************************************************PANEL GENERATE CODE************************************************************/
@@ -804,7 +772,7 @@ public class hgGUI extends javax.swing.JFrame {
 	    	if(memory_access=="prem")
 	    		modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+"-"+memory_access);
 	    	else if (memory_access=="sparse")
-	    		modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+"-"+memory_access+"-"+txtSparse.getText());
+	    		modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+"-"+memory_access+"-"+cbMemStep.getSelectedItem().toString());
 
 		}
     }
@@ -892,7 +860,8 @@ public class hgGUI extends javax.swing.JFrame {
     private javax.swing.JButton bGenerateDag;
     private javax.swing.JButton bLoadDag;
     private javax.swing.JButton bLoadToModify;
-    private javax.swing.JComboBox<String> comboMem;
+    private javax.swing.JComboBox<String> cbMemStep;
+    private javax.swing.JComboBox<String> cbMemUnit;
     private javax.swing.ButtonGroup groupMemAccess;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -916,7 +885,6 @@ public class hgGUI extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
     private javax.swing.JLabel labelDagModify;
@@ -943,6 +911,5 @@ public class hgGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txtMap;
     private javax.swing.JTextField txtPeriod;
     private javax.swing.JTextField txtPriority;
-    private javax.swing.JTextField txtSparse;
     // End of variables declaration//GEN-END:variables
 }

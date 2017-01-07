@@ -164,8 +164,7 @@
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" attributes="0">
                                               <Component id="jTextField5" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace max="32767" attributes="0"/>
-                                              <Component id="jTextField6" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                           </Group>
                                           <Group type="102" attributes="0">
                                               <Component id="jTextField1" min="-2" max="-2" attributes="0"/>
@@ -214,10 +213,7 @@
                                   <Component id="jTextField4" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jTextField6" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jTextField5" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="jTextField5" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -230,7 +226,7 @@
                                   <Component id="jTextField10" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTextField11" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="48" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -260,14 +256,6 @@
                       <Properties>
                         <Property name="columns" type="int" value="8"/>
                       </Properties>
-                    </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField6">
-                      <Properties>
-                        <Property name="columns" type="int" value="8"/>
-                      </Properties>
-                      <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField6ActionPerformed"/>
-                      </Events>
                     </Component>
                     <Component class="javax.swing.JSeparator" name="jSeparator1">
                     </Component>
@@ -377,7 +365,7 @@
                                           </Group>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="comboMem" min="-2" max="-2" attributes="0"/>
+                                      <Component id="cbMemUnit" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
@@ -422,7 +410,7 @@
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="3" attributes="0">
                                           <Component id="txtMEM" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="comboMem" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="cbMemUnit" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="0" pref="85" max="32767" attributes="0"/>
@@ -542,11 +530,8 @@
               <Properties>
                 <Property name="columns" type="int" value="8"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtMEMActionPerformed"/>
-              </Events>
             </Component>
-            <Component class="javax.swing.JComboBox" name="comboMem">
+            <Component class="javax.swing.JComboBox" name="cbMemUnit">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="3">
@@ -556,9 +541,6 @@
                   </StringArray>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboMemActionPerformed"/>
-              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -574,9 +556,6 @@
                   <Dimension value="[79, 23]"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bApplyChangesActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="labelDagModify">
             </Component>
@@ -647,7 +626,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="51" max="32767" attributes="0"/>
                               <Component id="scrollDagLoad" min="-2" pref="340" max="-2" attributes="0"/>
                               <EmptySpace pref="86" max="32767" attributes="0"/>
                           </Group>
@@ -664,11 +643,11 @@
                                   <Component id="panelRadioButtons" min="-2" max="-2" attributes="0"/>
                                   <Component id="jScrollPane2" alignment="0" pref="0" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="bGenerateCode" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="151" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="121" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -693,7 +672,7 @@
                           <Component id="bLoadDag" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
                           <Component id="bGenerateCode" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="17" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -756,18 +735,22 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="rbPrem" min="-2" max="-2" attributes="0"/>
-                              <Component id="rbSparse" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtSparse" min="-2" pref="129" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
-                                  <Component id="bApplyMemAccess" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="rbPrem" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="rbSparse" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="cbMemStep" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="22" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace pref="98" max="32767" attributes="0"/>
+                          <Component id="bApplyMemAccess" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="85" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -779,9 +762,9 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="rbSparse" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="txtSparse" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
+                              <Component id="cbMemStep" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="bApplyMemAccess" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -808,12 +791,6 @@
                     <Property name="actionCommand" type="java.lang.String" value=""/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="txtSparse">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="8"/>
-                    <Property name="enabled" type="boolean" value="false"/>
-                  </Properties>
-                </Component>
                 <Component class="javax.swing.JButton" name="bApplyMemAccess">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Apply"/>
@@ -821,6 +798,21 @@
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bApplyMemAccessActionPerformed"/>
                   </Events>
+                </Component>
+                <Component class="javax.swing.JComboBox" name="cbMemStep">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="4">
+                        <StringItem index="0" value="8"/>
+                        <StringItem index="1" value="16"/>
+                        <StringItem index="2" value="32"/>
+                        <StringItem index="3" value="64"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
                 </Component>
               </SubComponents>
             </Container>

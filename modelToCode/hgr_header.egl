@@ -30,7 +30,10 @@ typedef struct
 	int step;
 	long int data_size;
 	char data_granularity[2];
-	char *prem_data_ptr;
+	char *char_data_ptr;     //8 bits
+	int  *int_data_ptr;      //16 bits
+	long *long_data_ptr;     //32 bits
+	double *double_data_ptr; //64 bits
 } memory_access_t;
 
 int hgr_task_creator(tspec period,tspec rdline,int priority,int processor,int act_flag,void* name_task);

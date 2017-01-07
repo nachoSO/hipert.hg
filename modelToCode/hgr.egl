@@ -66,7 +66,17 @@ memory_access_t * hgr_load_mem(long int data_size, char *data_granularity, int t
 	(*mem_data).step = step; 
 	(*mem_data).data_size = calc_data_size(data_size,data_granularity);
 	strcpy((*mem_data).data_granularity,data_granularity);
-	(*mem_data).prem_data_ptr = (char *)malloc((*mem_data).data_size);
+	if(step>0 && step<=8){
+		(*mem_data).char_data_ptr   = (char *)malloc(((*mem_data).data_size)/step);
+	}else if(step>=9 && step<=16){
+		(*mem_data).int_data_ptr    = (int *)malloc(((*mem_data).data_size)/step);
+	}else if(step>=17 && step<=32){
+		(*mem_data).long_data_ptr   = (long *)malloc(((*mem_data).data_size)/step);
+	}else if(step>=33 && step<=64){
+		(*mem_data).double_data_ptr = (double *)malloc(((*mem_data).data_size)/step);
+	}else{	
+		(*mem_data).char_data_ptr   = (char *)malloc((*mem_data).data_size); //PREM
+	}
 	
 	return mem_data;
 }
@@ -77,7 +87,7 @@ void hgr_prem_memphase(memory_access_t *data){
 	
 	hgr_wait_dependency(&premMutex);
 	for(i=0; i<(*data).data_size; i++){
-		volatile char a = (*data).prem_data_ptr[i];
+		volatile char a = (*data).char_data_ptr[i];
 	}
 	hgr_release_dependency(&premMutex);
 }
@@ -102,10 +112,16 @@ void hgr_compute_task (long int ncycles){
 	long int i,j,k;
 	int step=(*data).step;
 	long int phi=(*data).data_size/step;
-	for(k=0;k<phi;k++){
+	for(i=0;i<phi;i++){
 		//memory phase
-		for(i=0;i<step;i++){
-			volatile char a = (*data).prem_data_ptr[i];
+		if(step>0 && step<=8){
+			volatile char a   = (*data).char_data_ptr[i];
+		}else if(step>=9 && step<=16){
+			volatile int a    = (*data).int_data_ptr[i];
+		}else if(step>=17 && step<=32){
+			volatile long a   = (*data).long_data_ptr[i];
+		}else if(step>=33 && step<=64){
+			volatile double a = (*data).double_data_ptr[i];
 		}
 		//execution phase
 		for(j=0;j<(ncycles/phi);j++);

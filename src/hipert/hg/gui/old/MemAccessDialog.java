@@ -1,4 +1,4 @@
-package hipert.hg.Old.gui;
+package hipert.hg.gui.old;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;

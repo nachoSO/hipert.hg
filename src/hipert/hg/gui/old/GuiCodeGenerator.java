@@ -1,4 +1,4 @@
-package hipert.hg.Old.gui;
+package hipert.hg.gui.old;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
