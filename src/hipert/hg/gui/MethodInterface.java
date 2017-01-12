@@ -23,7 +23,7 @@ import hipert.hg.modelToCode.DagToCode;
 public class MethodInterface extends JDialog {
 	
 	public static File[] loadFiles(hgGUI hgGUI,boolean multiSelection){
-		File[] dagFiles = null;
+		File[] files = null;
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File("./"));
 		fileChooser.setMultiSelectionEnabled(multiSelection);
@@ -31,27 +31,38 @@ public class MethodInterface extends JDialog {
 		// Show the dialog; wait until dialog is closed
 		int result = fileChooser.showOpenDialog(hgGUI);
 		if (result == JFileChooser.APPROVE_OPTION) {
-			dagFiles = fileChooser.getSelectedFiles();
-			for(File f:dagFiles)
+			files = fileChooser.getSelectedFiles();
+			for(File f:files)
 				System.out.println("Selected file: " + f.getAbsolutePath());
 		}
 		
-		return dagFiles;
+		return files;
 	}
 	
 	public static File loadFile(hgGUI hgGUI,boolean multiSelection){
-		File dagFile;
+		File file;
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File("./"));
 		fileChooser.setMultiSelectionEnabled(multiSelection);
 
 		// Show the dialog; wait until dialog is closed
 		int result = fileChooser.showOpenDialog(hgGUI);
-		dagFile=fileChooser.getSelectedFile();
+		file=fileChooser.getSelectedFile();
 
-		return dagFile;
+		return file;
 	}
 	
+	public static File loadFolder(hgGUI hgGUI,boolean multiSelection){
+		File file;
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setCurrentDirectory(new File("./"));
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		// Show the dialog; wait until dialog is closed
+		int result = fileChooser.showOpenDialog(hgGUI);
+		file=fileChooser.getSelectedFile();
+
+		return file;
+	}
 
 
 }

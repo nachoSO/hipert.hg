@@ -35,7 +35,7 @@ public class XMLGenerator {
 			
 			//dagName first line second string
 			line = br.readLine();
-			dags.get(index).dagName=line.split(" ")[1];
+			dags.get(index).setDagName(line.split(" ")[1]);
 			
 			//Process file
 			while( (line = br.readLine()) != null ){
@@ -68,9 +68,9 @@ public class XMLGenerator {
 				edges.add(new Edge(src+"_"+dst,src,dst));
 			}else{//3) The line is a node
 				line=line.toLowerCase();
-				dags.get(index).comment=line;
+				dags.get(index).setComment(line);
 				line=line.replace("\"", "");
-				dags.get(index).comment=dags.get(index).comment.replace("\"", "&quot;");
+				dags.get(index).setComment(dags.get(index).getComment().replace("\"", "&quot;"));
 				double miet=Double.parseDouble(line.split("miet=")[1].split(",")[0]);
 				double meet=Double.parseDouble(line.split("meet=")[1].split(",")[0]);
 				double maet=Double.parseDouble(line.split("maet=")[1].split(",")[0]);
@@ -78,7 +78,7 @@ public class XMLGenerator {
 				String mem_unit=line.split("unit=")[1].split(",")[0].replace("]","").toUpperCase();
 				int nodeId=Integer.parseInt(line.split(" ")[0]);
 				
-				nodes.add(new Node(nodeId,miet,meet,maet,mem_acess,mem_unit,dags.get(index).comment));
+				nodes.add(new Node(nodeId,miet,meet,maet,mem_acess,mem_unit,dags.get(index).getComment()));
 			}	
 		}else if(line.contains("period")){ //process period priority deadline information
 			dags.get(index).setPeriod(Integer.parseInt(line.split("period=")[1].split(",")[0]));
@@ -93,20 +93,20 @@ public class XMLGenerator {
     	try{
 			PrintWriter writer = new PrintWriter(new FileOutputStream(new File(filename),true));
 		    //write header of the xml
-		    writer.println("<dagCollection xmi:id=\""+dags.get(index).dagName+"\" name=\""+dags.get(index).dagName+"\" period=\""+dags.get(index).getPeriod()+"\" priority=\""
-		    			+dags.get(index).getPriority()+"\" deadline=\""+dags.get(index).getDeadline()+"\" processor=\""+dags.get(index).getMap()+"\" mem_type=\""+dags.get(index).mem_access
-		    			+"\" step=\""+dags.get(index).step+"\">");
+		    writer.println("<dagCollection xmi:id=\""+dags.get(index).getDagName()+"\" name=\""+dags.get(index).getDagName()+"\" period=\""+dags.get(index).getPeriod()+"\" priority=\""
+		    			+dags.get(index).getPriority()+"\" deadline=\""+dags.get(index).getDeadline()+"\" processor=\""+dags.get(index).getMap()+"\" mem_type=\""+dags.get(index).getMem_access()
+		    			+"\" step=\""+dags.get(index).getStep()+"\" stride=\""+dags.get(index).getStride()+"\">");
 		    
 		    for(Node node : nodes){
-		    	String nodeID=dags.get(index).dagName+"_"+node.getNodeID();
+		    	String nodeID=dags.get(index).getDagName()+"_"+node.getNodeID();
 			    writer.println("<node xmi:id=\""+nodeID+"\" name=\""+nodeID+"\" "
 			    		+ "comment=\""+node.getComment()+"\" miet=\""+node.getIwcet()+"\" meet=\""+node.getWcet()+"\" "
 			    		+ "maet=\""+node.getMaet()+"\" mem_access=\""+node.getMem_access()+"\" mem_unit=\""+node.getMem_unit()+"\"/>");
 		    }
 		    for(Edge edge : edges){
-		    	String edgeName=dags.get(index).dagName+"_"+edge.name;
-		    	String dagSrc=dags.get(index).dagName+"_"+edge.src.getNodeID();
-		    	String dagTrg=dags.get(index).dagName+"_"+edge.trg.getNodeID();
+		    	String edgeName=dags.get(index).getDagName()+"_"+edge.name;
+		    	String dagSrc=dags.get(index).getDagName()+"_"+edge.src.getNodeID();
+		    	String dagTrg=dags.get(index).getDagName()+"_"+edge.trg.getNodeID();
 			    writer.println("<edge xmi:id=\""+edgeName+"\" name=\""+edgeName+"\" src=\""+dagSrc+"\" trg=\""+dagTrg+"\"/>");
 		    }
 		    writer.println("</dagCollection>");
@@ -131,7 +131,7 @@ public class XMLGenerator {
 			nodes.clear();
 			edges.clear();
 		    dags.add(dag);
-			readDOTFile(dag.dagPath.toString(),index);
+			readDOTFile(dag.getDagPath().toString(),index);
 		    writeModelFile(fileDst,index);
 		    index++;
 		}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<GraphMetamodel:DagSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:GraphMetamodel="GraphMetamodel" xsi:schemaLocation="GraphMetamodel ./metamodel/graphMetamodel.ecore" xmi:id="dagPSocrates" partitioning_policy="PARTITIONED" semaphore_protocol="PRIO_CEILING" sched_alg="SCHED_OTHER">
+<GraphMetamodel:DagSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:GraphMetamodel="GraphMetamodel" xmi:id="dagPSocrates" partitioning_policy="PARTITIONED" semaphore_protocol="PRIO_CEILING">
   <dagCollection xmi:id="G1" name="G1" period="1000" priority="50" deadline="1000">
     <node xmi:id="G1_1" name="G1_1" miet="10.381" meet="10.381" maet="10.75" comment="1 [miet=&quot;10.381&quot;, meet=&quot;10.381&quot;, maet=&quot;10.75&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
     <node xmi:id="G1_2" name="G1_2" miet="10.0" meet="10.98" maet="10.92" comment="2 [miet=&quot;10.98&quot;, meet=&quot;10.0&quot;, maet=&quot;10.92&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
@@ -7,7 +7,7 @@
     <edge xmi:id="G1_1_2" name="G1_1_2" src="G1_1" trg="G1_2"/>
     <edge xmi:id="G1_1_3" name="G1_1_3" src="G1_1" trg="G1_3"/>
   </dagCollection>
-  <dagCollection xmi:id="G2" name="G2" period="2000" priority="60" deadline="2000" processor="1" mem_type="sparse" step="32">
+  <dagCollection xmi:id="G2" name="G2" period="2000" priority="60" deadline="2000" processor="1" mem_type="sparse" step="8" stride="1">
     <node xmi:id="G2_1" name="G2_1" miet="10.65" meet="10.48" maet="10.63" comment="1 [miet=&quot;10.48&quot;, meet=&quot;10.65&quot;, maet=&quot;10.63&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
     <node xmi:id="G2_2" name="G2_2" miet="10.91" meet="10.21" maet="10.34" comment="2 [miet=&quot;10.21&quot;, meet=&quot;10.91&quot;, maet=&quot;10.34&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
     <node xmi:id="G2_3" name="G2_3" miet="10.82" meet="10.42" maet="10.66" comment="3 [miet=&quot;10.42&quot;, meet=&quot;10.82&quot;, maet=&quot;10.66&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
@@ -18,5 +18,26 @@
     <edge xmi:id="G2_2_4" name="G2_2_4" src="G2_2" trg="G2_4"/>
     <edge xmi:id="G2_3_4" name="G2_3_4" src="G2_3" trg="G2_4"/>
     <edge xmi:id="G2_5_4" name="G2_5_4" src="G2_5" trg="G2_4"/>
+  </dagCollection>
+  <dagCollection xmi:id="G3" name="G3" period="1500" priority="50" deadline="1500" mem_type="sparse" step="64" stride="32">
+    <node xmi:id="G3_1" name="G3_1" miet="54.38" meet="54.38" maet="54.38" comment="1 [miet=&quot;54.38&quot;, meet=&quot;54.38&quot;, maet=&quot;54.38&quot;, mem=&quot;100&quot;, unit=&quot;kb&quot;]" mem_access="100" mem_unit="KB"/>
+    <node xmi:id="G3_2" name="G3_2" miet="201.98" meet="201.98" maet="201.98" comment="2 [miet=&quot;201.98&quot;, meet=&quot;201.98&quot;, maet=&quot;201.98&quot;, mem=&quot;100&quot;, unit=&quot;kb&quot;]" mem_access="100" mem_unit="KB"/>
+    <node xmi:id="G3_3" name="G3_3" miet="312.85" meet="312.85" maet="312.85" comment="3 [miet=&quot;312.85&quot;, meet=&quot;312.85&quot;, maet=&quot;312.85&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <node xmi:id="G3_4" name="G3_4" miet="112.85" meet="112.85" maet="112.85" comment="4 [miet=&quot;112.85&quot;, meet=&quot;112.85&quot;, maet=&quot;112.85&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <edge xmi:id="G3_1_2" name="G3_1_2" src="G3_1" trg="G3_2"/>
+    <edge xmi:id="G3_1_3" name="G3_1_3" src="G3_1" trg="G3_3"/>
+    <edge xmi:id="G3_1_4" name="G3_1_4" src="G3_1" trg="G3_4"/>
+  </dagCollection>
+  <dagCollection xmi:id="G4" name="G4" period="700" priority="60" deadline="700" processor="1" mem_type="sparse" step="64">
+    <node xmi:id="G4_1" name="G4_1" miet="94.48" meet="94.48" maet="94.48" comment="1 [miet=&quot;94.48&quot;, meet=&quot;94.48&quot;, maet=&quot;94.48&quot;, mem=&quot;100&quot;, unit=&quot;kb&quot;]" mem_access="100" mem_unit="KB"/>
+    <node xmi:id="G4_2" name="G4_2" miet="58.21" meet="58.21" maet="58.21" comment="2 [miet=&quot;58.21&quot;, meet=&quot;58.21&quot;, maet=&quot;58.21&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <node xmi:id="G4_3" name="G4_3" miet="14.42" meet="14.42" maet="14.42" comment="3 [miet=&quot;14.42&quot;, meet=&quot;14.42&quot;, maet=&quot;14.42&quot;, mem=&quot;100&quot;, unit=&quot;kb&quot;]" mem_access="100" mem_unit="KB"/>
+    <node xmi:id="G4_4" name="G4_4" miet="35.38" meet="35.38" maet="35.38" comment="4 [miet=&quot;35.38&quot;, meet=&quot;35.38&quot;, maet=&quot;35.38&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <node xmi:id="G4_5" name="G4_5" miet="12.84" meet="12.84" maet="12.84" comment="5 [miet=&quot;12.84&quot;, meet=&quot;12.84&quot;, maet=&quot;12.84&quot;, mem=&quot;100&quot;, unit=&quot;kb&quot;]" mem_access="100" mem_unit="KB"/>
+    <edge xmi:id="G4_1_2" name="G4_1_2" src="G4_1" trg="G4_2"/>
+    <edge xmi:id="G4_1_3" name="G4_1_3" src="G4_1" trg="G4_3"/>
+    <edge xmi:id="G4_2_4" name="G4_2_4" src="G4_2" trg="G4_4"/>
+    <edge xmi:id="G4_3_4" name="G4_3_4" src="G4_3" trg="G4_4"/>
+    <edge xmi:id="G4_5_3" name="G4_5_3" src="G4_5" trg="G4_3"/>
   </dagCollection>
 </GraphMetamodel:DagSet>

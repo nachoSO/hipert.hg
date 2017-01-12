@@ -7,26 +7,19 @@ package hipert.hg.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.LinkedList;
 
-import javax.swing.ButtonGroup;
+import javax.swing.AbstractButton;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
-import javax.swing.text.NumberFormatter;
-
 import hipert.hg.XMLParser.DAG;
 import hipert.hg.XMLParser.Node;
 import hipert.hg.XMLParser.XMLGenerator;
@@ -57,23 +50,33 @@ public class hgGUI extends javax.swing.JFrame {
 		
         rbPrem.setActionCommand("prem");
         rbSparse.setActionCommand("sparse");
-   
-        //PREMRB LISTENER
-        rbPrem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	cbMemStep.setEnabled(false);
-            }
-        });
+        rbSequential.setActionCommand("sequential");
+        rbRandom.setActionCommand("random");
         
-        //SPARSERB LISTENER
-        rbSparse.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	cbMemStep.setEnabled(true);
-            }
-        });
-        
+		ActionListener enablerListener = new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				AbstractButton aButton = (AbstractButton) actionEvent.getSource();
+            	cbMemStep.setEnabled(aButton.getText()=="Sparse" ? true : false);
+            	cbMemStep.setEnabled(aButton.getText()=="Sparse" ? true : false);
+				rbRandom.setEnabled(aButton.getText()=="Sparse" ? true : false);
+				rbSequential.setEnabled(aButton.getText()=="Sparse" ? true : false);
+				lblStride.setEnabled(aButton.getText()=="Sparse" ? true : false);
+				lblStep.setEnabled(aButton.getText()=="Sparse" ? true : false);
+				cbStride.setEnabled(aButton.getText()=="Sparse" ? true : false);
+			}
+	    };
+		rbSparse.addActionListener(enablerListener);
+		rbPrem.addActionListener(enablerListener);
+		
+		ActionListener enablerListener2 = new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				AbstractButton aButton = (AbstractButton) actionEvent.getSource();
+				cbStride.setEnabled(aButton.getText()=="Sequential" ? true : false);
+			}
+	    };
+		rbSequential.addActionListener(enablerListener2);
+		rbRandom.addActionListener(enablerListener2);
+
         //txtSparse only numbers
         /*txtSparse.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
@@ -99,6 +102,8 @@ public class hgGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         groupMemAccess = new javax.swing.ButtonGroup();
+        groupSparse = new javax.swing.ButtonGroup();
+        jTextField6 = new javax.swing.JTextField();
         tabPanel = new javax.swing.JTabbedPane();
         panteDagGenerator = new javax.swing.JPanel();
         panelElementsTab1 = new javax.swing.JPanel();
@@ -151,10 +156,28 @@ public class hgGUI extends javax.swing.JFrame {
         rbSparse = new javax.swing.JRadioButton();
         bApplyMemAccess = new javax.swing.JButton();
         cbMemStep = new javax.swing.JComboBox<>();
+        lblStep = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        rbSequential = new javax.swing.JRadioButton();
+        rbRandom = new javax.swing.JRadioButton();
+        cbStride = new javax.swing.JComboBox<>();
+        lblStride = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         lstReadyDAG = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        lblOutput = new javax.swing.JLabel();
+        lblRuntime = new javax.swing.JLabel();
+        lblGraphviz = new javax.swing.JLabel();
+        txtRuntime = new javax.swing.JTextField();
+        txtOutput = new javax.swing.JTextField();
+        txtGraphviz = new javax.swing.JTextField();
+        bOutput = new javax.swing.JButton();
+        bRuntime = new javax.swing.JButton();
+        bGraphviz = new javax.swing.JButton();
         labelIconHeader = new javax.swing.JLabel();
+
+        jTextField6.setText("jTextField6");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -349,7 +372,7 @@ public class hgGUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTabModifyLayout.createSequentialGroup()
                 .addGap(41, 41, 41)
                 .addComponent(labelDagModify)
-                .addGap(148, 692, Short.MAX_VALUE))
+                .addGap(148, 760, Short.MAX_VALUE))
             .addGroup(panelTabModifyLayout.createSequentialGroup()
                 .addGroup(panelTabModifyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelTabModifyLayout.createSequentialGroup()
@@ -358,7 +381,7 @@ public class hgGUI extends javax.swing.JFrame {
                     .addGroup(panelTabModifyLayout.createSequentialGroup()
                         .addGap(111, 111, 111)
                         .addComponent(bLoadToModify, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
                 .addGroup(panelTabModifyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTabModifyLayout.createSequentialGroup()
                         .addGroup(panelTabModifyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -505,71 +528,121 @@ public class hgGUI extends javax.swing.JFrame {
             }
         });
 
-        cbMemStep.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "8", "16", "32", "64" }));
+        cbMemStep.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "char", "int", "long", "double" }));
+        cbMemStep.setEnabled(false);
+        cbMemStep.setMinimumSize(new java.awt.Dimension(48, 22));
+        cbMemStep.setPreferredSize(new java.awt.Dimension(48, 22));
+
+        lblStep.setText("Step");
+        lblStep.setEnabled(false);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        groupSparse.add(rbSequential);
+        rbSequential.setSelected(true);
+        rbSequential.setText("Sequential");
+        rbSequential.setEnabled(false);
+
+        groupSparse.add(rbRandom);
+        rbRandom.setText("Random");
+        rbRandom.setEnabled(false);
+
+        cbStride.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "4", "8", "16", "32", "64", "128", "256" }));
+        cbStride.setEnabled(false);
+
+        lblStride.setText("Stride");
+        lblStride.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(rbSequential)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblStride)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbStride, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(rbRandom))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblStride)
+                    .addComponent(cbStride, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rbSequential, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rbRandom)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout panelRadioButtonsLayout = new javax.swing.GroupLayout(panelRadioButtons);
         panelRadioButtons.setLayout(panelRadioButtonsLayout);
         panelRadioButtonsLayout.setHorizontalGroup(
             panelRadioButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelRadioButtonsLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRadioButtonsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelRadioButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelRadioButtonsLayout.createSequentialGroup()
-                        .addComponent(rbPrem)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(rbPrem)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                .addGroup(panelRadioButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelRadioButtonsLayout.createSequentialGroup()
                         .addComponent(rbSparse)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cbMemStep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(23, 23, 23))))
+                        .addGap(48, 48, 48)
+                        .addComponent(lblStep)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbMemStep, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRadioButtonsLayout.createSequentialGroup()
-                .addContainerGap(98, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(bApplyMemAccess)
-                .addGap(85, 85, 85))
+                .addGap(161, 161, 161))
         );
         panelRadioButtonsLayout.setVerticalGroup(
             panelRadioButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelRadioButtonsLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(rbPrem)
-                .addGap(18, 18, 18)
                 .addGroup(panelRadioButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbPrem)
                     .addComponent(rbSparse)
-                    .addComponent(cbMemStep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbMemStep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblStep))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bApplyMemAccess)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bApplyMemAccess))
         );
 
         lstReadyDAG.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(lstReadyDAG);
 
-        jLabel1.setText("Ready DAGs");
+        jLabel1.setText("Ready Dags");
 
         javax.swing.GroupLayout panelCodeGeneratorLayout = new javax.swing.GroupLayout(panelCodeGenerator);
         panelCodeGenerator.setLayout(panelCodeGeneratorLayout);
         panelCodeGeneratorLayout.setHorizontalGroup(
             panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelCodeGeneratorLayout.createSequentialGroup()
-                .addGroup(panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelCodeGeneratorLayout.createSequentialGroup()
-                        .addContainerGap(51, Short.MAX_VALUE)
-                        .addComponent(scrollDagLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE))
-                    .addGroup(panelCodeGeneratorLayout.createSequentialGroup()
-                        .addGap(121, 121, 121)
-                        .addComponent(bLoadDag)))
-                .addGroup(panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelCodeGeneratorLayout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addGroup(panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel1)
-                            .addComponent(panelRadioButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addGap(60, 60, 60))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCodeGeneratorLayout.createSequentialGroup()
-                        .addComponent(bGenerateCode)
-                        .addGap(121, 121, 121))))
+                .addGap(121, 121, 121)
+                .addComponent(bLoadDag)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 283, Short.MAX_VALUE)
+                .addComponent(bGenerateCode)
+                .addGap(163, 163, 163))
+            .addGroup(panelCodeGeneratorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scrollDagLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1)
+                    .addComponent(jScrollPane2)
+                    .addComponent(panelRadioButtons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         panelCodeGeneratorLayout.setVerticalGroup(
             panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -577,11 +650,11 @@ public class hgGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelCodeGeneratorLayout.createSequentialGroup()
-                        .addComponent(panelRadioButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(panelRadioButtons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(2, 2, 2)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(scrollDagLoad))
                 .addGap(18, 18, 18)
                 .addGroup(panelCodeGeneratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -592,6 +665,97 @@ public class hgGUI extends javax.swing.JFrame {
 
         tabPanel.addTab("Code Generator", panelCodeGenerator);
 
+        lblOutput.setText("Output Folder");
+
+        lblRuntime.setText("Runtime Path");
+
+        lblGraphviz.setText("Graphviz Path");
+
+        txtRuntime.setEditable(false);
+        txtRuntime.setBackground(new java.awt.Color(255, 255, 255));
+        txtRuntime.setText("None");
+
+        txtOutput.setEditable(false);
+        txtOutput.setBackground(new java.awt.Color(255, 255, 255));
+        txtOutput.setText("None");
+
+        txtGraphviz.setEditable(false);
+        txtGraphviz.setBackground(new java.awt.Color(255, 255, 255));
+        txtGraphviz.setText("None");
+
+        bOutput.setText("Load");
+        bOutput.setName("loadFolder"); // NOI18N
+        bOutput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bOutputActionPerformed(evt);
+            }
+        });
+
+        bRuntime.setText("Load");
+        bRuntime.setName("loadRuntime"); // NOI18N
+        bRuntime.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bRuntimeActionPerformed(evt);
+            }
+        });
+
+        bGraphviz.setText("Load");
+        bGraphviz.setName("loadGraphviz"); // NOI18N
+        bGraphviz.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bGraphvizActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lblGraphviz)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtGraphviz))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblOutput)
+                            .addComponent(lblRuntime))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtOutput)
+                            .addComponent(txtRuntime, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(16, 16, 16)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bRuntime, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bOutput, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bGraphviz, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(42, 42, 42))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblOutput)
+                    .addComponent(txtOutput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bOutput, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(19, 19, 19)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRuntime)
+                    .addComponent(txtRuntime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bRuntime, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblGraphviz)
+                    .addComponent(txtGraphviz, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bGraphviz, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(186, Short.MAX_VALUE))
+        );
+
+        tabPanel.addTab("Configuration", jPanel2);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -600,7 +764,7 @@ public class hgGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(labelIconHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE))
+                        .addComponent(labelIconHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE))
                     .addComponent(tabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -644,7 +808,8 @@ public class hgGUI extends javax.swing.JFrame {
     MouseListener lastListener;
     XMLModifier xmlgen;
     File fileModify;
-    private void bLoadToModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLoadToModifyActionPerformed
+    @SuppressWarnings("unchecked")
+	private void bLoadToModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLoadToModifyActionPerformed
     	fileModify=MethodInterface.loadFile(this,false);
     	if(fileModify!=null){
     		xmlgen=new XMLModifier();
@@ -654,7 +819,8 @@ public class hgGUI extends javax.swing.JFrame {
 	        xmlgen.readDOTFile(fileModify.toString());
 	        nodes=(LinkedList<Node>) xmlgen.getNodes().clone();
 	        dag=xmlgen.getDag();
-	    	DefaultListModel modelDagModify = new DefaultListModel();
+	    	@SuppressWarnings("rawtypes")
+			DefaultListModel modelDagModify = new DefaultListModel();
 	    	lstDagModify.setModel(modelDagModify);
 	    	bApplyChanges.setEnabled(true);
 	    	
@@ -763,17 +929,25 @@ public class hgGUI extends javax.swing.JFrame {
 	
 	//APPLY BUTTON MEMORY ACCESS
     DefaultListModel modelReadyDag = new DefaultListModel();
-    private void bApplyMemAccessActionPerformed(java.awt.event.ActionEvent evt) {                                                
+    @SuppressWarnings("unchecked")
+	private void bApplyMemAccessActionPerformed(java.awt.event.ActionEvent evt) {                                                
 		if(lstDagLoaded.getSelectedIndex()<0){
 			JOptionPane.showMessageDialog(null, "Choose a DAG", "Code Generated", JOptionPane.INFORMATION_MESSAGE);
 		}else{
 			String memory_access = groupMemAccess.getSelection().getActionCommand();
+			String memory_stride = groupSparse.getSelection().getActionCommand();
 	    	lstReadyDAG.setModel(modelReadyDag);
-	    	if(memory_access=="prem")
+	    	if(memory_access=="prem"){
 	    		modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+"-"+memory_access);
-	    	else if (memory_access=="sparse")
-	    		modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+"-"+memory_access+"-"+cbMemStep.getSelectedItem().toString());
-
+	    	}
+	    	else if (memory_access=="sparse"){
+	    		if(memory_stride=="random")
+	    			modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+"-"+memory_access+"-"+cbMemStep.getSelectedItem().toString()+
+	    				 "-" + memory_stride);
+	    		else
+	    			modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+"-"+memory_access+"-"+cbMemStep.getSelectedItem().toString()+
+	    				 "-" + memory_stride + "-"+cbStride.getSelectedItem().toString());
+	    	}
 		}
     }
 
@@ -789,25 +963,46 @@ public class hgGUI extends javax.swing.JFrame {
     	}
     }
     
-    //FUNCTION TO PREPARE THE DAGS
+    //THIS FUNCTION PREPARES THE MODEL (CAMBIAR!!!!!!!!!!!!!!!!!)
 	private DAG[] packDags() {
 		DAG dags[] = new DAG[lstReadyDAG.getModel().getSize()];
 		for(int i=0;i<lstReadyDAG.getModel().getSize();i++){
 			String filePath="dags/"+lstReadyDAG.getModel().getElementAt(i).split("-")[0];
 			String mem_access=lstReadyDAG.getModel().getElementAt(i).split("-")[1];
+			//memory access type
 			if(mem_access.equals("prem")){
 				dags[i]=new DAG(filePath,mem_access);
 			}
 			else if (mem_access.equals("sparse")){
-				int step=Integer.parseInt(lstReadyDAG.getModel().getElementAt(i).split("-")[2]);
-				dags[i]=new DAG(filePath,mem_access,step);
+				String stepString=lstReadyDAG.getModel().getElementAt(i).split("-")[2];
+				//step access type
+				int step=0;
+				if (stepString.equals("char")){
+					step=8; //bits
+				}else if(stepString.equals("int")){
+					step=16;
+				}else if(stepString.equals("long")){
+					step=32;
+				}else if(stepString.equals("double")){
+					step=64;
+				}
+				
+				//Stride access type
+				String strideType=lstReadyDAG.getModel().getElementAt(i).split("-")[3];
+				int stride=0; //random access
+				if(strideType.equals("sequential")){
+					stride=Integer.parseInt(lstReadyDAG.getModel().getElementAt(i).split("-")[4]);
+				}
+				dags[i]=new DAG(filePath,mem_access,step,stride);
 			}
 		}
 		return dags;
 	}
 	
 	//FUNCTION TO REFRESH AVAILABLE DAGS
-    private void refreshDAGFiles(File[] files,JList lst) {
+    @SuppressWarnings("unchecked")
+	private void refreshDAGFiles(File[] files,JList lst) {
+		@SuppressWarnings("rawtypes")
 		DefaultListModel model = new DefaultListModel();
     	lst.removeAll();
     	lst.setModel(model);
@@ -815,6 +1010,28 @@ public class hgGUI extends javax.swing.JFrame {
             model.addElement(f.getName());
     	}
     }
+    
+    /*******************************************************************************************************************************************/
+    
+    /************************************************************PANEL CONFIGURATION************************************************************/
+
+    private void bOutputActionPerformed(java.awt.event.ActionEvent evt) {
+        File file=MethodInterface.loadFolder(this,false);
+        if(file!=null)
+        	txtOutput.setText(file.getPath());
+    }
+
+    private void bRuntimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRuntimeActionPerformed
+        File file=MethodInterface.loadFolder(this,false);
+        if(file!=null)
+        	txtRuntime.setText(file.getPath());
+    }
+
+    private void bGraphvizActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGraphvizActionPerformed
+        File file=MethodInterface.loadFolder(this,false);
+        if(file!=null)
+        	txtGraphviz.setText(file.getPath()); 
+    }//GEN-LAST:event_bGraphvizActionPerformed
     /*******************************************************************************************************************************************/
 
 	/**
@@ -858,11 +1075,16 @@ public class hgGUI extends javax.swing.JFrame {
     private javax.swing.JButton bApplyMemAccess;
     private javax.swing.JButton bGenerateCode;
     private javax.swing.JButton bGenerateDag;
+    private javax.swing.JButton bGraphviz;
     private javax.swing.JButton bLoadDag;
     private javax.swing.JButton bLoadToModify;
+    private javax.swing.JButton bOutput;
+    private javax.swing.JButton bRuntime;
     private javax.swing.JComboBox<String> cbMemStep;
     private javax.swing.JComboBox<String> cbMemUnit;
+    private javax.swing.JComboBox<String> cbStride;
     private javax.swing.ButtonGroup groupMemAccess;
+    private javax.swing.ButtonGroup groupSparse;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -875,6 +1097,8 @@ public class hgGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
@@ -885,10 +1109,16 @@ public class hgGUI extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
     private javax.swing.JLabel labelDagModify;
     private javax.swing.JLabel labelIconHeader;
+    private javax.swing.JLabel lblGraphviz;
+    private javax.swing.JLabel lblOutput;
+    private javax.swing.JLabel lblRuntime;
+    private javax.swing.JLabel lblStep;
+    private javax.swing.JLabel lblStride;
     private javax.swing.JScrollPane lstDagGenerated;
     private javax.swing.JList<String> lstDagLoaded;
     private javax.swing.JList<String> lstDagModify;
@@ -900,16 +1130,21 @@ public class hgGUI extends javax.swing.JFrame {
     private javax.swing.JPanel panelTextFields;
     private javax.swing.JPanel panteDagGenerator;
     private javax.swing.JRadioButton rbPrem;
+    private javax.swing.JRadioButton rbRandom;
+    private javax.swing.JRadioButton rbSequential;
     private javax.swing.JRadioButton rbSparse;
     private javax.swing.JScrollPane scrollDagLoad;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JTextField txtDeadline;
+    private javax.swing.JTextField txtGraphviz;
     private javax.swing.JTextField txtMAET;
     private javax.swing.JTextField txtMEET;
     private javax.swing.JTextField txtMEM;
     private javax.swing.JTextField txtMIET;
     private javax.swing.JTextField txtMap;
+    private javax.swing.JTextField txtOutput;
     private javax.swing.JTextField txtPeriod;
     private javax.swing.JTextField txtPriority;
+    private javax.swing.JTextField txtRuntime;
     // End of variables declaration//GEN-END:variables
 }

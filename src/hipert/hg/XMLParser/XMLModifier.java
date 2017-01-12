@@ -39,7 +39,7 @@ public class XMLModifier {
 			
 			//dagName first line second string
 			line = br.readLine();
-			dag.dagName=line.split(" ")[1];
+			dag.setDagName(line.split(" ")[1]);
 			
 			//Process file
 			while( (line = br.readLine()) != null ){
@@ -72,9 +72,9 @@ public class XMLModifier {
 				edges.add(new Edge(src+"_"+dst,src,dst));
 			}else{//3) The line is a node
 				line=line.toLowerCase();
-				dag.comment=line;
+				dag.setComment(line);
 				line=line.replace("\"", "");
-				dag.comment=dag.comment.replace("\"", "&quot;");
+				dag.setComment(dag.getComment().replace("\"", "&quot;"));
 				double miet=Double.parseDouble(line.split("miet=")[1].split(",")[0]);
 				double meet=Double.parseDouble(line.split("meet=")[1].split(",")[0]);
 				double maet=Double.parseDouble(line.split("maet=")[1].split(",")[0]);
@@ -82,7 +82,7 @@ public class XMLModifier {
 				String mem_unit=line.split("unit=")[1].split(",")[0].replace("]","").toUpperCase();
 				int nodeId=Integer.parseInt(line.split(" ")[0]);
 				
-				nodes.add(new Node(nodeId,miet,meet,maet,mem_acess,mem_unit,dag.comment));
+				nodes.add(new Node(nodeId,miet,meet,maet,mem_acess,mem_unit,dag.getComment()));
 			}	
 		}else if(line.contains("period")){ //process period priority deadline information
 			dag.setPeriod(Integer.parseInt(line.split("period=")[1].split(",")[0]));

@@ -8,7 +8,7 @@ for (dag in gs.dagCollection){
 }
 %]
 CFLAGS = -Wall -I../src/
-LDFLAGS=-L ../src -lptask -lpthread -lrt -Wunused-function -Wunused-variable
+LDFLAGS=-L ../src -lptask -lpthread -lrt -Wunused-function -Wunused-variable -O0
 CC=gcc
 LD=gcc
 .SUFFIXES:

@@ -55,7 +55,6 @@ void hgr_load_computation(double wcet_per_task[],int nElements,long int cycle_pe
 
 	for(i=0;i<nElements;i++){
 		cycle_per_task[i]=(long int)(((double)wcet_per_task[i]*(double)MAXCYCLES)/(double)avg);
-		printf("%d",i);
 	}
 }
 

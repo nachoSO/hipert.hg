@@ -31,7 +31,8 @@ void [%=dag.name%]_pre_load_tasks(){
 	double wcet_per_task[[%=dag.node.size()%]];
 	[%i=0;for (task in dag.node){%] 	
 	wcet_per_task[[%=i%]]=[%=task.miet%];
-	[%=dag.name%]_data[[%=i%]]=hgr_load_mem([%=task.mem_access%],"[%=task.mem_unit%]",[%=dag.mem_type.value%],[%=dag.step%]);
+	//create memory_access_t struct (data_size, data_granularity, memory_access type (PREM,sparse), step, stride)
+	[%=dag.name%]_data[[%=i%]]=hgr_load_mem([%=task.mem_access%],"[%=task.mem_unit%]",[%=dag.mem_type.value%],[%=dag.step%],[%=dag.stride%]);
 	[%i++;}%]
 		
 	hgr_load_computation(wcet_per_task,[%=dag.node.size()%],[%=dag.name%]_cycle_per_task);
@@ -87,7 +88,7 @@ void [%=dag.name%](){
 @template
 operation prem_memory(dag:Dag,task:Node,i:Integer){%]
 	[%var mutexTask:String;%]
-	printf("Hi im the node [%=task.name%]\n");  //[%=task.comment%]
+	//printf("Hi im the node [%=task.name%]\n");  //[%=task.comment%]
 	
 	hgr_prem_memphase([%=dag.name%]_data[[%=i%]]); //Mem phase
 
@@ -105,17 +106,18 @@ operation prem_memory(dag:Dag,task:Node,i:Integer){%]
 	hgr_release_dependency(&[%=mutexTask%]);
 		[%}%]
 	[%}%]
+	return 0;
 [%}
 
 @template
 operation sparse_memory(dag:Dag,task:Node,i:Integer){%]
 	[%var mutexTask:String;%]
-	printf("Hi im the node [%=task.name%]\n");  //[%=task.comment%]
+	//printf("Hi im the node [%=task.name%]\n");  //[%=task.comment%]
 
 	[%for (edge in dag.edge){
 		if(edge.trg.name=task.name){
 			mutexTask=edge.name;%]
-	hgr_wait_dependency(&[%=mutexTask%]); //wait dependency
+	hgr_wait_dependency(&[%=mutexTask%]); 
 		[%}%]
 	[%}%]
 	
@@ -124,9 +126,10 @@ operation sparse_memory(dag:Dag,task:Node,i:Integer){%]
 	[%for (edge in dag.edge){
 		if(edge.src.name=task.name){
 			mutexTask=edge.name;%]
-	hgr_release_dependency(&[%=mutexTask%]); //release dependency
+	hgr_release_dependency(&[%=mutexTask%]);
 		[%}%]
 	[%}%]
+	return 0;
 [%}%]
 
 

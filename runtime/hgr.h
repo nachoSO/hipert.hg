@@ -14,7 +14,7 @@ extern pthread_mutex_t premMutex;
 
 static char * rt_task_name[2] = {
     "G1",
-    "G2",
+    "G1",
 };
 
 typedef struct 
@@ -23,9 +23,9 @@ typedef struct
 	int step;
 	long int data_size;
 	char data_granularity[2];
-	char *char_data_ptr;     //8 bits
-	int  *int_data_ptr;      //16 bits
-	long *long_data_ptr;     //32 bits
+	char *char_data_ptr;     //8 bits //volatile
+	int  *int_data_ptr;      //16 bits //volatile
+	long *long_data_ptr;     //32 bits //volatile
 	double *double_data_ptr; //64 bits
 } memory_access_t;
 

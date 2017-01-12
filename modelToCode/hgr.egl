@@ -20,11 +20,11 @@ int hgr_task_creator(tspec period,tspec rdline,int priority,int processor,int ac
 
 long int calc_data_size(long int size,char * data_granularity){
 	long int data_size=size;
-	if(strcmp(data_granularity,"KB")==1)
+	if(!strcmp(data_granularity,"KB"))
 		data_size=data_size*1024;
-	else if(strcmp(data_granularity,"MB")==1)
+	else if(!strcmp(data_granularity,"MB"))
 		data_size=data_size*1024*1024;
-	else if(strcmp(data_granularity,"GB")==1)
+	else if(!strcmp(data_granularity,"GB"))
 		data_size=data_size*1024*1024*1024;
 	return data_size;
 }
@@ -55,16 +55,16 @@ void hgr_load_computation(double wcet_per_task[],int nElements,long int cycle_pe
 
 	for(i=0;i<nElements;i++){
 		cycle_per_task[i]=(long int)(((double)wcet_per_task[i]*(double)MAXCYCLES)/(double)avg);
-		printf("%d",i);
 	}
 }
 
-memory_access_t * hgr_load_mem(long int data_size, char *data_granularity, int type,int step){
-
+memory_access_t * hgr_load_mem(long int data_size, char *data_granularity, int type,int step,int stride){
 	memory_access_t *mem_data=(memory_access_t *) malloc (sizeof(memory_access_t));
 	(*mem_data).access_type = type; 
 	(*mem_data).step = step; 
 	(*mem_data).data_size = calc_data_size(data_size,data_granularity);
+	(*mem_data).stride = stride;
+	
 	strcpy((*mem_data).data_granularity,data_granularity);
 	if(step>0 && step<=8){
 		(*mem_data).char_data_ptr   = (char *)malloc(((*mem_data).data_size)/step);
@@ -105,29 +105,61 @@ void hgr_compute_task (long int ncycles){
 	//	(( ((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)))*1000);
 }
 
-
 //SPARSE: Memory & Computation phase
- void hgr_compute_sparse_task (memory_access_t *data, long int ncycles){
-
-	long int i,j,k;
+void hgr_compute_sparse_task (memory_access_t *data, long int ncycles){
+	long int i,j;
+	int * pointer; //points to the memory access stride
 	int step=(*data).step;
 	long int phi=(*data).data_size/step;
+	int stride=(*data).stride;
+	if(stride==0){ //random
+		pointer=random_generator(phi,phi); //number limit, size array
+	}else{ //sequential + stride
+		pointer=stride_generator(phi,phi); //stride, size array
+	}
+
 	for(i=0;i<phi;i++){
 		//memory phase
 		if(step>0 && step<=8){
-			volatile char a   = (*data).char_data_ptr[i];
+			volatile char a   = (*data).char_data_ptr[pointer[i]];
 		}else if(step>=9 && step<=16){
-			volatile int a    = (*data).int_data_ptr[i];
+			volatile int a    = (*data).int_data_ptr[pointer[i]];
 		}else if(step>=17 && step<=32){
-			volatile long a   = (*data).long_data_ptr[i];
+			volatile long a   = (*data).long_data_ptr[pointer[i]];
 		}else if(step>=33 && step<=64){
-			volatile double a = (*data).double_data_ptr[i];
+			volatile double a = (*data).double_data_ptr[pointer[i]];
 		}
 		//execution phase
 		for(j=0;j<(ncycles/phi);j++);
 	}
 }
 
+//This function generates a size number of randoms within limit value
+int * random_generator(int limit, int size) {
+	srand((unsigned)time(NULL));
+	int *random_pointer=(int *) malloc (sizeof(int)*size);
+	int divisor = RAND_MAX/(limit+1);
+	int randVal,i;
+	for(i=0;i<size;i++){
+		do { 
+			randVal = rand() / divisor;
+		} while (randVal > limit);
+		random_pointer[i]=randVal;
+	}
+	return random_pointer;
+}
+
+//This function generates the stride values
+int * stride_generator(int stride, int size) {
+	int i;
+	int *strides=(int *) malloc (sizeof(int)*size);
+	for(i=0;i<size;i++){
+		strides[i]=(i*(stride))%size;
+	}
+	return strides;
+}
+
+/*Wrappers*/
 int hgr_pthread_join(pthread_t thread){
 	pthread_join(thread, 0);
 }
@@ -137,7 +169,7 @@ int hgr_pthread_create(pthread_t *thread, const pthread_attr_t *attr,
 	pthread_create(thread, NULL, start_routine, arg);
 }
 
-void  hgr_ptask_init(int policy, global_policy global, sem_protocol protocol){
+void hgr_ptask_init(int policy, global_policy global, sem_protocol protocol){
 	ptask_init(policy, global, protocol);
 }
 
