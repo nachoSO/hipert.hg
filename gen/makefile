@@ -1,12 +1,3 @@
-[%
-var gs: DagSet := DagSet.allInstances().at(0);
-var makeString: String;
-var i:Integer=1;
-for (dag in gs.dagCollection){ 
-	makeString=makeString+"syntethicTask"+i+".c ";
-	i++;
-}
-%]
 CFLAGS = -Wall -I../src/
 LDFLAGS=-L ../src -lptask -lpthread -lrt 
 CC=gcc

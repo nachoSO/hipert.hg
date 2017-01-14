@@ -3,6 +3,8 @@ package hipert.hg.XMLParser;
 import java.io.File;
 
 public class DAG {
+	private String sched_policy;
+	private String partitioning_policy;
 	private int period;
 	private int priority;
 	private int deadline;
@@ -15,17 +17,22 @@ public class DAG {
 	private String mem_access;
 	
 	//prem constructor
-	public DAG(String dagPath, String mem_access){
+	public DAG(String dagPath, String mem_access,int step,String sched_policy,String partitioning_policy){
 		this.setDagPath(new File(dagPath));
 		this.setMem_access(mem_access);
+		this.setStep(step);
+		this.setSched_policy(sched_policy);
+		this.setPartitioning_policy(partitioning_policy);
 	}
 	
-	//scatter constructor
-	public DAG(String dagPath, String mem_access,int step,int stride){
+	//sparse constructor
+	public DAG(String dagPath, String mem_access,int step,int stride,String sched_policy,String partitioning_policy){
 		this.setDagPath(new File(dagPath));
 		this.setMem_access(mem_access);
 		this.setStep(step);
 		this.setStride(stride);
+		this.setSched_policy(sched_policy);
+		this.setPartitioning_policy(partitioning_policy);
 	}
 
 	public DAG() {
@@ -110,5 +117,21 @@ public class DAG {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public String getSched_policy() {
+		return sched_policy;
+	}
+
+	public void setSched_policy(String sched_policy) {
+		this.sched_policy = sched_policy;
+	}
+
+	public String getPartitioning_policy() {
+		return partitioning_policy;
+	}
+
+	public void setPartitioning_policy(String partitioning_policy) {
+		this.partitioning_policy = partitioning_policy;
 	}
 }

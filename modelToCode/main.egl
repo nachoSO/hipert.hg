@@ -6,6 +6,12 @@
 #include "hgr.h"
 #include "syntethicTask.h"
 
+char * rt_task_name[[%=ds.dagCollection.size%]] = {
+    [%for (rt_task in ds.dagCollection){ %]
+    "[%=rt_task.name%]",
+    [%}%]
+};
+
 int main(int argc, char *argv[]){
 	int index=0;
 	
