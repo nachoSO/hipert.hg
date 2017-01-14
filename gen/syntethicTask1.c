@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "hgr.h"
+#include "_hgr.h"
 
 pthread_mutex_t G1_1_2,G1_1_3;
 long int G1_cycle_per_task[3];

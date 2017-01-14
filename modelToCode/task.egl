@@ -18,7 +18,7 @@ for (dag in gs.dagCollection.at(index)){
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "hgr.h"
+#include "_hgr.h"
 
 pthread_mutex_t [%=mutex%];
 long int [%=dag.name%]_cycle_per_task[[%=dag.node.size()%]];

@@ -1,4 +1,3 @@
-#include "hgr.h"
 #ifndef synth_H
 #define synth_H
 void *G1_1();

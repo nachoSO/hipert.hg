@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "hgr.h"
+#include "_hgr.h"
 
 //PREM: Memory phase
 void hgr_prem_memphase(memory_access_t *data){

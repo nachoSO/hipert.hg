@@ -1,4 +1,3 @@
-#include "hgr.h"
 #ifndef synth_H
 #define synth_H
 [%var gs: DagSet := DagSet.allInstances().at(0);

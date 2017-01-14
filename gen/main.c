@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "hgr.h"
+#include "_hgr.h"
 #include "syntethicTask.h"
 
 char * rt_task_name[1] = {
