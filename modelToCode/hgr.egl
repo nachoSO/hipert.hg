@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include "_hgr.h"
 
-pthread_mutex_t premMutex;
-
 int hgr_task_creator(tspec period,tspec rdline,int priority,int processor,int act_flag,void* name_task){
 	tpars tparam = TASK_SPEC_DFL;
 	tparam = (tpars) {

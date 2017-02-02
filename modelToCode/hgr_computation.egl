@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "_hgr.h"
 
+pthread_mutex_t premMutex;
+
 //PREM: Memory phase
 void hgr_prem_memphase(memory_access_t *data){
 	int i;
@@ -39,7 +41,7 @@ void hgr_compute_sparse_task (memory_access_t *data, unsigned long int ncycles){
 	int stride=(*data).stride;
 	unsigned long int ro=ncycles/phi;
 
-	printf("ncycles= %lu ,phi=%lu, ro=%lu, step=%d \n",ncycles,phi,ro,step);
+	//printf("ncycles= %lu ,phi=%lu, ro=%lu, step=%d \n",ncycles,phi,ro,step);
 	if(stride==0){ //random
 		pointer=random_generator(phi,phi); //number limit, size array
 	}else{ //sequential + stride
@@ -48,14 +50,14 @@ void hgr_compute_sparse_task (memory_access_t *data, unsigned long int ncycles){
 	
 	for(i=0;i<phi;i++){
 		//memory phase
-		if(step>0 && step<=8){
+		if(step==1){
 			volatile char a   = (*data).char_data_ptr[pointer[i]];
-		}else if(step>=9 && step<=16){
+		}else if(step==4){
 			volatile int a    = (*data).int_data_ptr[pointer[i]];
-		}else if(step>=17 && step<=32){
-			volatile long a   = (*data).double_data_ptr[pointer[i]];
-		}else if(step>=33 && step<=64){
-			volatile double a = (*data).long_double_data_ptr[pointer[i]];
+		}else if(step==8){
+			volatile double a   = (*data).double_data_ptr[pointer[i]];
+		}else if(step==16){
+			volatile long double a = (*data).long_double_data_ptr[pointer[i]];
 		}
 		//execution phase
 		for(j=0;j<ro;j++);

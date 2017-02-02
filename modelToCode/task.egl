@@ -20,7 +20,7 @@ for (dag in gs.dagCollection.at(index)){
 #include <stdio.h>
 #include "_hgr.h"
 
-pthread_mutex_t [%=mutex%];
+pthread_mutex_t [%=mutex%],lock_start,lock_end;
 long int [%=dag.name%]_cycle_per_task[[%=dag.node.size()%]];
 memory_access_t *[%=dag.name%]_data[[%=dag.node.size()%]];
 
@@ -70,11 +70,14 @@ void [%=dag.name%](){
 		[%i=0;
 		for (node in dag.node){%]  
 		hgr_pthread_create(&threads[[%=i%]], NULL, &[%=node.name%], (void *)[%=i%]);[%i++;}%]
+		
+		hgr_release_dependency(&lock_start);
+		
+		hgr_wait_dependency(&lock_end);
 		[%i=0;
 		for (node in dag.node){%]  
 		hgr_pthread_join(threads[[%=i%]]);[%i++;}
 		%]
-		
 		
 		[%=dag.name%]_mutexDestroy();
 		hgr_wait_for_period();
@@ -89,8 +92,9 @@ operation prem_memory(dag:Dag,task:Node,i:Integer){%]
 	[%var mutexTask:String;%]
 	//printf("Hi im the node [%=task.name%]\n");  //[%=task.comment%]
 	
+	hgr_wait_dependency(&lock_start);
+	
 	hgr_prem_memphase([%=dag.name%]_data[[%=i%]]); //Mem phase
-
 	
 	[%for (edge in dag.edge){
 		if(edge.trg.name=task.name){
@@ -105,6 +109,8 @@ operation prem_memory(dag:Dag,task:Node,i:Integer){%]
 	hgr_release_dependency(&[%=mutexTask%]);
 		[%}%]
 	[%}%]
+	hgr_release_dependency(&lock_end);
+	
 [%}
 
 @template
@@ -112,6 +118,7 @@ operation sparse_memory(dag:Dag,task:Node,i:Integer){%]
 	[%var mutexTask:String;%]
 	//printf("Hi im the node [%=task.name%]\n");  //[%=task.comment%]
 
+	hgr_wait_dependency(&lock_start);
 	[%for (edge in dag.edge){
 		if(edge.trg.name=task.name){
 			mutexTask=edge.name;%]
@@ -127,6 +134,8 @@ operation sparse_memory(dag:Dag,task:Node,i:Integer){%]
 	hgr_release_dependency(&[%=mutexTask%]);
 		[%}%]
 	[%}%]
+	hgr_release_dependency(&lock_end);
+	
 [%}%]
 
 

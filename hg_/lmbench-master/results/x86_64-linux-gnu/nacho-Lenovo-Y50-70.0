@@ -1,0 +1,169 @@
+[lmbench3.0 results for Linux nacho-Lenovo-Y50-70 4.4.0-47-generic #68-Ubuntu SMP Wed Oct 26 19:39:52 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux]
+[LMBENCH_VER: 3.0-a9]
+[BENCHMARK_HARDWARE: YES]
+[BENCHMARK_OS: YES]
+[ALL: 512 1k 2k 4k 8k 16k 32k 64k 128k 256k 512k 1m 2m 4m 8m 16m 32m 64m 128m 256m 512m 1024m 2048m 4096m]
+[DISKS: ]
+[DISK_DESC: ]
+[ENOUGH: 5000]
+[FAST: ]
+[FASTMEM: NO]
+[FILE: /var/tmp/XXX]
+[FSDIR: /var/tmp]
+[HALF: 512 1k 2k 4k 8k 16k 32k 64k 128k 256k 512k 1m 2m 4m 8m 16m 32m 64m 128m 256m 512m 1024m 2048m]
+[INFO: INFO.nacho-Lenovo-Y50-70]
+[LINE_SIZE: ]
+[LOOP_O: 0.00000000]
+[MB: 5526]
+[MHZ: 3591 MHz, 0.2785 nanosec clock]
+[MOTHERBOARD: ]
+[NETWORKS: ]
+[PROCESSORS: 8]
+[REMOTE: ]
+[SLOWFS: NO]
+[OS: x86_64-linux-gnu]
+[SYNC_MAX: 1]
+[LMBENCH_SCHED: DEFAULT]
+[TIMING_O: 0]
+[LMBENCH VERSION: 3.0-a9]
+[USER: root]
+[HOSTNAME: nacho-Lenovo-Y50-70]
+[NODENAME: nacho-Lenovo-Y50-70]
+[SYSNAME: Linux]
+[PROCESSOR: x86_64]
+[MACHINE: x86_64]
+[RELEASE: 4.4.0-47-generic]
+[VERSION: #68-Ubuntu SMP Wed Oct 26 19:39:52 UTC 2016]
+[BUSYBOX LINKAGE: : static ]
+[vie ene 20 10:49:36 CET 2017]
+[ 10:49:36 up 31 min, 1 user, load average: 0,50, 0,87, 1,18]
+[net: Tabla de la interfaz del núcleo]
+Tabla: error al obtener información sobre la interfaz: Dispositivo no encontrado
+[net: Iface MTU Met RX-OK RX-ERR RX-DRP RX-OVR TX-OK TX-ERR TX-DRP TX-OVR Flg]
+[net: eth0       1500 0         0      0      0 0             0      0      0      0 BMU]
+[if: eth0      Link encap:Ethernet  direcciónHW f0:76:1c:61:9d:81  ]
+[if: ACTIVO DIFUSIÓN MULTICAST  MTU:1500  Métrica:1]
+[if: Paquetes RX:0 errores:0 perdidos:0 overruns:0 frame:0]
+[if: Paquetes TX:0 errores:0 perdidos:0 overruns:0 carrier:0]
+[if: colisiones:0 long.colaTX:1000 ]
+[if: Bytes RX:0 (0.0 B)  TX bytes:0 (0.0 B)]
+[if: ]
+[net: lo        65536 0      2593      0      0 0          2593      0      0      0 LRU]
+[if: lo        Link encap:Bucle local  ]
+[if: Direc. inet:127.0.0.1  Másc:255.0.0.0]
+[if: Dirección inet6: ::1/128 Alcance:Anfitrión]
+[if: ACTIVO BUCLE FUNCIONANDO  MTU:65536  Métrica:1]
+[if: Paquetes RX:2593 errores:0 perdidos:0 overruns:0 frame:0]
+[if: Paquetes TX:2593 errores:0 perdidos:0 overruns:0 carrier:0]
+[if: colisiones:0 long.colaTX:1 ]
+[if: Bytes RX:389003 (389.0 KB)  TX bytes:389003 (389.0 KB)]
+[if: ]
+[net: virbr0     1500 0         0      0      0 0             0      0      0      0 BMU]
+[if: virbr0    Link encap:Ethernet  direcciónHW 00:00:00:00:00:00  ]
+[if: Direc. inet:192.168.122.1  Difus.:192.168.122.255  Másc:255.255.255.0]
+[if: ACTIVO DIFUSIÓN MULTICAST  MTU:1500  Métrica:1]
+[if: Paquetes RX:0 errores:0 perdidos:0 overruns:0 frame:0]
+[if: Paquetes TX:0 errores:0 perdidos:0 overruns:0 carrier:0]
+[if: colisiones:0 long.colaTX:1000 ]
+[if: Bytes RX:0 (0.0 B)  TX bytes:0 (0.0 B)]
+[if: ]
+[net: wlan0      1500 0     25772      0      0 0         20900      0      0      0 BMRU]
+[if: wlan0     Link encap:Ethernet  direcciónHW d0:53:49:cb:de:ad  ]
+[if: Direc. inet:155.185.78.174  Difus.:155.185.78.255  Másc:255.255.255.0]
+[if: Dirección inet6: fe80::d253:49ff:fecb:dead/64 Alcance:Enlace]
+[if: ACTIVO DIFUSIÓN FUNCIONANDO MULTICAST  MTU:1500  Métrica:1]
+[if: Paquetes RX:25772 errores:0 perdidos:0 overruns:0 frame:0]
+[if: Paquetes TX:20900 errores:0 perdidos:0 overruns:0 carrier:0]
+[if: colisiones:0 long.colaTX:1000 ]
+[if: Bytes RX:24901312 (24.9 MB)  TX bytes:3703036 (3.7 MB)]
+[if: ]
+[mount: sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime)]
+[mount: proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)]
+[mount: udev on /dev type devtmpfs (rw,nosuid,relatime,size=4021904k,nr_inodes=1005476,mode=755)]
+[mount: devpts on /dev/pts type devpts (rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000)]
+[mount: tmpfs on /run type tmpfs (rw,nosuid,noexec,relatime,size=808524k,mode=755)]
+[mount: /dev/sda8 on / type ext4 (rw,relatime,errors=remount-ro,data=ordered)]
+[mount: securityfs on /sys/kernel/security type securityfs (rw,nosuid,nodev,noexec,relatime)]
+[mount: tmpfs on /dev/shm type tmpfs (rw,nosuid,nodev)]
+[mount: tmpfs on /run/lock type tmpfs (rw,nosuid,nodev,noexec,relatime,size=5120k)]
+[mount: tmpfs on /sys/fs/cgroup type tmpfs (rw,mode=755)]
+[mount: cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/lib/systemd/systemd-cgroups-agent,name=systemd)]
+[mount: pstore on /sys/fs/pstore type pstore (rw,nosuid,nodev,noexec,relatime)]
+[mount: efivarfs on /sys/firmware/efi/efivars type efivarfs (rw,nosuid,nodev,noexec,relatime)]
+[mount: cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,devices)]
+[mount: cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,perf_event,release_agent=/run/cgmanager/agents/cgm-release-agent.perf_event)]
+[mount: cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,net_cls,net_prio)]
+[mount: cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,cpu,cpuacct)]
+[mount: cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,cpuset,clone_children)]
+[mount: cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,memory)]
+[mount: cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,pids,release_agent=/run/cgmanager/agents/cgm-release-agent.pids)]
+[mount: cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,hugetlb,release_agent=/run/cgmanager/agents/cgm-release-agent.hugetlb)]
+[mount: cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,blkio)]
+[mount: cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,freezer)]
+[mount: systemd-1 on /proc/sys/fs/binfmt_misc type autofs (rw,relatime,fd=36,pgrp=1,timeout=0,minproto=5,maxproto=5,direct)]
+[mount: debugfs on /sys/kernel/debug type debugfs (rw,relatime)]
+[mount: mqueue on /dev/mqueue type mqueue (rw,relatime)]
+[mount: hugetlbfs on /dev/hugepages type hugetlbfs (rw,relatime)]
+[mount: fusectl on /sys/fs/fuse/connections type fusectl (rw,relatime)]
+[mount: tracefs on /sys/kernel/debug/tracing type tracefs (rw,relatime)]
+[mount: /dev/sda2 on /boot/efi type vfat (rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro)]
+[mount: binfmt_misc on /proc/sys/fs/binfmt_misc type binfmt_misc (rw,relatime)]
+[mount: cgmfs on /run/cgmanager/fs type tmpfs (rw,relatime,size=100k,mode=755)]
+[mount: tmpfs on /run/user/1000 type tmpfs (rw,nosuid,nodev,relatime,size=808524k,mode=700,uid=1000,gid=1000)]
+[mount: gvfsd-fuse on /run/user/1000/gvfs type fuse.gvfsd-fuse (rw,nosuid,nodev,relatime,user_id=1000,group_id=1000)]
+Simple syscall: 0.0416 microseconds
+Simple read: 0.1250 microseconds
+Simple write: 0.0865 microseconds
+Simple stat: 0.2821 microseconds
+Simple fstat: 0.0827 microseconds
+Simple open/close: 0.6952 microseconds
+Select on 10 fd's: 0.1742 microseconds
+Select on 100 fd's: 0.7586 microseconds
+Select on 250 fd's: 1.7446 microseconds
+Select on 500 fd's: 3.3695 microseconds
+Select on 10 tcp fd's: 0.1967 microseconds
+Select on 100 tcp fd's: 1.9851 microseconds
+Select on 250 tcp fd's: 5.1321 microseconds
+Select on 500 tcp fd's: 10.0414 microseconds
+Signal handler installation: 0.0847 microseconds
+Signal handler overhead: 0.5542 microseconds
+Protection fault: 0.3076 microseconds
+Pipe latency: 4.1457 microseconds
+AF_UNIX sock stream latency: 4.0140 microseconds
+Process fork+exit: 85.9833 microseconds
+Process fork+execve: 283.6000 microseconds
+Process fork+/bin/sh -c: 754.0000 microseconds
+integer bit: 0.36 nanoseconds
+integer add: 0.14 nanoseconds
+integer mul: -0.02 nanoseconds
+integer div: 6.65 nanoseconds
+integer mod: 7.06 nanoseconds
+int64 bit: 0.28 nanoseconds
+uint64 add: 0.14 nanoseconds
+int64 mul: 0.84 nanoseconds
+int64 div: 11.90 nanoseconds
+int64 mod: 11.92 nanoseconds
+float add: 0.84 nanoseconds
+float mul: 1.44 nanoseconds
+float div: 3.76 nanoseconds
+double add: 0.87 nanoseconds
+double mul: 1.41 nanoseconds
+double div: 5.67 nanoseconds
+float bogomflops: 1.99 nanoseconds
+double bogomflops: 3.93 nanoseconds
+integer bit parallelism: 3.67
+integer add parallelism: 1.92
+integer mul parallelism: 16.00
+integer div parallelism: 2.96
+integer mod parallelism: 3.30
+int64 bit parallelism: 3.06
+int64 add parallelism: 1.89
+int64 mul parallelism: 16.09
+int64 div parallelism: 1.65
+int64 mod parallelism: 1.52
+float add parallelism: 3.02
+float mul parallelism: 9.40
+float div parallelism: 1.85
+double add parallelism: 3.01
+double mul parallelism: 9.44
+double div parallelism: 1.47

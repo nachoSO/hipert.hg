@@ -14,11 +14,11 @@ extern char * rt_task_name;
 
 typedef struct 
 {
+	char data_granularity[2];
 	int access_type; // 0 = PREM, 1 = sparse access 
 	int step;
 	int stride;
 	long int data_size;
-	char data_granularity[2];
 	volatile char *char_data_ptr;     //1B
 	volatile int  *int_data_ptr;      //4B
 	volatile double *double_data_ptr;     //8B

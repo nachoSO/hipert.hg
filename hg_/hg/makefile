@@ -1,0 +1,48 @@
+CFLAGS = -Wall -I../src/ -I./config/pthread_runtime/ ${PARAM1} -DLMPATH='"../lmbench-master/bin/x86_64-linux-gnu/mhz"' -DTOTAL_TASK=2
+
+CONFIG_PTHREAD=./config/pthread_runtime
+LDFLAGS=-L ../src -lptask -lpthread -lrt -lm 
+CC=gcc
+LD=gcc
+.SUFFIXES:
+.SUFFIXES: .o .c
+
+DEPS_PTHREAD = $(CONFIG_PTHREAD)/_hgr.h
+
+EXECS =  main  
+
+SRCS_main = main.c syntethicTask1.c syntethicTask2.c $(CONFIG_PTHREAD)/_hgr.c 
+SRCS_special= _hgr_computation.c 
+
+OBJS_main = ${SRCS_main:.c=.o}
+
+SPECIAL_OBJS = ${SRCS_special:.c=.o} 
+$(SPECIAL_OBJS): EXTRA_FLAGS := -O0
+
+all: $(EXECS) 
+
+-include Makefile.deps  
+
+depend:
+	$(CC) $(CFLAGS) -MM *.[ch] > Makefile.deps
+
+.c.o: 
+	$(CC) $(DEPENDS) $(CFLAGS) $(EXTRA_FLAGS) -o $@ -c $<
+
+main: $(OBJS_main) $(SPECIAL_OBJS) 
+	$(LD) -o $@ $^ $(LDFLAGS) 
+
+clean:
+	rm -rf *.o
+	rm -rf $(EXECS)
+
+cleanedit:
+	rm -rf *~
+
+
+
+
+
+
+
+
