@@ -7,7 +7,7 @@
 double FREQUENCY=0;
 
 //sudo update-rc.d ondemand disable
-int main(int argc, char *argv[]){
+int gen_main(int argc, char *argv[]){
 	int index=0;
 
 	hgr_init(SCHED_FIFO, PARTITIONED, PRIO_CEILING);

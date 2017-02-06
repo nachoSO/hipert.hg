@@ -2,6 +2,7 @@
 #define hgr_H
 #include <stdio.h>
 // #include <ptask.h>
+#include "ptime.h"
 #include <string.h>
 // #include "pmutex.h"
 #include <stdint.h>
@@ -12,7 +13,16 @@
 #define DIV_ROUND_CLOSEST(n, d) ((((n) < 0) ^ ((d) < 0)) ? (((n) - (d)/2)/(d)) : (((n) + (d)/2)/(d)))
 
 // extern pthread_mutex_t premMutex;
-// pthread_t ** threads;
+// pthread_t ** threads; 
+
+// From PTASK.h
+/* activation flag for task_create */
+#define	DEFERRED	0
+#define	NOW		1
+
+typedef enum {PARTITIONED, GLOBAL} global_policy;
+typedef enum {PRIO_INHERITANCE, PRIO_CEILING, NO_PROTOCOL} sem_protocol;
+typedef enum {TASK_SUSPENDED, TASK_ACTIVE, TASK_WFP} ptask_state;
 
 typedef struct 
 {

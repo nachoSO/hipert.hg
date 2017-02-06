@@ -1,0 +1,23 @@
+LIBFOLDER=${HOME}/__remote/hg/config/bostan-gomp/lib
+MULTIBIN_NAME=io_elf.mpk
+IOS_ELF_NAME=io_elf
+
+all:
+# 	k1-rtems-gcc -mcluster=ioddr -mboard=developer -mhypervisor -march=k1b -mos=rtems -E -I/usr/local/psoctools/include/ -include libpsocoffload.h -I -D_OPENMP=200805 -D_MCC -D_MERCURIUM -o psocratescc_Zg4xGl es.c 
+# 	k1-gcc -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -E -I -D_OPENMP=200805 -I/home/bsc/psoctools-repo/psoctools/share/mcxx/gomp-omp -D_OPENMP=200805 -include gomp-omp.h -D_MCC -D_MERCURIUM -o psocratescc_D9WmbX cluster_es.c.c 
+	k1-gcc -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -c -o cluster_es.c.o psocratescc_cluster_es.c.c 
+	k1-rtems-gcc -mcluster=ioddr -mboard=developer -mhypervisor -march=k1b -mos=rtems -c -o es.o psocratescc_es.c 
+# 	k1-rtems-objcopy --add-section .mercurium=psocratescc_rfBcEa.tar --set-section-flags .mercurium=alloc,readonly es.o
+# 	k1-gcc -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -E -I -D_OPENMP=200805 -I/home/bsc/psoctools-repo/psoctools/share/mcxx/gomp-omp -D_OPENMP=200805 -include gomp-omp.h -D_MCC -D_MERCURIUM -o psocratescc-cluster_xmfIzy psocrates_tdg_es.c
+	k1-gcc -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -c -o psocrates_tdg_es.o psocrates_tdg_es.c 
+# 	k1-rtems-objcopy -Obinary --only-section=.mercurium es.o psocratescc_gfDyHb/multifile.tar
+	k1-gcc -o erika -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare cluster_es.c.o -L${LIBFOLDER} -L/usr/local/psoctools/lib -lpsocomp-plain -lee -lvbsp -lmppaipc -Xlinker --enable-new-dtags -Lgomp-dir-not-specified -Xlinker -rpath -Xlinker gomp-dir-not-specified 
+	k1-gcc -o ${IOS_ELF_NAME} -mcluster=ioddr -mboard=developer -mhypervisor -march=k1b -mos=rtems es.o -L/usr/local/psoctools/lib -lpsocoffload -lmppapower -lmppanoc -lmpparouting -lpcie_queue -lmppaipc 
+	k1-create-multibinary --cluster erika --boot=io_elf -T ${MULTIBIN_NAME}
+	
+clean:
+	rm -rf *report *.o *.mpk erika io_elf dot/ 
+	
+run:
+# 	ln -svf ${APP}.mpk ${IOS_ELF_NAME}.mpk
+	k1-jtag-runner --multibinary ${MULTIBIN_NAME} --exec-multibin=IODDR0:${IOS_ELF_NAME}

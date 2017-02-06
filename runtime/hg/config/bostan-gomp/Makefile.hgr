@@ -1,0 +1,27 @@
+BACKEND		?= ${HOME}/__remote/hg/config/bostan-gomp
+PSOCSDK		?= /usr/local/psoctools/
+
+LIBFOLDER	= ${BACKEND}/lib
+MULTIBIN_NAME	= io_elf.mpk
+IOS_ELF_NAME	= io_elf
+
+all:
+##	Generated files
+	k1-gcc -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -c -I$(BACKEND) -o main.o main.c 
+##	Compile runtime (clust+ios)
+	k1-gcc -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -c -o ${BACKEND}/_hgr.o ${BACKEND}/_hgr.c 
+	k1-gcc -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -c -o ${BACKEND}/cluster_main.o ${BACKEND}/cluster_main.c 
+	k1-rtems-gcc -mcluster=ioddr -mboard=developer -mhypervisor -march=k1b -mos=rtems -c -o ${BACKEND}/io_main.o ${BACKEND}/io_main.c
+##	Link runtime (clust+app file+ios)
+	# NOTE: I recompiled libpsocomp libpsocomp-plain to exclude task table (for the moment)
+	k1-gcc -o erika -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare ${BACKEND}/_hgr.o ${BACKEND}/cluster_main.o main.o -L${LIBFOLDER} -L${PSOCSDK}/lib -lpsocomp-plain -lee -lvbsp -lmppaipc -lm -Xlinker --enable-new-dtags -Lgomp-dir-not-specified -Xlinker -rpath -Xlinker gomp-dir-not-specified 
+	k1-gcc -o ${IOS_ELF_NAME} -mcluster=ioddr -mboard=developer -mhypervisor -march=k1b -mos=rtems ${BACKEND}/io_main.o -L${PSOCSDK}/lib -lpsocoffload -lmppapower -lmppanoc -lmpparouting -lpcie_queue -lmppaipc 
+##	Make multibin
+	k1-create-multibinary --cluster erika --boot=${IOS_ELF_NAME} -T ${MULTIBIN_NAME}
+
+clean:
+	rm -rf *.o *.mpk erika ${IOS_ELF_NAME} 
+	rm -rf ${BACKEND}/*.o ${BACKEND}/*report ${BACKEND}/*.mpk ${BACKEND}/erika ${BACKEND}/${IOS_ELF_NAME} ${BACKEND}/dot/ 
+	
+run:
+	k1-jtag-runner --multibinary ${MULTIBIN_NAME} --exec-multibin=IODDR0:${IOS_ELF_NAME}

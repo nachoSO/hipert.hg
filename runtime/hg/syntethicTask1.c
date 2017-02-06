@@ -58,7 +58,7 @@ void G1_finish(){
 }
 
 void *G1_1(){
-	//printf("Hi im the node G1_1\n");  //1 [miet="10.381", meet="10.381", maet="10.75", mem="1", unit="mb"]
+	printf("Hi im the node G1_1\n");  //1 [miet="10.381", meet="10.381", maet="10.75", mem="1", unit="mb"]
 	
 	pthread_mutex_trylock(&lock_start1);
 
