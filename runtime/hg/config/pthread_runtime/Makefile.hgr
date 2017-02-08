@@ -13,7 +13,7 @@ DEPS_PTHREAD = $(BACKEND)/_hgr.h
 
 EXECS =  main  
 
-SRCS_main = $(CSRCS) $(BACKEND)/_hgr.c 
+SRCS_main = $(CSRCS) $(BACKEND)/_hgr.c hgr_common.c 
 SRCS_special= _hgr_computation.c 
 
 OBJS_main = ${SRCS_main:.c=.o}

@@ -1,26 +1,57 @@
 BACKEND		?= ${HOME}/__remote/hg/config/bostan-gomp
 PSOCSDK		?= /usr/local/psoctools/
-
 LIBFOLDER	= ${BACKEND}/lib
+
 MULTIBIN_NAME	= io_elf.mpk
+CC_ELF_NAME	= erika # DO NOT CHANGE THIS
 IOS_ELF_NAME	= io_elf
 
-all:
-##	Generated files
-	k1-gcc -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -c -I$(BACKEND) -o main.o main.c 
-##	Compile runtime (clust+ios)
-	k1-gcc -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -c -o ${BACKEND}/_hgr.o ${BACKEND}/_hgr.c 
-	k1-gcc -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -c -o ${BACKEND}/cluster_main.o ${BACKEND}/cluster_main.c 
-	k1-rtems-gcc -mcluster=ioddr -mboard=developer -mhypervisor -march=k1b -mos=rtems -c -o ${BACKEND}/io_main.o ${BACKEND}/io_main.c
+CFLAGS		+= -DHGR_DEBUG 
+
+## Gen code
+
+# CC code
+CC_CFLAGS	= -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare -Wall -I. -I${PSOCSDK}/include -I$(BACKEND) ${CFLAGS}
+
+CC_LDFLAGS	= ${CC_CFLAGS}
+CC_LIBS		= -L${LIBFOLDER} -L${PSOCSDK}/lib -lpsocomp-plain -lee -lvbsp -lmppaipc -lm -Xlinker --enable-new-dtags -Lgomp-dir-not-specified -Xlinker -rpath -Xlinker gomp-dir-not-specified 
+
+## IOS code
+IOS_CFLAGS 	= -mcluster=ioddr -mboard=developer -mhypervisor -march=k1b -mos=rtems -I. -I${PSOCSDK}/include -I$(BACKEND) ${CFLAGS}
+IOS_LDFLAGS	= ${IOS_CFLAGS}
+IOS_LIBS	= -L${PSOCSDK}/lib -lpsocoffload -lmppapower -lmppanoc -lmpparouting -lpcie_queue -lmppaipc 
+
+# CSRCS are for cluster
+GENCC		= k1-gcc
+GENFLAGS	= ${CC_CFLAGS}
+GENOBJS		= $(CSRCS:.c=.o)
+
+MAINOBJS	= $(MAINSRCS:.c=.o)
+
+# gensrcs:
+%.o:    %.c
+	$(GENCC) $(GENFLAGS) -c $<
+
+all:	$(GENOBJS)
+##	Clust
+# 	k1-gcc ${CC_CFLAGS} -c -o ${BACKEND}/ptime.o ${BACKEND}/ptime.c 
+	k1-gcc ${CC_CFLAGS} -c -o ${BACKEND}/hgr_cluster.o ${BACKEND}/hgr_cluster.c 
+	k1-gcc ${CC_CFLAGS} -c -o hgr_common.o hgr_common.c 
+	k1-gcc ${CC_CFLAGS} -c -o ${BACKEND}/hgr_cluster_main.o ${BACKEND}/hgr_cluster_main.c 
+##	IOS
+	k1-rtems-gcc ${IOS_CFLAGS} -c -o ${MAINOBJS} ${MAINSRCS}
+	k1-rtems-gcc ${IOS_CFLAGS} -c -o ${BACKEND}/ptime.o ${BACKEND}/ptime.c
+	k1-rtems-gcc ${IOS_CFLAGS} -c -o ${BACKEND}/hgr_io.o ${BACKEND}/hgr_io.c
+	k1-rtems-gcc ${IOS_CFLAGS} -c -o ${BACKEND}/hgr_io_main.o ${BACKEND}/hgr_io_main.c
 ##	Link runtime (clust+app file+ios)
-	# NOTE: I recompiled libpsocomp libpsocomp-plain to exclude task table (for the moment)
-	k1-gcc -o erika -mcluster=node -mboard=developer -mhypervisor -march=k1b -mos=bare ${BACKEND}/_hgr.o ${BACKEND}/cluster_main.o main.o -L${LIBFOLDER} -L${PSOCSDK}/lib -lpsocomp-plain -lee -lvbsp -lmppaipc -lm -Xlinker --enable-new-dtags -Lgomp-dir-not-specified -Xlinker -rpath -Xlinker gomp-dir-not-specified 
-	k1-gcc -o ${IOS_ELF_NAME} -mcluster=ioddr -mboard=developer -mhypervisor -march=k1b -mos=rtems ${BACKEND}/io_main.o -L${PSOCSDK}/lib -lpsocoffload -lmppapower -lmppanoc -lmpparouting -lpcie_queue -lmppaipc 
+	# NOTE: I recompiled libpsocomp libpsocomp-plain to exclude task table (for the moment) ADD ${BACKEND}/ptime.o
+	k1-gcc -o ${CC_ELF_NAME} ${CC_LDFLAGS} ${BACKEND}/hgr_cluster_main.o hgr_common.o ${BACKEND}/hgr_cluster.o $(GENOBJS) ${CC_LIBS}
+	k1-gcc -o ${IOS_ELF_NAME} ${IOS_LDFLAGS} ${BACKEND}/hgr_io_main.o ${BACKEND}/hgr_io.o ${BACKEND}/ptime.o ${MAINOBJS} ${IOS_LIBS}
 ##	Make multibin
-	k1-create-multibinary --cluster erika --boot=${IOS_ELF_NAME} -T ${MULTIBIN_NAME}
+	k1-create-multibinary --cluster ${CC_ELF_NAME} --boot=${IOS_ELF_NAME} -T ${MULTIBIN_NAME}
 
 clean:
-	rm -rf *.o *.mpk erika ${IOS_ELF_NAME} 
+	rm -rf *.o *.mpk ${CC_ELF_NAME} ${IOS_ELF_NAME} 
 	rm -rf ${BACKEND}/*.o ${BACKEND}/*report ${BACKEND}/*.mpk ${BACKEND}/erika ${BACKEND}/${IOS_ELF_NAME} ${BACKEND}/dot/ 
 	
 run:

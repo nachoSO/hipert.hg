@@ -47,4 +47,10 @@ tspec   tspec_sub(const tspec *a, const tspec *b);
 tspec   tspec_sub_delta(const tspec *a, ptime delta, int unit);
 
 
+// _POL_'s fix for Bostan
+//  as defined in time.h
+#ifndef CLOCK_MONOTONIC
+#define CLOCK_MONOTONIC 1
+#endif
+
 #endif 
