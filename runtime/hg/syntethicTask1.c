@@ -6,7 +6,7 @@
 
 hgr_dependency_t G1_1_2, G1_1_3, lock_start1;
 PREM_node_t *G1_data[3];
-long int var_condition1=0;
+volatile long int var_condition1=0;
 long double wcet_per_task[3];
 double FREQUENCY;
 
@@ -34,35 +34,38 @@ void G1_create_dependency(){
 	hgr_wait_dependency(&lock_start1);
 }
 
-void G1_destroy_dependency(){
+void G1_destroy_dependency() {
 	hgr_destroy_dependency(&G1_1_2);
 	hgr_destroy_dependency(&G1_1_3);
 	hgr_destroy_dependency(&lock_start1);
 }
 
-// void *G1_wait_finish(){
-// 	unsupported();
+void *G1_wait_finish() {
+	log("\n");
 // 	struct sched_param sp;
 // 	memset(&sp,0,sizeof(sp));
 // 	sp.sched_priority=90;
 // 	sched_setscheduler(0,SCHED_FIFO,&sp);
-// // 	while(var_condition1!=3); //_POL_
-// 	while(var_condition1!=1);
-// 	return 0;
-// }
+	while(var_condition1!=3) //log("var_condition1 is %ld\n", var_condition1)
+		; 
+// 	log("var_condition1 is %ld\n", var_condition1)
+	log("Done\n");
+	return 0;
+}
 
-void G1_start(){
+void G1_start() {
 	hgr_release_dependency(&lock_start1);
 }
 // 
-void G1_finish(){
-	unsupported();
+void G1_finish() {
+	log("\n");
+	hgr_thread_create(0, 100, NULL, &G1_wait_finish, (void *)0);  
 // 	pthread_t t;
 // 	hgr_pthread_create(&t, NULL, &G1_wait_finish, (void *)3);	
 // 	hgr_pthread_join(t);	
 }
 
-void *G1_1(void * param){
+void *G1_1(void * param) {
 	printf("Hi im the node G1_1\n");  //1 [miet="10.381", meet="10.381", maet="10.75", mem="1", unit="mb"]
 	
 	hgr_wait_dependency(&lock_start1);
@@ -74,7 +77,7 @@ void *G1_1(void * param){
 	hgr_release_dependency(&G1_1_2);
 	hgr_release_dependency(&G1_1_3);
 // 
-// 	var_condition1++;
+	var_condition1++;
 // 	free(ptr_dst);
 	hgr_exit();
 
@@ -92,7 +95,7 @@ void *G1_2(){
 // 
 // 	hgr_PREM_compute_node(G1_data[1],ptr_dst); 
 // 
-// 	var_condition1++;
+	var_condition1++;
 // 	free(ptr_dst);
 	hgr_exit();
 
@@ -110,7 +113,7 @@ void *G1_3(){
 // 
 // 	hgr_PREM_compute_node(G1_data[2],ptr_dst); 
 // 	
-// 	var_condition1++;
+	var_condition1++;
 // 	free(ptr_dst);
 	hgr_exit();
 
