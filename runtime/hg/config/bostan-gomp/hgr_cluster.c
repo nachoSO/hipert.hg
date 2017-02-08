@@ -1,5 +1,6 @@
 // #include <unistd.h>
 #include "_hgr.h"
+#include "hgr_dependencies.h"
 // #include <math.h>
 
 int mhz(){
@@ -73,12 +74,12 @@ struct gomp_ol_args_0_t
 extern void GOMP_task(void (*fn) (void *), void *data, void (*cpyfn) (void *, void *), long arg_size, long arg_align, int if_clause, unsigned flags __attribute__((unused)));
 
 int hgr_thread_create(int taskID, int nodeID, const void *attr,
-                          void *(*start_routine) (void *), void *arg)
+											void *(*start_routine) (void *), void *arg)
 {
 	log("\n");
 	static int thrID = 0;
 	if(arg)
-		warning("args passing to thread is not supported");
+		warning("args passing to thread is not supported\n");
 	
 	struct gomp_ol_args_0_t ol_data_0;
 // 	ol_data_0.a = (int *const *) a;
@@ -86,31 +87,25 @@ int hgr_thread_create(int taskID, int nodeID, const void *attr,
 	
 	GOMP_task((void (*)(void *))start_routine, &ol_data_0,
 					 (void (*)(void *, void *))0, // cpyfn
-						8, 4, 1, // long arg_size, long arg_align, int if_clause
+						0, 4, 1, // long arg_size, long arg_align, int if_clause
 						gomp_task_flags_0
 						//, 0, 1U // , void **depend, unsigned id
 						);
 	
  	return thrID++;
 }
-// 
+
 int hgr_thread_join(int taskID, int nodeID){
 	unsupported();
 // 	return hgr_pthread_join(threads[taskID][nodeID]);
 	return -1;
 }
-// 
-// int hgr_pthread_join(pthread_t thread){
-// 	unsupported();
-// // 	return pthread_join(thread, 0);
-// 	return -1;
-// }
 
-// void hgr_wait_for_period (int taskID){
-// 	unsupported();
-// // 	log("Task %d waiting for period...\n",taskID);
-// // 	ptask_wait_for_period();
-// }
+void hgr_wait_for_period (int taskID){
+	unsupported();
+// 	log("Task %d waiting for period...\n",taskID);
+// 	ptask_wait_for_period();
+}
 
 void hgr_init_dependency(hgr_dependency_t *dep, const void *attr){
 	log("\n");
@@ -132,9 +127,9 @@ void hgr_release_dependency(hgr_dependency_t *dep){
 	omp_unset_lock(dep);
 }
 
-// void hgr_exit(){
-// 	unsupported();
-// // 	pthread_exit(NULL);
-// }
+void hgr_exit() {
+	unsupported();
+// 	pthread_exit(NULL);
+}
 
 

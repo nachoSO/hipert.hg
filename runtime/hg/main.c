@@ -20,6 +20,8 @@ int gen_main(int argc, char *argv[]){
 // 	index=hgr_task_creator(1,tspec_from(7, SEC),tspec_from(7, SEC),99,1,NOW); //1948.142624 miliseconds syntethicTask3
 // 
 // 	hgr_pthread_join(ptask_get_threadid(index));
+	hgr_task_joinall();
+	
 	hgr_destroy();
 	return 0;
 }	

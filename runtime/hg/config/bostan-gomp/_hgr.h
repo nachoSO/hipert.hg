@@ -78,12 +78,14 @@ void hgr_PREM_compute_node (PREM_node_t *node, void *ptr_dst);
 void hgr_SPARSE_compute_node (SPARSE_node_t *node,unsigned long int * pointer);
 void hgr_mem_ex(SPARSE_node_t *node,unsigned long int * pointer);
 
-// #include "omp-lock.h"
-typedef void* omp_lock_t;
-// Not present in omp-lock.h
-extern void omp_init_lock(omp_lock_t *lock);
-extern void omp_destroy_lock(omp_lock_t *lock);
-typedef omp_lock_t hgr_dependency_t;
+// #define K1_ERIKA_PLATFORM_MOS
+// // #include "eecfg.h"
+// #include "omp.h"
+// // typedef void* omp_lock_t;
+// // Not present in omp-lock.h
+// extern void omp_init_lock(omp_lock_t *lock);
+// extern void omp_destroy_lock(omp_lock_t *lock);
+// typedef omp_lock_t hgr_dependency_t;
 
 /******************* Wrappers ***************************/
 
@@ -98,6 +100,8 @@ void hgr_prepare_task(int taskID,int numNodes);
 
 void hgr_free_task(int taskID);
 
+void hgr_task_joinall();
+
 int hgr_thread_create(int taskID, int nodeID, const void *attr, void *(*start_routine) (void *), void *arg);
 
 int hgr_thread_join(int taskID, int numNode);
@@ -108,11 +112,11 @@ int hgr_thread_join(int taskID, int numNode);
 
 void hgr_wait_for_period(int taskID);
 
-/* Dependencies */
-void hgr_init_dependency(hgr_dependency_t *mutex, const void *attr);
-void hgr_destroy_dependency(hgr_dependency_t *mutex);
-void hgr_wait_dependency(hgr_dependency_t *mutex);
-void hgr_release_dependency(hgr_dependency_t *mutex);
+// /* Dependencies */
+// void hgr_init_dependency(hgr_dependency_t *mutex, const void *attr);
+// void hgr_destroy_dependency(hgr_dependency_t *mutex);
+// void hgr_wait_dependency(hgr_dependency_t *mutex);
+// void hgr_release_dependency(hgr_dependency_t *mutex);
 // void hgr_ptask_init(int policy, global_policy global, sem_protocol protocol);
 void hgr_exit();
 

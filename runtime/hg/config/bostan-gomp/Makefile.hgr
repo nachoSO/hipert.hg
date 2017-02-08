@@ -1,12 +1,13 @@
 BACKEND		?= ${HOME}/__remote/hg/config/bostan-gomp
-PSOCSDK		?= /usr/local/psoctools/
+# PSOCSDK		?= /usr/local/psoctools
+PSOCSDK		?= ${BACKEND}/lib/erika-enterprise-rtems/psoctools
 LIBFOLDER	= ${BACKEND}/lib
 
 MULTIBIN_NAME	= io_elf.mpk
 CC_ELF_NAME	= erika # DO NOT CHANGE THIS
 IOS_ELF_NAME	= io_elf
 
-CFLAGS		+= -DHGR_DEBUG 
+CFLAGS		+= -DHGR_DEBUG -save-temps=obj
 
 ## Gen code
 

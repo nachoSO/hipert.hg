@@ -1,25 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
+
 #include "libpsocoffload.h"
 #include "_hgr.h"
+
 static void _host_fn_0(omp_param_t *_params)
 {
 	printf("FATAL ERROR\n");
-//   int *const a = *((int (*)[1])_params[0].ptr);
-//   int *const b = *((int (*)[1])_params[1].ptr);
-//   {
-// #pragma omp parallel shared(b, a)    
-// #pragma omp single   
-// #pragma omp task shared(a, b)   
-//     {
-//       printf("Inside task\n");
-//       b[0] = a[0] + 1;
-//     }
-//   }
 }
 
 struct mppa_target_param_0;
-struct  mppa_target_param_0
+struct mppa_target_param_0
 {
   int n;
   omp_param_t params[2];
