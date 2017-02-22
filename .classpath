@@ -8,5 +8,10 @@
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Epsilon/plugins/org.eclipse.epsilon.eol.engine_1.4.0.201611012202.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Epsilon/plugins/org.eclipse.epsilon.emc.emf_1.4.0.201611012202.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Program Files/Epsilon/plugins/org.eclipse.epsilon.common_1.4.0.201611012202.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/psoc_mapper.dll">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="hipert.hg.v2/bin/hipert/hg/modelToCode"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

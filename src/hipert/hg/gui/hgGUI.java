@@ -5,6 +5,7 @@
  */
 package hipert.hg.gui;
 
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -12,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.AbstractButton;
@@ -25,12 +27,14 @@ import hipert.hg.XMLParser.Node;
 import hipert.hg.XMLParser.XMLGenerator;
 import hipert.hg.XMLParser.XMLModifier;
 import hipert.hg.modelToCode.DagToCode;
+import hipert.hg.modelToCode.PsocMapper;
 
 /**
  *
  * @author LPC
  */
 public class hgGUI extends javax.swing.JFrame {
+	
 
     /**
      * Creates new form NewJFrame
@@ -38,8 +42,14 @@ public class hgGUI extends javax.swing.JFrame {
     public hgGUI() {
         initComponents();    
         setPanelLoadDAGComponents();
+        
+        // _POL_
+		ArrayList<String> dotFileNames = new ArrayList<String>();
+    	dotFileNames.add("lib/14_test-melani1.dot");
+    	dotFileNames.add("lib/15_test-melani2.dot");
+    	PsocMapper.GenerateTaskTable(dotFileNames /*this.xmlGenerator.getFilename()*/);
     }
-    
+  
     public void setPanelLoadDAGComponents(){
     	ImageIcon imgIcon,imgHeader;
     	imgIcon = new ImageIcon("./imgs/icon_hipert.png");
@@ -996,6 +1006,7 @@ public class hgGUI extends javax.swing.JFrame {
 	    	}
 		}
     }
+    XMLGenerator xmlGenerator = null;
 
     //GENERATE CODE BUTTON
     private void bGenerateCodeActionPerformed(java.awt.event.ActionEvent evt) {                                              
@@ -1004,7 +1015,7 @@ public class hgGUI extends javax.swing.JFrame {
     	}else{
     		String memory_access = groupMemAccess.getSelection().getActionCommand();
 			JOptionPane.showMessageDialog(null, "Code Generated", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
-	        new XMLGenerator(packDags());
+			xmlGenerator = new XMLGenerator(packDags());
 	        new DagToCode();
     	}
     }

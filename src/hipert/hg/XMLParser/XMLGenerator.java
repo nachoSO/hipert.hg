@@ -7,6 +7,17 @@ public class XMLGenerator {
 	private LinkedList<Edge> edges=new LinkedList<Edge>();
 	private LinkedList<Node> nodes=new LinkedList<Node>();
 	private LinkedList<DAG> dags=new LinkedList<DAG>();
+	
+	private String filename = null;
+
+//	// _POL_ for debug purposes
+//	public void setFilename(String filename) {
+//		this.filename = filename;
+//	}
+
+	public String getFilename() {
+		return filename;
+	}
 
 	private String dagMemAccess="prem";
 	
@@ -46,6 +57,7 @@ public class XMLGenerator {
 		{  
 		    e.printStackTrace();
 		}
+		this.filename = filename;
     }
     
     /*This function process a line from the file and prepare the structure

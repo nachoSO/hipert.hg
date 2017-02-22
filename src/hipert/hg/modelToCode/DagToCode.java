@@ -27,15 +27,25 @@ public class DagToCode {
 	
 	protected Object result;
 	
+	
 	public DagToCode() {
 		try {
 			EglTemplateFactoryModuleAdapter module = new EglTemplateFactoryModuleAdapter(new EglFileGeneratingTemplateFactory()); 
 			module.parse(new File("modelToCode/driver.egl"));
 
+			
 			module.getContext().getModelRepository().addModel(
 					createEmfModel("Model", "./modelToCode/dagParsed.model", "./metamodel/graphMetamodel.ecore", true, true));
 			result = module.execute();
 			module.getContext().getModelRepository().dispose();
+			
+			// _POL_
+//			try
+//			{
+//				new PsocMapper().GenerateTaskTable("");
+//			}
+//			catch (java.lang.UnsatisfiedLinkError ule)
+//			{}
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
