@@ -42,13 +42,9 @@ void G1_destroy_dependency() {
 
 void *G1_wait_finish() {
 	log("\n");
-// 	struct sched_param sp;
-// 	memset(&sp,0,sizeof(sp));
-// 	sp.sched_priority=90;
-// 	sched_setscheduler(0,SCHED_FIFO,&sp);
-	while(var_condition1!=3) //log("var_condition1 is %ld\n", var_condition1)
+	
+	while(var_condition1!=3)
 		; 
-// 	log("var_condition1 is %ld\n", var_condition1)
 	log("Done\n");
 	return 0;
 }
@@ -75,7 +71,6 @@ void *G1_1(void * param) {
 // 	hgr_PREM_compute_node(G1_data[0],ptr_dst); //Mem phase
 // 	
 	hgr_release_dependency(&G1_1_2);
-	hgr_release_dependency(&G1_1_3);
 // 
 	var_condition1++;
 // 	free(ptr_dst);
@@ -95,6 +90,7 @@ void *G1_2(){
 // 
 // 	hgr_PREM_compute_node(G1_data[1],ptr_dst); 
 // 
+	hgr_release_dependency(&G1_1_3);
 	var_condition1++;
 // 	free(ptr_dst);
 	hgr_exit();
@@ -147,7 +143,7 @@ void G1(){
 // 		clock_gettime(CLOCK_MONOTONIC, &tend);
 // 		timeTaken=(( ((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)))*1000;
 // 		printf("PREM | Total execution time: %f miliseconds\n",timeTaken);
-// 
+ 
 		hgr_thread_join(0,0);
 		hgr_thread_join(0,1);  
 		hgr_thread_join(0,2);

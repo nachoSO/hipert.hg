@@ -8,14 +8,14 @@
 
 void hgr_init(int policy, global_policy global, sem_protocol protocol){
 	log("\n");
-} // hgr_init
+}
 
 void hgr_destroy(){
 	log("\n");
 }
 
 struct mppa_target_param_1;
-struct  mppa_target_param_1
+struct mppa_target_param_1
 {
   int n;
   omp_param_t params[6];
@@ -31,7 +31,11 @@ int hgr_task_creator(int _taskID, tspec period,tspec rdline,int priority,int pro
 {
 	log("\n");
 	log("taskID is %d\n", _taskID);
-	
+	if(numtasks == 2)
+	{
+		log("The GUMP runtime currently doesn't support more than 2 simulaneous RT-task on the accelerator!\n");
+		return -1;
+	}
 	struct mppa_target_param_1 *mppa_data_1;
 		/* Offloaded data structure is freed in the Runtime. */ 
 	mppa_data_1 = malloc(sizeof(struct mppa_target_param_1));
@@ -62,13 +66,24 @@ int hgr_task_creator(int _taskID, tspec period,tspec rdline,int priority,int pro
 	(*mppa_data_1).n = 6;
 	
 	GOMP_target(0, (void (*)(void *))_host_fn_1, (void *)1, (void *)mppa_data_1, numtasks, 65535U);
-	GOMP_target_wait(0, (void *)mppa_data_1, numtasks);
+	// log("before invoking GOMP_target_wait\n");
+	// GOMP_target_wait(0, (void *)mppa_data_1, numtasks);
+	log("returning %d\n", numtasks+1);
 	return numtasks++;
 }
 
-
 void hgr_task_joinall()
 {
-	unsupported();
-// 	GOMP_target_wait(0, (void *)mppa_data_1, 0);
+	log("\n");
+	int i;
+	int end = numtasks;
+	if(numtasks >= 2)
+	{
+		warning("The GUMP runtime currently doesn't support more than 2 simulaneous RT-task on the accelerator!\n");
+		end = numtasks;
+	}
+	
+	for(i=0; i<end; i++)
+		// data param is unused
+		GOMP_target_wait(0, (void *) 0x0, i);
 }

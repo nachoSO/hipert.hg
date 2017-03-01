@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="ASCII"?>
-<GraphMetamodel:DagSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:GraphMetamodel="GraphMetamodel" xmi:id="dagPSocrates" partitioning_policy="GLOBAL" semaphore_protocol="PRIO_CEILING" sched_alg="SCHED_FIFO">
-<dagCollection xmi:id="G2" name="G2" period="2000" priority="60" deadline="2000" processor="1" mem_type="prem" step="1" stride="0">
-<node xmi:id="G2_1" name="G2_1" comment="1 [miet=&quot;10.48&quot;, meet=&quot;10.65&quot;, maet=&quot;10.63&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" miet="10.65" meet="10.48" maet="10.63" mem_access="100" mem_unit="B"/>
-<node xmi:id="G2_2" name="G2_2" comment="2 [miet=&quot;10.21&quot;, meet=&quot;10.91&quot;, maet=&quot;10.34&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" miet="10.91" meet="10.21" maet="10.34" mem_access="100" mem_unit="B"/>
-<node xmi:id="G2_3" name="G2_3" comment="3 [miet=&quot;10.42&quot;, meet=&quot;10.82&quot;, maet=&quot;10.66&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" miet="10.82" meet="10.42" maet="10.66" mem_access="100" mem_unit="B"/>
-<node xmi:id="G2_4" name="G2_4" comment="4 [miet=&quot;10.38&quot;, meet=&quot;10.12&quot;, maet=&quot;10.89&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" miet="10.12" meet="10.38" maet="10.89" mem_access="100" mem_unit="B"/>
-<node xmi:id="G2_5" name="G2_5" comment="5 [miet=&quot;10.84&quot;, meet=&quot;10.86&quot;, maet=&quot;10.21&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" miet="10.86" meet="10.84" maet="10.21" mem_access="100" mem_unit="B"/>
-<edge xmi:id="G2_1_2" name="G2_1_2" src="G2_1" trg="G2_2"/>
-<edge xmi:id="G2_1_3" name="G2_1_3" src="G2_1" trg="G2_3"/>
-<edge xmi:id="G2_2_4" name="G2_2_4" src="G2_2" trg="G2_4"/>
-<edge xmi:id="G2_3_4" name="G2_3_4" src="G2_3" trg="G2_4"/>
-<edge xmi:id="G2_5_4" name="G2_5_4" src="G2_5" trg="G2_4"/>
-</dagCollection>
+<GraphMetamodel:DagSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:GraphMetamodel="GraphMetamodel" xsi:schemaLocation="GraphMetamodel ./metamodel/graphMetamodel.ecore" xmi:id="dagPSocrates" semaphore_protocol="PRIO_CEILING">
+  <dagCollection xmi:id="G1" name="G1" step="1">
+    <node xmi:id="G1_1" name="G1_1" miet="-1.0" meet="1.0" maet="-1.0" comment="1 [miet=&quot;1&quot;, map=&quot;0&quot;]"/>
+    <node xmi:id="G1_2" name="G1_2" miet="-1.0" meet="2.0" maet="-1.0" comment="2 [miet=&quot;2&quot;, map=&quot;0&quot;]"/>
+    <node xmi:id="G1_3" name="G1_3" miet="-1.0" meet="3.0" maet="-1.0" comment="3 [miet=&quot;3&quot;, map=&quot;1&quot;]"/>
+    <edge xmi:id="G1_1_2" name="G1_1_2" src="G1_1" trg="G1_2"/>
+    <edge xmi:id="G1_2_3" name="G1_2_3" src="G1_2" trg="G1_3"/>
+  </dagCollection>
 </GraphMetamodel:DagSet>

@@ -2,6 +2,8 @@ package hipert.hg.XMLParser;
 import java.io.*;
 import java.util.LinkedList;
 
+import org.eclipse.epsilon.common.util.StringUtil;
+
 public class XMLGenerator {
 	
 	private LinkedList<Edge> edges=new LinkedList<Edge>();
@@ -59,6 +61,25 @@ public class XMLGenerator {
 		}
 		this.filename = filename;
     }
+
+    private static double GetValDouble(String line, String attrName, double defaultValue) {
+    	try { return Double.parseDouble(MaybeGetVal(line, attrName)); }
+    	catch(Exception ex) { return defaultValue;}
+    }
+    private static int GetValInt(String line, String attrName, int defaultValue) {
+    	try { return Integer.parseInt(MaybeGetVal(line, attrName)); }
+    	catch(Exception ex) { return defaultValue;}
+    }
+    
+    private static String MaybeGetVal(String line, String attrName) {
+    	String [] split = line.toLowerCase().split(attrName+"=");
+    	if(split.length < 2) // No way
+    		return "";
+    	split = split[1].split(",");
+    	if(split.length < 2) // No way
+    		return "";
+    	return split[0];
+    }
     
     /*This function process a line from the file and prepare the structure
     to be written in the file
@@ -68,6 +89,13 @@ public class XMLGenerator {
     3) Node (containing)
     */
     private void processString(String line,int index) {
+    	if(line == null || StringUtil.isEmpty(line))
+    		return;
+    	
+    	// If it's a comment
+    	if(line.trim().startsWith("//"))
+    			return;
+    	
 		//1)ignore 0 [label....] && not contains }
 		if(!line.startsWith("\t0") && !line.contains("}")){
 			line=line.trim(); 
@@ -83,14 +111,21 @@ public class XMLGenerator {
 				dags.get(index).setComment(line);
 				line=line.replace("\"", "");
 				dags.get(index).setComment(dags.get(index).getComment().replace("\"", "&quot;"));
-				double miet=Double.parseDouble(line.split("miet=")[1].split(",")[0]);
-				double meet=Double.parseDouble(line.split("meet=")[1].split(",")[0]);
-				double maet=Double.parseDouble(line.split("maet=")[1].split(",")[0]);
-				int mem_acess=Integer.parseInt(line.split("mem=")[1].split(",")[0]);
-				String mem_unit=line.split("unit=")[1].split(",")[0].replace("]","").toUpperCase();
-				int nodeId=Integer.parseInt(line.split(" ")[0]);
 				
+				double miet = GetValDouble(line, "miet", -1);
+				double meet = GetValDouble(line, "meet", -1);
+				double maet = GetValDouble(line, "maet", -1);
+				int mem_acess = GetValInt(line, "mem", 0);
+				
+				//String mem_unit=line.split("unit=")[1].split(",")[0].replace("]","").toUpperCase();
+				String mem_unit = MaybeGetVal(line, "unit");
+				mem_unit = mem_unit.replace("]","").toUpperCase();
+				if(StringUtil.isEmpty(mem_unit))
+					mem_unit = "B";
+				
+				int nodeId=Integer.parseInt(line.split(" ")[0]);
 				nodes.add(new Node(nodeId,miet,meet,maet,mem_acess,mem_unit,dags.get(index).getComment()));
+				
 			}	
 		}else if(line.contains("period")){ //process period priority deadline information
 			dags.get(index).setPeriod(Integer.parseInt(line.split("period=")[1].split(",")[0]));

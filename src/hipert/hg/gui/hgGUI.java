@@ -22,12 +22,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+
+import com.upscale.PsocMapper;
+
+import hipert.hg.Globals;
 import hipert.hg.XMLParser.DAG;
 import hipert.hg.XMLParser.Node;
 import hipert.hg.XMLParser.XMLGenerator;
 import hipert.hg.XMLParser.XMLModifier;
 import hipert.hg.modelToCode.DagToCode;
-import hipert.hg.modelToCode.PsocMapper;
+import hipert.hg.modelToCode.DagToCodeBostanGomp;
 
 /**
  *
@@ -42,12 +46,6 @@ public class hgGUI extends javax.swing.JFrame {
     public hgGUI() {
         initComponents();    
         setPanelLoadDAGComponents();
-        
-        // _POL_
-		ArrayList<String> dotFileNames = new ArrayList<String>();
-    	dotFileNames.add("lib/14_test-melani1.dot");
-    	dotFileNames.add("lib/15_test-melani2.dot");
-    	PsocMapper.GenerateTaskTable(dotFileNames /*this.xmlGenerator.getFilename()*/);
     }
   
     public void setPanelLoadDAGComponents(){
@@ -957,7 +955,7 @@ public class hgGUI extends javax.swing.JFrame {
 	
     //LOAD BUTTON LISTENER && LIST LISTENER
 	private void bLoadDagActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        File[] files=MethodInterface.loadFiles(this,true);
+        files=MethodInterface.loadFiles(this,true);
     	if(files!=null)
     		refreshDAGFiles(files,lstDagLoaded);
 
@@ -994,29 +992,48 @@ public class hgGUI extends javax.swing.JFrame {
 			String memory_stride = groupSparse.getSelection().getActionCommand();
 	    	lstReadyDAG.setModel(modelReadyDag);
 	    	if(memory_access=="prem"){
-	    		modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+"-"+memory_access+"-"+cbMemStep.getSelectedItem().toString());
+	    		modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+Globals.Separator+memory_access+Globals.Separator+cbMemStep.getSelectedItem().toString());
 	    	}
 	    	else if (memory_access=="sparse"){
 	    		if(memory_stride=="random")
-	    			modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+"-"+memory_access+"-"+cbMemStep.getSelectedItem().toString()+
-	    				 "-" + memory_stride);
+	    			modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+Globals.Separator+memory_access+Globals.Separator+cbMemStep.getSelectedItem().toString()+
+	    				 Globals.Separator + memory_stride);
 	    		else
-	    			modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+"-"+memory_access+"-"+cbMemStep.getSelectedItem().toString()+
-	    				 "-" + memory_stride + "-"+cbStride.getSelectedItem().toString());
+	    			modelReadyDag.addElement(lstDagLoaded.getSelectedValue().toString()+Globals.Separator+memory_access+Globals.Separator+cbMemStep.getSelectedItem().toString()+
+	    				 Globals.Separator + memory_stride + Globals.Separator+cbStride.getSelectedItem().toString());
 	    	}
 		}
     }
     XMLGenerator xmlGenerator = null;
+    File[] files = null;
 
     //GENERATE CODE BUTTON
     private void bGenerateCodeActionPerformed(java.awt.event.ActionEvent evt) {                                              
     	if(lstReadyDAG.getModel().getSize()<=0){
 			JOptionPane.showMessageDialog(null, "There is no any DAG loaded", "Code Generated", JOptionPane.INFORMATION_MESSAGE);
     	}else{
-    		String memory_access = groupMemAccess.getSelection().getActionCommand();
-			JOptionPane.showMessageDialog(null, "Code Generated", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
-			xmlGenerator = new XMLGenerator(packDags());
-	        new DagToCode();
+    		
+    		xmlGenerator = new XMLGenerator(packDags());
+
+			DagToCode codeGenerator = null;
+			if(false)
+				codeGenerator = new DagToCode();
+			else
+				codeGenerator = new DagToCodeBostanGomp();
+			
+			ArrayList<String> fileNames = new ArrayList<String>();
+			try
+			{
+				for (File file : files) {
+					fileNames.add(file.getCanonicalPath());
+				}
+				codeGenerator.GenerateCode(fileNames);
+		        JOptionPane.showMessageDialog(null, "Code Generated", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
+			}
+			catch(Exception ex) {
+		        JOptionPane.showMessageDialog(null, ex.getMessage(), "Code Generator", JOptionPane.ERROR_MESSAGE);			
+			}
+			
     	}
     }
     
@@ -1024,25 +1041,25 @@ public class hgGUI extends javax.swing.JFrame {
 	private DAG[] packDags() {
 		DAG dags[] = new DAG[lstReadyDAG.getModel().getSize()];
 		for(int i=0;i<lstReadyDAG.getModel().getSize();i++){
-			String filePath="dags/"+lstReadyDAG.getModel().getElementAt(i).split("-")[0];
-			String mem_access=lstReadyDAG.getModel().getElementAt(i).split("-")[1];
+			String filePath="dags/"+lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[0];
+			String mem_access=lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[1];
 			String sched_policy=cbScheduling.getSelectedItem().toString();
 			String partitioning_policy=cbPartitioning.getSelectedItem().toString();
 			//memory access type
 			if(mem_access.equals("prem")){
-				String stepString=lstReadyDAG.getModel().getElementAt(i).split("-")[2];
+				String stepString=lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[2];
 				int step=calcStep(stepString);
 				dags[i]=new DAG(filePath,mem_access,step,sched_policy,partitioning_policy);
 			}
 			else if (mem_access.equals("sparse")){
-				String stepString=lstReadyDAG.getModel().getElementAt(i).split("-")[2];
+				String stepString=lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[2];
 				int step=calcStep(stepString);
 				
 				//Stride access type
-				String strideType=lstReadyDAG.getModel().getElementAt(i).split("-")[3];
+				String strideType=lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[3];
 				int stride=0; //random access
 				if(strideType.equals("sequential")){
-					stride=Integer.parseInt(lstReadyDAG.getModel().getElementAt(i).split("-")[4]);
+					stride=Integer.parseInt(lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[4]);
 				}
 				dags[i]=new DAG(filePath,mem_access,step,stride,sched_policy,partitioning_policy);
 			}

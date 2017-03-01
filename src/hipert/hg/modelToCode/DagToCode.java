@@ -12,6 +12,7 @@ package hipert.hg.modelToCode;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.egl.EglFileGeneratingTemplateFactory;
@@ -29,6 +30,9 @@ public class DagToCode {
 	
 	
 	public DagToCode() {
+	}
+
+	public void GenerateCode(ArrayList<String> fileNames) {
 		try {
 			EglTemplateFactoryModuleAdapter module = new EglTemplateFactoryModuleAdapter(new EglFileGeneratingTemplateFactory()); 
 			module.parse(new File("modelToCode/driver.egl"));
@@ -39,14 +43,6 @@ public class DagToCode {
 			result = module.execute();
 			module.getContext().getModelRepository().dispose();
 			
-			// _POL_
-//			try
-//			{
-//				new PsocMapper().GenerateTaskTable("");
-//			}
-//			catch (java.lang.UnsatisfiedLinkError ule)
-//			{}
-
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

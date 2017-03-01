@@ -44,17 +44,17 @@ int cache_size()
 	return cache_size;
 }
 
-// void dropCaches(){
-// 	unsupported();
-// // 	FILE *fp;
-// // 	fp = fopen("/proc/sys/vm/drop_caches", "w");
-// // 	if (fp == NULL) {
-// // 	    printf("error %d: %s\n", errno, strerror(errno));
-// // 	    // error handling, exit or return
-// // 	}
-// // 	fprintf(fp, "3"); 
-// // 	fclose(fp);
-// }
+void dropCaches(){
+	unsupported();
+// 	FILE *fp;
+// 	fp = fopen("/proc/sys/vm/drop_caches", "w");
+// 	if (fp == NULL) {
+// 	    printf("error %d: %s\n", errno, strerror(errno));
+// 	    // error handling, exit or return
+// 	}
+// 	fprintf(fp, "3"); 
+// 	fclose(fp);
+}
 
 /*Wrappers*/
 void hgr_prepare_task(int taskID, int numNodes)
@@ -108,28 +108,23 @@ void hgr_wait_for_period (int taskID){
 }
 
 void hgr_init_dependency(hgr_dependency_t *dep, const void *attr){
-	log("\n");
-	omp_init_lock(dep);
+	// log("\n");
 }
 
 void hgr_destroy_dependency(hgr_dependency_t *dep){
-	log("\n");
-	omp_destroy_lock(dep);
+	// log("\n");
 }
 
 void hgr_wait_dependency(hgr_dependency_t *dep){
-	log("\n");
-	omp_set_lock(dep);
+	// log("\n");
 }
 
 void hgr_release_dependency(hgr_dependency_t *dep){
-	log("\n");
-	omp_unset_lock(dep);
+	// log("\n");
 }
 
 void hgr_exit() {
-	unsupported();
-// 	pthread_exit(NULL);
+	log("\n");
 }
 
 

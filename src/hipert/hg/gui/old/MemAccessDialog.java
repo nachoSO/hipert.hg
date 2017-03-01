@@ -92,11 +92,10 @@ public class MemAccessDialog extends JDialog {
 	
 	class acceptHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			memory_access = group.getSelection().getActionCommand();
-			JOptionPane.showMessageDialog(null, "Code Generated", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
-	        //new XMLGenerator(dagFiles,memory_access);
-	        new DagToCode();
-			setVisible(false);
+//			memory_access = group.getSelection().getActionCommand();
+//	        new DagToCode();
+//			JOptionPane.showMessageDialog(null, "Code Generated", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
+//			setVisible(false);
 		}
 	}
 }
