@@ -1,0 +1,10 @@
+digraph G1 {
+	// Also, parameters 'label' and 'style' will be ignored
+	0 [label="tdg_id=0", style=invis]
+	1 [MIET="1", map="0"]
+	2 [miet="2", map="0"]
+	3 [MIET="3", map="1"]
+	
+	1 -> 2
+	2 -> 3
+}

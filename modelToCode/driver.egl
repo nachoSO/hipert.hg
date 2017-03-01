@@ -9,7 +9,7 @@
 	var runtime_header_header: Template := TemplateFactory.load('hgr_header.egl');
 	
 	main.generate('../gen/main.c');
-	makefile.generate('../gen/makefile');
+	makefile.generate('../gen/Makefile');
 	task_header.generate('../gen/syntethicTask.h');
 	runtime.generate('../runtime/_hgr.c');
 	runtime_computation.generate('../runtime/_hgr_computation.c');

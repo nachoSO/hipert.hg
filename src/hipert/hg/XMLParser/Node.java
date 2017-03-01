@@ -13,7 +13,7 @@ public class Node {
 		this.setNodeID(nodeID);
 	}
 	
-	public Node(int nodeID,double wcet,double iwcet,double maet,int mem_access, String mem_unit,String comment ){
+	public Node(int nodeID,double iwcet,double wcet,double maet,int mem_access, String mem_unit,String comment ){
 		this.setWcet(wcet);
 		this.setIwcet(iwcet);
 		this.setMaet(maet);

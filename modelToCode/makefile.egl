@@ -7,42 +7,23 @@ for (dag in gs.dagCollection){
 	i++;
 }
 %]
-CFLAGS = -Wall -I../src/
-LDFLAGS=-L ../src -lptask -lpthread -lrt 
-CC=gcc
-LD=gcc
-.SUFFIXES:
-.SUFFIXES: .o .c
+MAINSRCS = main.c
+CSRCS = [%=makeString%]
 
-EXECS =  main  
+CFLAGS= -DTOTAL_TASK=[%=i-1%] -O0 -g3
+LDFLAGS=
 
-SRCS_main = main.c syntethicTask1.c syntethicTask2.c syntethicTask3.c syntethicTask4.c syntethicTask5.c  _hgr.c
-SRCS_special= _hgr_computation.c 
+#DOTSRCS= def.dot ciao.dot
 
-OBJS_main = ${SRCS_main:.c=.o}
+#BACKEND=./config/pthread_runtime
+BACKEND=./config/bostan-gomp
+#recuperare dal config
 
-SPECIAL_OBJS = ${SRCS_special:.c=.o}
-$(SPECIAL_OBJS): EXTRA_FLAGS := -O0 
+#????
+SCHEDULE=global
 
-all: $(EXECS) 
+include $(BACKEND)/Makefile.hgr
 
--include Makefile.deps
-
-depend:
-	$(CC) $(CFLAGS) -MM *.[ch] > Makefile.deps
-
-.c.o: 
-	$(CC) $(DEPENDS) $(CFLAGS) $(EXTRA_FLAGS) -o $@ -c $<
-
-main: $(OBJS_main) $(SPECIAL_OBJS) ../src/libptask.a
-	$(LD) -o $@ $^ $(LDFLAGS) 
-
-clean:
-	rm -rf *.o
-	rm -rf $(EXECS)
-
-cleanedit:
-	rm -rf *~
 
 
 

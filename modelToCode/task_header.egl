@@ -1,21 +1,33 @@
 #ifndef synth_H
 #define synth_H
+
 [%var gs: DagSet := DagSet.allInstances().at(0);
-var i: Integer;
 var j: Integer;
+var i: Integer;
 j=0;
 for (dag in gs.dagCollection){ 
 %]
-[%i=0;for (task in dag.node){%]
-void *[%=task.name%]();
-[%i++;}%]
+void *[%=dag.name%](void *);
+[%}%]
+typedef void (*task_fn)(void *);
 
-//This function calculates
-void [%=dag.name%]_pre_load_tasks();
-void [%=dag.name%]_mutexCreate();
-void [%=dag.name%]_mutexDestroy();
-void [%=dag.name%]();
-[%j++;}%]
+typedef struct _task_table_item_s
+{
+	char fn_name[256];
+	task_fn fn_ptr;
+	tspec period;
+	tspec rdline;
+	int priority;
+	int processor;
+	int act_flag;
+} task_table_item_t;
+
+task_table_item_t functions[] = {
+[%for (rt_task in gs.dagCollection){ %]
+	{.fn_name = "[%=rt_task.name%]", .fn_ptr = [%=rt_task.name%] },
+[%}%]
+};
+
 
 #endif
 
