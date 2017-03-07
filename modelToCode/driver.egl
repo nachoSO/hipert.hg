@@ -7,11 +7,10 @@
 	var runtime: Template := TemplateFactory.load('hgr.egl');
 	var runtime_computation: Template := TemplateFactory.load('hgr_computation.egl');
 	var runtime_header_header: Template := TemplateFactory.load('hgr_header.egl');
+	var ds: DagSet := DagSet.allInstances().at(0);
 	
-	main.generate('../gen/main.c');
-	makefile.generate('../gen/Makefile');
-	task_header.generate('../gen/syntethicTask.h');
-	runtime.generate('../runtime/_hgr.c');
-	runtime_computation.generate('../runtime/_hgr_computation.c');
-	runtime_header_header.generate('../runtime/_hgr.h');
+	main.generate(ds.output_dir+'main.c');
+	makefile.generate(ds.output_dir+'Makefile');
+	task_header.generate(ds.output_dir+'syntethicTask.h');
+	
 %]

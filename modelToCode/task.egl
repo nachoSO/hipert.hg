@@ -7,7 +7,7 @@ var mutex: String;
 var lastNode: Integer;
 mutex=""; 
 
-for (dag in gs.dagCollection.at(index)){ 
+for (dag in gs.dagCollection.at(DAG_ID)){ 
 	for (edge in dag.edge){ 
 		mutex=mutex+edge.name;
 	if (hasMore)
@@ -18,16 +18,20 @@ for (dag in gs.dagCollection.at(index)){
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "_hgr.h"
+#include "hgr.h"
 #include "hgr_dependencies.h"
 
-hgr_dependency_t [%=mutex%],lock_start;
+hgr_dependency_t [%=mutex%],lock_start_[%=dag.name%];
+[%if(dag.mem_type.name="prem"){%]
 PREM_node_t *[%=dag.name%]_data[[%=dag.node.size()%]];
-volatile long int var_condition1=0;
+[%}else {%]
+SPARSE_node_t *[%=dag.name%]_data[[%=dag.node.size()%]];
+unsigned long int * pointer_[%=dag.name%][[%=dag.node.size()%]]; //points to the memory access stride
+[%}%]
+volatile long int var_condition_[%=dag.name%]=0;
 long double wcet_per_task[[%=dag.node.size()%]];
-double FREQUENCY;
 
-void [%=dag.name%]_pre_load_tasks(){
+void [%=dag.name%]_pre_load_tasks(double FREQUENCY){
 	int granularity=[%=dag.step%];
 	[%i=0;for (task in dag.node){%] 	
 	
@@ -36,6 +40,11 @@ void [%=dag.name%]_pre_load_tasks(){
 	[%=dag.name%]_data[[%=i%]]=hgr_load_PREM_node([%=task.mem_access%],"[%=task.mem_unit%]",[%=dag.mem_type.value%],granularity,wcet_per_task[[%=i%]],FREQUENCY,[%=i%]);
 	[%}else {%]
 	[%=dag.name%]_data[[%=i%]]=hgr_load_SPARSE_node([%=task.mem_access%],"[%=task.mem_unit%]",[%=dag.mem_type.value%],granularity,[%=dag.stride%],wcet_per_task[[%=i%]],FREQUENCY,[%=i%]);
+ 	[%if(dag.stride==0){%]
+ 	pointer_[%=dag.name%][[%=i%]]=random_generator([%=dag.name%]_data[[%=i%]]->data_size/[%=dag.step%],[%=dag.name%]_data[[%=i%]]->data_size/[%=dag.step%]); //rand
+ 	[%}else {%]
+ 	pointer_[%=dag.name%][[%=i%]]=stride_generator([%=dag.stride%],[%=dag.name%]_data[[%=i%]]->data_size/[%=dag.stride%]); //sequential with stride
+	[%}%]
 	[%}%]
 	[%i++;}%]
 	
@@ -46,29 +55,29 @@ void [%=dag.name%]_create_dependency(){
 	hgr_init_dependency(&[%=edge.name%],NULL);
 	hgr_wait_dependency(&[%=edge.name%]);	
 	[%}%]
-	hgr_init_dependency(&lock_start1,NULL);
-	hgr_wait_dependency(&lock_start1);
+	hgr_init_dependency(&lock_start_[%=dag.name%],NULL);
+	hgr_wait_dependency(&lock_start_[%=dag.name%]);
 }
 
 void [%=dag.name%]_destroy_dependency(){
 	[%for (edge in dag.edge){%]
 	hgr_destroy_dependency(&[%=edge.name%]);
 	[%}%]
-	hgr_destroy_dependency(&lock_start1);
+	hgr_destroy_dependency(&lock_start_[%=dag.name%]);
 }
 
 void *[%=dag.name%]_wait_finish() {
-	while(var_condition1!=[%=dag.node.size()%])
+	while(var_condition_[%=dag.name%]!=[%=dag.node.size()%])
 		; 
 	return 0;
 }
 
 void [%=dag.name%]_start() {
-	hgr_release_dependency(&lock_start);
+	hgr_release_dependency(&lock_start_[%=dag.name%]);
 }
 
 void [%=dag.name%]_finish() {
-	hgr_thread_create(0, 100, NULL, &[%=dag.name%]_wait_finish, (void *)0);  
+	finish_work([%=dag.name%]_wait_finish);
 }
 
 [%i=0;for (task in dag.node){%]
@@ -83,42 +92,41 @@ void *[%=task.name%](){
 [%i++;}%]
 
 void [%=dag.name%](){
-	FREQUENCY=(double)(mhz()/1000.0);
+	struct timespec tstart={0,0}, tend={0,0};
+	double timeTaken;
+	double FREQUENCY=(double)(mhz()/1000.0);
 
 	printf("FREQ: %f \n",FREQUENCY);
-	G1_pre_load_tasks();
-	hgr_prepare_task(0,3);
+	[%=dag.name%]_pre_load_tasks(FREQUENCY);
+	hgr_prepare_task([%=DAG_ID%],3);
 
 	while(1){
-		var_condition1=0;
-		G1_create_dependency();
-	
-		pthread_t threads[[%=dag.node.size%]];
-		[%=dag.name%]_mutexCreate();
+		var_condition_[%=dag.name%]=0;
+		[%=dag.name%]_create_dependency();
+
 		[%i=0;
 		for (node in dag.node){%]
 		
-		hgr_thread_create(0,[%=i%], NULL, &[%=node.name%], (void *)[%=i%]);[%i++;}%]  
+		hgr_thread_create([%=DAG_ID%],[%=i%], NULL, &[%=node.name%], (void *)[%=i%]);[%i++;}%]  
  		clock_gettime(CLOCK_MONOTONIC, &tstart);	
 
-		G1_start();
-		G1_finish();~
+		[%=dag.name%]_start();
+		[%=dag.name%]_finish();
 		
  		clock_gettime(CLOCK_MONOTONIC, &tend);
  		timeTaken=(( ((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)))*1000;
- 		printf("Total execution time: %f miliseconds\n",timeTaken);
+ 		printf("Total execution time TASK [%=DAG_ID%]: %f miliseconds\n",timeTaken);
 		
-		hgr_release_dependency(&lock_start);
+		hgr_release_dependency(&lock_start_[%=dag.name%]);
 		
-		hgr_wait_dependency(&lock_end);
 		[%i=0;
 		for (node in dag.node){%]  
-		hgr_thread_join(0,[%=i%]);[%i++;}
+		hgr_thread_join([%=DAG_ID%],[%=i%]);[%i++;}
 		%]
 		
-		hgr_free_task(0);
+		//hgr_free_task(0);
 		[%=dag.name%]_destroy_dependency();
-		hgr_wait_for_period(0);
+		hgr_wait_for_period([%=DAG_ID%]);
 	}
 }
 
@@ -130,11 +138,9 @@ operation prem_memory(dag:Dag,task:Node,i:Integer){%]
 	[%var mutexTask:String;%]
 	//printf("Hi im the node [%=task.name%]\n");  //[%=task.comment%]
 	
-	pthread_mutex_trylock(&lock_start);
+	pthread_mutex_trylock(&lock_start_[%=dag.name%]);
  	volatile char *ptr_dst = (char *)malloc(G1_data[0]->data_size);
-	
-	hgr_prem_memphase([%=dag.name%]_data[[%=i%]]); //Mem phase
-	
+		
 	[%for (edge in dag.edge){
 		if(edge.trg.name=task.name){
 			mutexTask=edge.name;%]
@@ -149,7 +155,7 @@ operation prem_memory(dag:Dag,task:Node,i:Integer){%]
 		[%}%]
 	[%}%]
 	
-	var_condition1++;
+	var_condition_[%=dag.name%]++;
  	free(ptr_dst);
 	hgr_exit();
 
@@ -161,7 +167,7 @@ operation sparse_memory(dag:Dag,task:Node,i:Integer){%]
 	[%var mutexTask:String;%]
 	//printf("Hi im the node [%=task.name%]\n");  //[%=task.comment%]
 
-	pthread_mutex_trylock(&lock_start);
+	pthread_mutex_trylock(&lock_start_[%=dag.name%]);
 	[%for (edge in dag.edge){
 		if(edge.trg.name=task.name){
 			mutexTask=edge.name;%]
@@ -169,7 +175,7 @@ operation sparse_memory(dag:Dag,task:Node,i:Integer){%]
 		[%}%]
 	[%}%]
 	
-	hgr_SPARSE_compute_node([%=dag.name%]_data[[%=i%]],pointer[[%=i%]]); //Mem & Computation phase
+	hgr_SPARSE_compute_node([%=dag.name%]_data[[%=i%]],pointer_[%=dag.name%][[%=i%]]); //Mem & Computation phase
 	
 	[%for (edge in dag.edge){
 		if(edge.src.name=task.name){
@@ -178,7 +184,7 @@ operation sparse_memory(dag:Dag,task:Node,i:Integer){%]
 		[%}%]
 	[%}%]
 
-	var_condition1++;
+	var_condition_[%=dag.name%]++;
 	hgr_exit();
 	return 0;
 [%}%]

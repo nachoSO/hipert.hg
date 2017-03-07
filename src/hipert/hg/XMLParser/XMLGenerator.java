@@ -201,7 +201,11 @@ public class XMLGenerator {
 		try {
 			PrintWriter writer = new PrintWriter(fileDst, "UTF-8");
 			writer.println("<?xml version=\"1.0\" encoding=\"ASCII\"?>");
-		    writer.println("<GraphMetamodel:DagSet xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:GraphMetamodel=\"GraphMetamodel\" xmi:id=\"dagPSocrates\" partitioning_policy=\""+d.getPartitioning_policy()+"\" semaphore_protocol=\"PRIO_CEILING\" sched_alg=\""+d.getSched_policy()+"\">");
+
+		    writer.println("<GraphMetamodel:DagSet xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:GraphMetamodel=\"GraphMetamodel\" "
+		    		+ "xmi:id=\"dagPSocrates\" partitioning_policy=\""+d.getPartitioning_policy()+"\" semaphore_protocol=\"PRIO_CEILING\" "
+    				+ "sched_alg=\""+d.getSched_policy()+"\" output_dir=\""+d.getOutput_dir()+"/"+"\">");
+
 			writer.close();   		
 
 		} catch (FileNotFoundException e) {

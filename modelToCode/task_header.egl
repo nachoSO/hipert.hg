@@ -9,7 +9,7 @@ for (dag in gs.dagCollection){
 %]
 void *[%=dag.name%](void *);
 [%}%]
-typedef void (*task_fn)(void *);
+typedef void *(*task_fn)(void *);
 
 typedef struct _task_table_item_s
 {

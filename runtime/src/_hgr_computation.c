@@ -1,10 +1,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "_hgr.h"
+#include "hgr.h"
 #include <math.h>
 
-pthread_mutex_t premMutex;
+extern pthread_mutex_t premMutex;
 
 void set_max_priority(){
 	struct sched_param sp;

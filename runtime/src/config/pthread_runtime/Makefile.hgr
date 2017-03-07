@@ -1,7 +1,7 @@
-PTASK_BASE=../src/
+PTASK_BASE=../lib/ptask
 
 
-CFLAGS += -Wall -I$(PTASK_BASE) -I$(BACKEND) ${PARAM1} -DLMPATH='"../lmbench-master/bin/x86_64-linux-gnu/mhz"'
+CFLAGS += -Wall -I$(PTASK_BASE) -I$(BACKEND) ${PARAM1} -DLMPATH='"../lib/lmbench-master/bin/x86_64-linux-gnu/mhz"'
 LDFLAGS += -L $(PTASK_BASE) -lptask -lpthread -lrt -lm 
 
 CC=gcc
@@ -9,11 +9,11 @@ LD=gcc
 .SUFFIXES:
 .SUFFIXES: .o .c
 
-DEPS_PTHREAD = $(BACKEND)/_hgr.h
+DEPS_PTHREAD = $(BACKEND)/hgr.h
 
 EXECS =  main  
 
-SRCS_main = $(CSRCS) $(BACKEND)/_hgr.c hgr_common.c 
+SRCS_main = $(MAINSRCS) $(CSRCS) $(BACKEND)/_hgr.c hgr_common.c 
 SRCS_special= _hgr_computation.c 
 
 OBJS_main = ${SRCS_main:.c=.o}

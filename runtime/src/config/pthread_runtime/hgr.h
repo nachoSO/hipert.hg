@@ -1,7 +1,7 @@
 #ifndef hgr_H
 #define hgr_H
 #include <stdio.h>
-// #include <ptask.h>
+#include <ptask.h>
 #include <string.h>
 // #include "pmutex.h"
 #include <stdint.h>
@@ -9,6 +9,7 @@
 #include <math.h>
 #include <errno.h>
 
+#define log printf
 #define DIV_ROUND_CLOSEST(n, d) ((((n) < 0) ^ ((d) < 0)) ? (((n) - (d)/2)/(d)) : (((n) + (d)/2)/(d)))
 
 // extern pthread_mutex_t premMutex;
@@ -74,29 +75,20 @@ int hgr_task_creator(int taskID, tspec period,tspec rdline,int priority,int proc
 
 void hgr_wait_for_period(int taskID);
 
-void hgr_init_dependency(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr);
-
-void hgr_destroy_dependency(pthread_mutex_t *mutex);
-
-void hgr_wait_dependency(pthread_mutex_t *mutex);
-
-void hgr_release_dependency(pthread_mutex_t *mutex);
-
 void hgr_prepare_task(int taskID,int numNodes);
 
 int hgr_thread_create(int taskID, int nodeID, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);
 
 int hgr_thread_join(int taskID, int numNode);
 
-int hgr_pthread_join(pthread_t thread);
+//int hgr_pthread_join(pthread_t thread);
 
-int hgr_pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);
+//int hgr_pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);
 
 void hgr_ptask_init(int policy, global_policy global, sem_protocol protocol);
 
 void hgr_exit();
 
 #endif
-
 
 

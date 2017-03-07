@@ -32,8 +32,10 @@ public class MethodInterface extends JDialog {
 		int result = fileChooser.showOpenDialog(hgGUI);
 		if (result == JFileChooser.APPROVE_OPTION) {
 			files = fileChooser.getSelectedFiles();
-			for(File f:files)
+			for(File f:files){
+				
 				System.out.println("Selected file: " + f.getAbsolutePath());
+			}
 		}
 		
 		return files;

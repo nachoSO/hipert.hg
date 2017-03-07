@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import com.upscale.PsocMapper;
 
+import hipert.hg.Globals;
+
 /**
  * @author Pol
  *

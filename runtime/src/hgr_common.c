@@ -1,4 +1,4 @@
-#include "_hgr.h"
+#include "hgr.h"
 
 int ROUND_UP(unsigned long int a, unsigned long b){
 	log("\n");
@@ -83,7 +83,7 @@ PREM_node_t * hgr_load_PREM_node(long int data_size, char *data_granularity, int
 	return node;
 }
 
-//This function generates a size number of randoms within limit value
+//This function generates an index randomly with size number of randoms within limit value (limit&size = data_size/step)
 unsigned long int * random_generator(long int limit, long int size) {
 	log("\n");
 	srand((unsigned)time(NULL));
@@ -101,7 +101,7 @@ unsigned long int * random_generator(long int limit, long int size) {
 	return random_pointer;
 }
 
-//This function generates the stride values
+//This function generates the stride values (size = data_size/stride)
 unsigned long int * stride_generator(int stride, long int size) {
 	log("\n");
 	unsigned long int i;

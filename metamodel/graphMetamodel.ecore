@@ -7,6 +7,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="partitioning_policy" eType="#//PARTITIONING_POLICY"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="semaphore_protocol" eType="#//SEMAPHORE_PROTOCOL"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sched_alg" eType="#//SCHED_ALG"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="output_dir" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Dag">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

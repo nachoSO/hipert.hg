@@ -60,7 +60,12 @@ public class hgGUI extends javax.swing.JFrame {
         rbSparse.setActionCommand("sparse");
         rbSequential.setActionCommand("sequential");
         rbRandom.setActionCommand("random");
+
         
+    	txtOutput.setText(Globals.defaultOutputDir); 
+    	txtRuntime.setText(Globals.defaultRuntimeDir);
+    	txtGraphviz.setText(Globals.defaultGraphvizDir); 
+    	
 		ActionListener enablerListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				AbstractButton aButton = (AbstractButton) actionEvent.getSource();
@@ -966,15 +971,7 @@ public class hgGUI extends javax.swing.JFrame {
 			    if(index>=0){
 					if (evt.getClickCount() == 2) {
 					    index = list.locationToIndex(evt.getPoint());
-					    Runtime rt = Runtime.getRuntime();
-						try {
-							Process pr = rt.exec("graphviz/bin/dot.exe "
-							+ "-Tpng dags/"+list.getSelectedValue().toString()
-							+ " -o dagToPNG/"+list.getSelectedValue().toString().replace(".dot", ".png"));
-							new ImageDag("dagToPNG/"+list.getSelectedValue().toString().replace(".dot", ".png"));
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						new ImageDag("dagToPNG/"+list.getSelectedValue().toString().replace(".dot", ".png"));
 					}
 			    }
 		    }
@@ -1027,6 +1024,7 @@ public class hgGUI extends javax.swing.JFrame {
 				for (File file : files) {
 					fileNames.add(file.getCanonicalPath());
 				}
+				Globals.GenFilesDir=txtOutput.getText();
 				codeGenerator.GenerateCode(fileNames);
 		        JOptionPane.showMessageDialog(null, "Code Generated", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
 			}
@@ -1044,12 +1042,13 @@ public class hgGUI extends javax.swing.JFrame {
 			String filePath="dags/"+lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[0];
 			String mem_access=lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[1];
 			String sched_policy=cbScheduling.getSelectedItem().toString();
+			String output_dir=txtOutput.getText();
 			String partitioning_policy=cbPartitioning.getSelectedItem().toString();
 			//memory access type
 			if(mem_access.equals("prem")){
 				String stepString=lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[2];
 				int step=calcStep(stepString);
-				dags[i]=new DAG(filePath,mem_access,step,sched_policy,partitioning_policy);
+				dags[i]=new DAG(filePath,mem_access,step,sched_policy,partitioning_policy,output_dir);
 			}
 			else if (mem_access.equals("sparse")){
 				String stepString=lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[2];
@@ -1061,7 +1060,7 @@ public class hgGUI extends javax.swing.JFrame {
 				if(strideType.equals("sequential")){
 					stride=Integer.parseInt(lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[4]);
 				}
-				dags[i]=new DAG(filePath,mem_access,step,stride,sched_policy,partitioning_policy);
+				dags[i]=new DAG(filePath,mem_access,step,stride,sched_policy,partitioning_policy,output_dir);
 			}
 		}
 		return dags;
@@ -1091,6 +1090,15 @@ public class hgGUI extends javax.swing.JFrame {
     	lst.setModel(model);
     	for(File f : files){
             model.addElement(f.getName());
+		    Runtime rt = Runtime.getRuntime();
+			try {
+				Process pr = rt.exec(txtGraphviz.getText()+"bin/dot.exe "
+				+ "-Tpng dags/"+f.getName()
+				+ " -o dagToPNG/"+f.getName().toString().replace(".dot", ".png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	}
     }
     
@@ -1104,7 +1112,8 @@ public class hgGUI extends javax.swing.JFrame {
         	txtOutput.setText(file.getPath());
     }
 
-    private void bRuntimeActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    private void bRuntimeActionPerformed(java.awt.event.ActionEvent evt) {    
+
         File file=MethodInterface.loadFolder(this,false);
         if(file!=null)
         	txtRuntime.setText(file.getPath());

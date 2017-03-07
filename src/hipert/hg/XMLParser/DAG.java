@@ -3,6 +3,7 @@ package hipert.hg.XMLParser;
 import java.io.File;
 
 public class DAG {
+	private String output_dir;
 	private String sched_policy;
 	private String partitioning_policy;
 	private int period;
@@ -17,22 +18,25 @@ public class DAG {
 	private String mem_access;
 	
 	//prem constructor
-	public DAG(String dagPath, String mem_access,int step,String sched_policy,String partitioning_policy){
+	public DAG(String dagPath, String mem_access,int step,String sched_policy,String partitioning_policy,String output_dir){
 		this.setDagPath(new File(dagPath));
 		this.setMem_access(mem_access);
 		this.setStep(step);
 		this.setSched_policy(sched_policy);
 		this.setPartitioning_policy(partitioning_policy);
+		this.setOutput_dir(output_dir);
 	}
 	
 	//sparse constructor
-	public DAG(String dagPath, String mem_access,int step,int stride,String sched_policy,String partitioning_policy){
+	public DAG(String dagPath, String mem_access,int step,int stride,String sched_policy,String partitioning_policy,String output_dir){
 		this.setDagPath(new File(dagPath));
 		this.setMem_access(mem_access);
 		this.setStep(step);
 		this.setStride(stride);
 		this.setSched_policy(sched_policy);
 		this.setPartitioning_policy(partitioning_policy);
+		this.setOutput_dir(output_dir);
+
 	}
 
 	public DAG() {
@@ -46,7 +50,16 @@ public class DAG {
 	public void setPeriod(int period) {
 		this.period = period;
 	}
+	
+	
+	public String getOutput_dir() {
+		return output_dir;
+	}
 
+	public void setOutput_dir(String output_dir) {
+		this.output_dir = output_dir;
+	}
+	
 	public int getDeadline() {
 		return deadline;
 	}
