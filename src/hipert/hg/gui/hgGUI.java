@@ -1096,8 +1096,8 @@ public class hgGUI extends javax.swing.JFrame {
 				+ "-Tpng dags/"+f.getName()
 				+ " -o dagToPNG/"+f.getName().toString().replace(".dot", ".png"));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				// For some reason it fails (e.g., no graphviz installed). Not fatal..
 			}
     	}
     }

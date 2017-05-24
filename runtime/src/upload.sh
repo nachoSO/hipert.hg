@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOSTNAME=89.97.65.173
+HOSTNAME=79.8.93.92 # Also 79.58.110.76
 USERNAME=unimore
 PORT=10022
 

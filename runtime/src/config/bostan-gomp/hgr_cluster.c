@@ -73,8 +73,8 @@ struct gomp_ol_args_0_t
 
 extern void GOMP_task(void (*fn) (void *), void *data, void (*cpyfn) (void *, void *), long arg_size, long arg_align, int if_clause, unsigned flags __attribute__((unused)));
 
-int hgr_thread_create(int taskID, int nodeID, const void *attr,
-											void *(*start_routine) (void *), void *arg)
+int hgr_thread_create(	int taskID, int nodeID, const void *attr,
+			void *(*start_routine) (void *), void *arg)
 {
 	log("\n");
 	static int thrID = 0;
