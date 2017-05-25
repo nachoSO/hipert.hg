@@ -60,6 +60,7 @@ public class hgGUI extends javax.swing.JFrame {
         rbSparse.setActionCommand("sparse");
         rbSequential.setActionCommand("sequential");
         rbRandom.setActionCommand("random");
+        bOutput.setEnabled(false);
 
         
     	txtOutput.setText(Globals.defaultOutputDir); 
@@ -1039,7 +1040,8 @@ public class hgGUI extends javax.swing.JFrame {
 	private DAG[] packDags() {
 		DAG dags[] = new DAG[lstReadyDAG.getModel().getSize()];
 		for(int i=0;i<lstReadyDAG.getModel().getSize();i++){
-			String filePath="dags/"+lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[0];
+			//!!!!!!!CHANGE THIS!!!!!!!!
+			String filePath="examples/"+lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[0];
 			String mem_access=lstReadyDAG.getModel().getElementAt(i).split(Globals.Separator)[1];
 			String sched_policy=cbScheduling.getSelectedItem().toString();
 			String output_dir=txtOutput.getText();
