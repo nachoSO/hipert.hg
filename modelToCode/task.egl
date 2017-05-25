@@ -98,7 +98,7 @@ void [%=dag.name%](){
 
 	printf("FREQ: %f \n",FREQUENCY);
 	[%=dag.name%]_pre_load_tasks(FREQUENCY);
-	hgr_prepare_task([%=DAG_ID%],3);
+	hgr_prepare_task([%=DAG_ID%],[%=dag.node.size()%]);
 
 	while(1){
 		var_condition_[%=dag.name%]=0;
@@ -139,7 +139,7 @@ operation prem_memory(dag:Dag,task:Node,i:Integer){%]
 	//printf("Hi im the node [%=task.name%]\n");  //[%=task.comment%]
 	
 	pthread_mutex_trylock(&lock_start_[%=dag.name%]);
- 	volatile char *ptr_dst = (char *)malloc(G1_data[0]->data_size);
+ 	volatile char *ptr_dst = (char *)malloc([%=dag.name%]_data[[%=i%]]->data_size);
 		
 	[%for (edge in dag.edge){
 		if(edge.trg.name=task.name){

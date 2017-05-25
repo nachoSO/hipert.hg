@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
+<<<<<<< HEAD
 <GraphMetamodel:DagSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:GraphMetamodel="GraphMetamodel" xsi:schemaLocation="GraphMetamodel ./metamodel/graphMetamodel.ecore" xmi:id="dagPSocrates" semaphore_protocol="PRIO_CEILING" output_dir="D:\UniMoRe\Workspace\hipert.hg\gen/">
   <dagCollection xmi:id="G1" name="G1" step="1">
     <node xmi:id="G1_1" name="G1_1" miet="1.0" meet="-1.0" maet="-1.0" comment="1 [miet=&quot;1&quot;, map=&quot;0&quot;]"/>
@@ -13,5 +14,19 @@
     <node xmi:id="G1_3" name="G1_3" miet="10.85" meet="10.53" maet="10.66" comment="3 [miet=&quot;10.85&quot;, meet=&quot;10.53&quot;, maet=&quot;10.66&quot;, mem=&quot;1&quot;, unit=&quot;mb&quot;]" mem_access="1"/>
     <edge xmi:id="G1_1_2" name="G1_1_2" src="G1_1" trg="G1_2"/>
     <edge xmi:id="G1_1_3" name="G1_1_3" src="G1_1" trg="G1_3"/>
+=======
+<GraphMetamodel:DagSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:GraphMetamodel="GraphMetamodel" xsi:schemaLocation="GraphMetamodel ./metamodel/graphMetamodel.ecore" xmi:id="dagPSocrates" semaphore_protocol="PRIO_CEILING" output_dir="C:/Users/LPC/Dropbox/CodeGen/hipert.hg.v2/runtime/src//">
+  <dagCollection xmi:id="G4" name="G4" period="700" priority="60" deadline="700" processor="1" step="1">
+    <node xmi:id="G4_1" name="G4_1" miet="94.48" meet="94.48" maet="94.48" comment="1 [miet=&quot;94.48&quot;, meet=&quot;94.48&quot;, maet=&quot;94.48&quot;, mem=&quot;500&quot;, unit=&quot;kb&quot;]" mem_access="500"/>
+    <node xmi:id="G4_2" name="G4_2" miet="58.21" meet="58.21" maet="58.21" comment="2 [miet=&quot;58.21&quot;, meet=&quot;58.21&quot;, maet=&quot;58.21&quot;, mem=&quot;500&quot;, unit=&quot;b&quot;]" mem_access="500"/>
+    <node xmi:id="G4_3" name="G4_3" miet="14.42" meet="14.42" maet="14.42" comment="3 [miet=&quot;14.42&quot;, meet=&quot;14.42&quot;, maet=&quot;14.42&quot;, mem=&quot;500&quot;, unit=&quot;kb&quot;]" mem_access="500"/>
+    <node xmi:id="G4_4" name="G4_4" miet="35.38" meet="35.38" maet="35.38" comment="4 [miet=&quot;35.38&quot;, meet=&quot;35.38&quot;, maet=&quot;35.38&quot;, mem=&quot;500&quot;, unit=&quot;b&quot;]" mem_access="500"/>
+    <node xmi:id="G4_5" name="G4_5" miet="12.84" meet="12.84" maet="12.84" comment="5 [miet=&quot;12.84&quot;, meet=&quot;12.84&quot;, maet=&quot;12.84&quot;, mem=&quot;500&quot;, unit=&quot;kb&quot;]" mem_access="500"/>
+    <edge xmi:id="G4_1_2" name="G4_1_2" src="G4_1" trg="G4_2"/>
+    <edge xmi:id="G4_1_3" name="G4_1_3" src="G4_1" trg="G4_3"/>
+    <edge xmi:id="G4_2_4" name="G4_2_4" src="G4_2" trg="G4_4"/>
+    <edge xmi:id="G4_3_4" name="G4_3_4" src="G4_3" trg="G4_4"/>
+    <edge xmi:id="G4_5_3" name="G4_5_3" src="G4_5" trg="G4_3"/>
+>>>>>>> 25d8b93c4a9ba4d8128fbecee9261a65994a9790
   </dagCollection>
 </GraphMetamodel:DagSet>

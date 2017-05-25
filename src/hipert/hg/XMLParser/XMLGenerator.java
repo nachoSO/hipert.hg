@@ -178,6 +178,7 @@ public class XMLGenerator {
 			nodes.clear();
 			edges.clear();
 		    dags.add(dag);
+		    System.out.println("asda2: "+dag.getDagPath().toString());
 			readDOTFile(dag.getDagPath().toString(),index);
 		    writeModelFile(fileDst,index);
 		    index++;
