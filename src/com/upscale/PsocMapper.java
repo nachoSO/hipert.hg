@@ -3,8 +3,6 @@ package com.upscale;
 import java.io.File;
 import java.util.ArrayList;
 
-import hipert.hg.Globals;
-
 public class PsocMapper {
 	static {
 		try {
@@ -30,12 +28,12 @@ public class PsocMapper {
 	
 	public static native int GenerateTaskTable(String dotFileNames[], String tableFileName);
 
-	public static int GenerateTaskTable(ArrayList<String> dotFileNames) {
+	public static int GenerateTaskTable(ArrayList<String> dotFileNames, String outFile) {
     	String[] stringArr = new String[dotFileNames.size()];
     	stringArr = dotFileNames.toArray(stringArr);
     	
     	try {
-    		return PsocMapper.GenerateTaskTable(stringArr, Globals.GenFilesDir + "/" + Globals.PsocTableFileName);
+    		return PsocMapper.GenerateTaskTable(stringArr, outFile);
     	}
 		catch (java.lang.UnsatisfiedLinkError ule) {
 			throw ule;

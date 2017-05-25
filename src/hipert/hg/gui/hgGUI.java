@@ -26,12 +26,14 @@ import javax.swing.JOptionPane;
 import com.upscale.PsocMapper;
 
 import hipert.hg.Globals;
-import hipert.hg.XMLParser.DAG;
-import hipert.hg.XMLParser.Node;
-import hipert.hg.XMLParser.XMLGenerator;
-import hipert.hg.XMLParser.XMLModifier;
-import hipert.hg.modelToCode.DagToCode;
-import hipert.hg.modelToCode.DagToCodeBostanGomp;
+import hipert.hg.backend.IBackend;
+import hipert.hg.backend.bostangomp.DagToCodeBostanGomp;
+import hipert.hg.backend.ptask.DagToCode;
+import hipert.hg.frontend.IFrontend;
+import hipert.hg.frontend.rtdot.DAG;
+import hipert.hg.frontend.rtdot.Node;
+import hipert.hg.frontend.rtdot.XMLGenerator;
+import hipert.hg.frontend.rtdot.XMLModifier;
 
 /**
  *
@@ -1002,7 +1004,7 @@ public class hgGUI extends javax.swing.JFrame {
 	    	}
 		}
     }
-    XMLGenerator xmlGenerator = null;
+    IFrontend parser = null;
     File[] files = null;
 
     //GENERATE CODE BUTTON
@@ -1010,13 +1012,20 @@ public class hgGUI extends javax.swing.JFrame {
     	if(lstReadyDAG.getModel().getSize()<=0){
 			JOptionPane.showMessageDialog(null, "There is no any DAG loaded", "Code Generated", JOptionPane.INFORMATION_MESSAGE);
     	}else{
-    		
-    		xmlGenerator = new XMLGenerator(packDags());
 
-			DagToCode codeGenerator = null;
-			if(false)
+    		//if(currentFrontend == Frontend.RtDot)
+    		parser = new XMLGenerator();
+    		// else
+    		//  other frontendas
+    		
+    		String fileDst="./modelToCode/dagParsed.model";
+    		
+    		parser.Parse(packDags(), fileDst);
+
+			IBackend codeGenerator = null;
+			if(false) // current backend == Backend.PTasks
 				codeGenerator = new DagToCode();
-			else
+			else // if current backend == Backend.BostanGomp
 				codeGenerator = new DagToCodeBostanGomp();
 			
 			ArrayList<String> fileNames = new ArrayList<String>();
@@ -1025,9 +1034,13 @@ public class hgGUI extends javax.swing.JFrame {
 				for (File file : files) {
 					fileNames.add(file.getCanonicalPath());
 				}
+				
 				Globals.GenFilesDir=txtOutput.getText();
-				codeGenerator.GenerateCode(fileNames);
+				codeGenerator.GenerateCode(fileDst);
 		        JOptionPane.showMessageDialog(null, "Code Generated", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
+		        
+				codeGenerator.Post(fileNames);
+		        JOptionPane.showMessageDialog(null, "Executed Post-Operation", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
 			}
 			catch(Exception ex) {
 		        JOptionPane.showMessageDialog(null, ex.getMessage(), "Code Generator", JOptionPane.ERROR_MESSAGE);			
@@ -1092,14 +1105,16 @@ public class hgGUI extends javax.swing.JFrame {
     	lst.setModel(model);
     	for(File f : files){
             model.addElement(f.getName());
-		    Runtime rt = Runtime.getRuntime();
+		    
 			try {
+			    Runtime rt = Runtime.getRuntime();
 				Process pr = rt.exec(txtGraphviz.getText()+"bin/dot.exe "
 				+ "-Tpng dags/"+f.getName()
 				+ " -o dagToPNG/"+f.getName().toString().replace(".dot", ".png"));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+		        JOptionPane.showMessageDialog(null, "Unable to find GraphViz", "Code Parser", JOptionPane.WARNING_MESSAGE);
 			}
     	}
     }

@@ -1,10 +1,12 @@
-package hipert.hg.XMLParser;
+package hipert.hg.frontend.rtdot;
 import java.io.*;
 import java.util.LinkedList;
 
 import org.eclipse.epsilon.common.util.StringUtil;
 
-public class XMLGenerator {
+import hipert.hg.frontend.IFrontend;
+
+public class XMLGenerator implements IFrontend {
 	
 	private LinkedList<Edge> edges=new LinkedList<Edge>();
 	private LinkedList<Node> nodes=new LinkedList<Node>();
@@ -168,10 +170,9 @@ public class XMLGenerator {
 	 public XMLGenerator() {
 
 	 }
-    
-	 public XMLGenerator(DAG dagsParam[]) {
+
+	 public void Parse(DAG dagsParam[], String fileDst) {    
 		this.dagMemAccess=dagMemAccess;
-		String fileDst="./modelToCode/dagParsed.model";
 		createModelFile(fileDst,dagsParam[0]);
 		int index=0;
 		for (DAG dag : dagsParam){

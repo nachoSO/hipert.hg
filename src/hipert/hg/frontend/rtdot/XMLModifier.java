@@ -1,4 +1,4 @@
-package hipert.hg.XMLParser;
+package hipert.hg.frontend.rtdot;
 import java.awt.List;
 import java.io.*;
 import java.nio.charset.StandardCharsets;

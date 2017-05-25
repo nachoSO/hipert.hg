@@ -1,4 +1,4 @@
-package hipert.hg.XMLParser;
+package hipert.hg.frontend.rtdot;
 
 public class Node {
 	private double wcet; //worst case execution time (MIET), isolated wcet (MEET), average execution time

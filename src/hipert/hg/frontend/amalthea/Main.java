@@ -5,7 +5,7 @@
  * @version 1.0 25/05/16
  */
 
-package hipert.hg.amaltheaParser;
+package hipert.hg.frontend.amalthea;
 
 import java.io.File;
 import java.io.FileInputStream;

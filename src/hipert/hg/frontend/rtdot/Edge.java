@@ -1,4 +1,4 @@
-package hipert.hg.XMLParser;
+package hipert.hg.frontend.rtdot;
 
 public class Edge {
 	Node src;

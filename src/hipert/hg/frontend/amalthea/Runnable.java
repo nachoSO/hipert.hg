@@ -1,4 +1,4 @@
-package hipert.hg.amaltheaParser;
+package hipert.hg.frontend.amalthea;
 
 public class Runnable {
 	String name;
