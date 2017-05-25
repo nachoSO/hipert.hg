@@ -20,7 +20,7 @@ long int calc_data_size(long int size,char * data_granularity){
 	return data_size;
 }
 
-SPARSE_node_t * hgr_load_SPARSE_node(long int data_size, char *data_granularity, int type,int granularity,int stride,long double wcet,double FREQUENCY,int nodeID){
+SPARSE_node_t * hgr_load_SPARSE_node(long int data_size, char *data_granularity ,int granularity,int stride,long double wcet,double FREQUENCY,int nodeID){
 	log("\n");
 	SPARSE_node_t *node=(SPARSE_node_t *) malloc (sizeof(SPARSE_node_t));
 	(*node).granularity = granularity; 
@@ -37,19 +37,19 @@ SPARSE_node_t * hgr_load_SPARSE_node(long int data_size, char *data_granularity,
 	unsigned long int beta = ceil(ro); /* num iterations */ 
 	(*node).wcet_cycles=beta;
 	if(granularity==1){
-		(*node).char_data_ptr   = (char *)malloc(sizeof(char)*((*node).data_size/granularity));
+		(*node).char_data_ptr   = (char *)malloc(sizeof(char)*((*node).data_size));
 	}else if(granularity==4){
-		(*node).int_data_ptr    = (int *)malloc(sizeof(int)*((*node).data_size/granularity));
+		(*node).int_data_ptr    = (int *)malloc(sizeof(int)*((*node).data_size));
 	}else if(granularity==8){
-		(*node).double_data_ptr   = (double *)malloc(sizeof(double)*((*node).data_size/granularity));
+		(*node).double_data_ptr   = (double *)malloc(sizeof(double)*((*node).data_size));
 	}else if(granularity==16){
-		(*node).long_double_data_ptr = (long double *)malloc(sizeof(long double)*((*node).data_size/granularity));
+		(*node).long_double_data_ptr = (long double *)malloc(sizeof(long double)*((*node).data_size));
 	}
 	
 	return node;
 }
 
-PREM_node_t * hgr_load_PREM_node(long int data_size, char *data_granularity, int type,int granularity,long double wcet,double FREQUENCY,int nodeID){
+PREM_node_t * hgr_load_PREM_node(long int data_size, char *data_granularity,int granularity,long double wcet,double FREQUENCY,int nodeID){
 	log("\n");
 	PREM_node_t *node=(PREM_node_t *) malloc (sizeof(PREM_node_t));
 	(*node).granularity = granularity; 
@@ -83,18 +83,16 @@ PREM_node_t * hgr_load_PREM_node(long int data_size, char *data_granularity, int
 	return node;
 }
 
-//This function generates an index randomly with size number of randoms within limit value (limit&size = data_size/step)
-unsigned long int * random_generator(long int limit, long int size) {
+//This function generates an index randomly with size number of randoms within limit value
+unsigned long int * random_generator(long int size) {
 	log("\n");
 	srand((unsigned)time(NULL));
 	unsigned long int *random_pointer=(unsigned long int *) malloc (sizeof(unsigned long int)*size);
-	long int divisor = RAND_MAX/(limit+1);
+	long int divisor = RAND_MAX/(size+1);
 
 	int randVal,i;
 	for(i=0;i<size;i++){
-		do { 
-			randVal = rand() / divisor;
-		} while (randVal > limit);
+		randVal = rand() / divisor;
 		random_pointer[i]=randVal;
 	}
 

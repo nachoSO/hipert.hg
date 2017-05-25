@@ -37,13 +37,13 @@ void [%=dag.name%]_pre_load_tasks(double FREQUENCY){
 	
 	wcet_per_task[[%=i%]]=[%=task.miet%];
 	[%if(dag.mem_type.name="prem"){%]
-	[%=dag.name%]_data[[%=i%]]=hgr_load_PREM_node([%=task.mem_access%],"[%=task.mem_unit%]",[%=dag.mem_type.value%],granularity,wcet_per_task[[%=i%]],FREQUENCY,[%=i%]);
+	[%=dag.name%]_data[[%=i%]]=hgr_load_PREM_node([%=task.mem_access%],"[%=task.mem_unit%]",granularity,wcet_per_task[[%=i%]],FREQUENCY,[%=i%]);
 	[%}else {%]
-	[%=dag.name%]_data[[%=i%]]=hgr_load_SPARSE_node([%=task.mem_access%],"[%=task.mem_unit%]",[%=dag.mem_type.value%],granularity,[%=dag.stride%],wcet_per_task[[%=i%]],FREQUENCY,[%=i%]);
+	[%=dag.name%]_data[[%=i%]]=hgr_load_SPARSE_node([%=task.mem_access%],"[%=task.mem_unit%]",granularity,[%=dag.stride%],wcet_per_task[[%=i%]],FREQUENCY,[%=i%]);
  	[%if(dag.stride==0){%]
- 	pointer_[%=dag.name%][[%=i%]]=random_generator([%=dag.name%]_data[[%=i%]]->data_size/[%=dag.step%],[%=dag.name%]_data[[%=i%]]->data_size/[%=dag.step%]); //rand
+ 	pointer_[%=dag.name%][[%=i%]]=random_generator([%=dag.name%]_data[[%=i%]]->data_size); //rand
  	[%}else {%]
- 	pointer_[%=dag.name%][[%=i%]]=stride_generator([%=dag.stride%],[%=dag.name%]_data[[%=i%]]->data_size/[%=dag.stride%]); //sequential with stride
+ 	pointer_[%=dag.name%][[%=i%]]=stride_generator([%=dag.stride%],[%=dag.name%]_data[[%=i%]]->data_size); //sequential with stride
 	[%}%]
 	[%}%]
 	[%i++;}%]
