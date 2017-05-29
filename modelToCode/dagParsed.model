@@ -24,7 +24,7 @@
     <edge xmi:id="G4_3_4" name="G4_3_4" src="G4_3" trg="G4_4"/>
     <edge xmi:id="G4_5_3" name="G4_5_3" src="G4_5" trg="G4_3"/>
   </dagCollection>
-  <dagCollection xmi:id="G4" name="G4" period="700" priority="60" deadline="700" processor="1" mem_type="sparse" step="8" stride="1">
+  <dagCollection xmi:id="G4" name="G4" period="700" priority="60" deadline="700" processor="1" mem_type="sparse" step="1" stride="32">
     <node xmi:id="G4_1" name="G4_1" miet="94.48" meet="94.48" maet="94.48" comment="1 [miet=&quot;94.48&quot;, meet=&quot;94.48&quot;, maet=&quot;94.48&quot;, mem=&quot;500&quot;, unit=&quot;kb&quot;]" mem_access="500"/>
     <node xmi:id="G4_2" name="G4_2" miet="58.21" meet="58.21" maet="58.21" comment="2 [miet=&quot;58.21&quot;, meet=&quot;58.21&quot;, maet=&quot;58.21&quot;, mem=&quot;500&quot;, unit=&quot;b&quot;]" mem_access="500"/>
     <node xmi:id="G4_3" name="G4_3" miet="14.42" meet="14.42" maet="14.42" comment="3 [miet=&quot;14.42&quot;, meet=&quot;14.42&quot;, maet=&quot;14.42&quot;, mem=&quot;500&quot;, unit=&quot;kb&quot;]" mem_access="500"/>
@@ -48,19 +48,7 @@
     <edge xmi:id="G4_3_4" name="G4_3_4" src="G4_3" trg="G4_4"/>
     <edge xmi:id="G4_5_3" name="G4_5_3" src="G4_5" trg="G4_3"/>
   </dagCollection>
-  <dagCollection xmi:id="G4" name="G4" period="700" priority="60" deadline="700" processor="1" mem_type="sparse" step="8">
-    <node xmi:id="G4_1" name="G4_1" miet="94.48" meet="94.48" maet="94.48" comment="1 [miet=&quot;94.48&quot;, meet=&quot;94.48&quot;, maet=&quot;94.48&quot;, mem=&quot;500&quot;, unit=&quot;kb&quot;]" mem_access="500"/>
-    <node xmi:id="G4_2" name="G4_2" miet="58.21" meet="58.21" maet="58.21" comment="2 [miet=&quot;58.21&quot;, meet=&quot;58.21&quot;, maet=&quot;58.21&quot;, mem=&quot;500&quot;, unit=&quot;b&quot;]" mem_access="500"/>
-    <node xmi:id="G4_3" name="G4_3" miet="14.42" meet="14.42" maet="14.42" comment="3 [miet=&quot;14.42&quot;, meet=&quot;14.42&quot;, maet=&quot;14.42&quot;, mem=&quot;500&quot;, unit=&quot;kb&quot;]" mem_access="500"/>
-    <node xmi:id="G4_4" name="G4_4" miet="35.38" meet="35.38" maet="35.38" comment="4 [miet=&quot;35.38&quot;, meet=&quot;35.38&quot;, maet=&quot;35.38&quot;, mem=&quot;500&quot;, unit=&quot;b&quot;]" mem_access="500"/>
-    <node xmi:id="G4_5" name="G4_5" miet="12.84" meet="12.84" maet="12.84" comment="5 [miet=&quot;12.84&quot;, meet=&quot;12.84&quot;, maet=&quot;12.84&quot;, mem=&quot;500&quot;, unit=&quot;kb&quot;]" mem_access="500"/>
-    <edge xmi:id="G4_1_2" name="G4_1_2" src="G4_1" trg="G4_2"/>
-    <edge xmi:id="G4_1_3" name="G4_1_3" src="G4_1" trg="G4_3"/>
-    <edge xmi:id="G4_2_4" name="G4_2_4" src="G4_2" trg="G4_4"/>
-    <edge xmi:id="G4_3_4" name="G4_3_4" src="G4_3" trg="G4_4"/>
-    <edge xmi:id="G4_5_3" name="G4_5_3" src="G4_5" trg="G4_3"/>
-  </dagCollection>
-  <dagCollection xmi:id="G4" name="G4" period="700" priority="60" deadline="700" processor="1" mem_type="sparse" step="4">
+  <dagCollection xmi:id="G4" name="G4" period="700" priority="60" deadline="700" processor="1" mem_type="sparse" step="8" stride="1">
     <node xmi:id="G4_1" name="G4_1" miet="94.48" meet="94.48" maet="94.48" comment="1 [miet=&quot;94.48&quot;, meet=&quot;94.48&quot;, maet=&quot;94.48&quot;, mem=&quot;500&quot;, unit=&quot;kb&quot;]" mem_access="500"/>
     <node xmi:id="G4_2" name="G4_2" miet="58.21" meet="58.21" maet="58.21" comment="2 [miet=&quot;58.21&quot;, meet=&quot;58.21&quot;, maet=&quot;58.21&quot;, mem=&quot;500&quot;, unit=&quot;b&quot;]" mem_access="500"/>
     <node xmi:id="G4_3" name="G4_3" miet="14.42" meet="14.42" maet="14.42" comment="3 [miet=&quot;14.42&quot;, meet=&quot;14.42&quot;, maet=&quot;14.42&quot;, mem=&quot;500&quot;, unit=&quot;kb&quot;]" mem_access="500"/>

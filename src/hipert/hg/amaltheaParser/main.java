@@ -7,13 +7,22 @@
 
 package hipert.hg.amaltheaParser;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,12 +35,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class Main {
+public class main {
    static int nShared=0; //num of shared labels
    public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException{
 
-	   FileInputStream file = new FileInputStream(new File("./amalthea/ChallengeModel.amxmi"));
-
+	   FileInputStream file = new FileInputStream(new File("ChallengeModel_2017.amxmi"));
        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
        DocumentBuilder builder =  builderFactory.newDocumentBuilder();
        Document xmlDocument = builder.parse(file);
@@ -43,31 +51,32 @@ public class Main {
 	   Core core1=load_core("Scheduler_CORE1?type=os.TaskScheduler",xmlDocument,xPath); //all preempptive | U: 1.3357246246246244
 	   Core core2=load_core("Scheduler_CORE2?type=os.TaskScheduler",xmlDocument,xPath); //preempptive & cooperative | U: 1.0685265349999995
 	   Core core3=load_core("Scheduler_CORE3?type=os.TaskScheduler",xmlDocument,xPath); //all preempptive | U: 1.1793503684210531
-	   
 	   //Core core0=load_manual_core();
 	   //order tasks by priority
 	   Collections.sort(core0.tasks);
 	   Collections.sort(core1.tasks);
 	   Collections.sort(core2.tasks);
 	   Collections.sort(core3.tasks);
-	   
-	   //this function balance the utilization	
-	   increaseWCET(core0,core1,core2,core3);
-	   
-	   //calculate response time of all core tasks
-	   System.out.println("Computing RTA");
-	   core0.RTAcore(); 
-	   core1.RTAcore(); 
-	   core2.RTAcore(); 
-	   core3.RTAcore(); 
+	   System.out.println("Cores already loaded");
 	   
 	   LinkedList<Core> cores=new LinkedList<Core>();
 	   cores.add(core0);
 	   cores.add(core1);
 	   cores.add(core2);
 	   cores.add(core3);
-
-	   //private_and_shared_labels(xmlDocument,xPath);
+	   matrixCommunication(cores,xmlDocument,xPath);
+	   System.out.println("Matrix communication computed");
+	   taskDependencies(cores);
+	   
+	   //this function balance the utilization	
+	   //increaseWCET(core0,core1,core2,core3);
+	   //calculate response time of all core tasks
+	   /* System.out.println("Computing RTA");
+	   core0.RTAcore(); 
+	   core1.RTAcore(); 
+	   core2.RTAcore(); 
+	   core3.RTAcore(); 
+	   
 
 	   //print results
 	   for(int j=0;j<cores.size();j++){
@@ -82,13 +91,179 @@ public class Main {
 			   System.out.println(cores.get(j).tasks.get(i) + ", utilization: "+utilization);
 		   }
 	   }
-	   
 	   computeEffectChain(cores,"EffectChain_1",xmlDocument,xPath);
 	   computeEffectChain(cores,"EffectChain_2",xmlDocument,xPath);
 	   computeEffectChain(cores,"EffectChain_3",xmlDocument,xPath);
+	   */
+	   
+   }
+
+   //this function shows the task dependencies between tasks
+   private static void taskDependencies(LinkedList<Core> cores) {
 
    }
+
+   //This function prints the matrix communication
+   static void matrixCommunication(LinkedList<Core> cores, Document xmlDocument,XPath xPath) throws FileNotFoundException, UnsupportedEncodingException, XPathExpressionException{
+	   PrintWriter  writer_IMPLICIT= new PrintWriter("label_memory_mapping_implicit.txt", "UTF-8");
+	   PrintWriter  writer_LET= new PrintWriter("label_memory_mapping_LET_h.txt", "UTF-8");
+
+	   System.out.println("Creating matrix communication");
+	   for(Core core_src:cores){
+		   for(Task t_src: core_src.tasks){
+			   writer_IMPLICIT.println("Task "+t_src.name+" communicates with...");
+			   writer_LET.println("Task "+t_src.name+" communicates with...");
+			   
+			   int IMPLICIT_footprint=0;
+			   int LET_footprint=0;
+			   int IMPLICIT_TcostCopyInPerTask=0;
+			   int IMPLICIT_TcostCopyOutPerTask=0;
+			   
+			   for(Core core_dst:cores){
+
+				   for(Task t_dst: core_dst.tasks){
+					   
+					   int IMPLICIT_costCopyInPerTask=0;
+					   int IMPLICIT_costCopyOutPerTask=0;
+
+					   int LET_costTransactionPerTask=0;
+					   
+					   if(!t_src.name.equals(t_dst.name)){
+						   for(String label_src: t_src.labels){
+							  for(String label_dest:t_dst.labels){
+								  String src_operation=label_src.substring(label_src.length() - 1);
+								  String dst_operation=label_dest.substring(label_dest.length() - 1);
+								  if(label_src.substring(0,label_src.length()-2).equals(label_dest.substring(0,label_dest.length()-2))
+										  && !src_operation.equals(dst_operation)){
+									  	  
+									  String label_src_allocation=labelAllocation(label_src.substring(0,label_src.length()-2),xmlDocument,xPath);
+									  String label_dst_allocation=labelAllocation(label_dest.substring(0,label_dest.length()-2),xmlDocument,xPath);
+									  String core_source=core_of_task(t_src.name, xmlDocument, xPath).replace("?type=hw.Core","");
+									  String core_dest=core_of_task(t_dst.name, xmlDocument, xPath).replace("?type=hw.Core","");
+									  
+									  //IMPLICIT
+									  int IMPLICIT_costCopyIn=calculateCostCopyIn_IMPLICIT(label_src_allocation,core_source);
+									  int IMPLICIT_costCopyOut=0;
+									  if(src_operation.equals("w")) //cost copy out only for writers
+										  IMPLICIT_costCopyOut=calculateCostCopyOut_IMPLICIT(label_src_allocation,core_source);
+
+									  writer_IMPLICIT.println("\t Task_src: "+t_src.name+"("+core_source+")"+" label: "+label_src+ "("
+									  + label_src_allocation +")" +
+									  " || Task_dst: "+t_dst.name+"("+core_dest+")"+" label: "+label_dest 
+									  + "("+ label_dst_allocation +")" + " || Cost copy in: "+ IMPLICIT_costCopyIn + " - Cost copy out: "+ IMPLICIT_costCopyOut);
+									  IMPLICIT_costCopyInPerTask+=IMPLICIT_costCopyIn;
+									  IMPLICIT_costCopyOutPerTask+=IMPLICIT_costCopyOut;
+									  IMPLICIT_footprint+=size_of_label(label_src.substring(0,label_src.length()-2),xmlDocument,xPath);
+									  
+									  //LET
+									  int LET_costTransaction=0;
+									  if(src_operation.equals("w")) //cost Transaction out only for writers
+										  LET_costTransaction=calculateCostTransaction_LET(label_src_allocation,core_dest);
+
+									  writer_LET.println("\t Task_src: "+t_src.name+"("+core_source+")"+" label: "+label_src+ "("
+									  + label_src_allocation +")" +
+									  " || Task_dst: "+t_dst.name+"("+core_dest+")"+" label: "+label_dest 
+									  + "("+ label_dst_allocation +")" + " || Cost transaction: "+ LET_costTransaction);
+									  LET_costTransactionPerTask+=LET_costTransaction;
+									  if(src_operation.equals("r")){
+										  int footprint=size_of_label(label_src.substring(0,label_src.length()-2),xmlDocument,xPath);							  
+										  if(typeOfCommunication(t_src.name,t_dst.name).equals("nh")){ //non-harmonic tasks use the double of footprint
+											  if(t_src.name.equals("Task_20ms"))
+												  footprint=footprint*3;
+											  else if(t_src.name.equals("Task_50ms"))
+												  footprint=footprint*2;
+										  }else if(typeOfCommunication(t_src.name,t_dst.name).equals("a")){
+											  footprint=footprint*3;
+										  }
+										  LET_footprint+=footprint;
+									  }
+								  }
+							  }
+						   }
+					   }
+					   IMPLICIT_TcostCopyInPerTask+=IMPLICIT_costCopyInPerTask;
+					   IMPLICIT_TcostCopyOutPerTask+=IMPLICIT_costCopyOutPerTask;
+					   if(IMPLICIT_costCopyInPerTask!=0)
+						   writer_IMPLICIT.println("\t \t Cost copy in "+t_src.name+" to "+t_dst.name+" is: "+IMPLICIT_costCopyInPerTask+ " cycles");
+					   if(IMPLICIT_costCopyOutPerTask!=0)
+						   writer_IMPLICIT.println("\t \t Cost copy out "+t_src.name+" to "+t_dst.name+" is: "+IMPLICIT_costCopyOutPerTask+ " cycles");
+					   if(LET_costTransactionPerTask!=0)
+						   writer_LET.println("\t \t Total cost transaction "+t_src.name+" to "+t_dst.name+ " is: "+LET_costTransactionPerTask+ " cycles");
+				   }
+				   
+			   }
+			   writer_IMPLICIT.println("******** Cost copy in task: "+t_src.name+" is: "+IMPLICIT_TcostCopyInPerTask+ " cycles");
+			   writer_IMPLICIT.println("******** Cost copy out task: "+t_src.name+" is: "+IMPLICIT_TcostCopyOutPerTask+ " cycles");
+			   writer_IMPLICIT.println("******** Total footprint used for shared_labels task: "+t_src.name+" is: "+IMPLICIT_footprint+ " bits");
+			   
+			   writer_LET.println("******** Total footprint used for shared_labels task: "+t_src.name+" is: "+LET_footprint+ " bits");
+
+		   }
+	   }
+	   writer_IMPLICIT.close();
+	   writer_LET.close();
+
+   }
+
+	   private static String typeOfCommunication(String t_src, String t_dst) {
+		   String communicationType="h";
+		   if(t_src.contains("ISR") || t_dst.contains("ISR") || t_src.contains("Angle") || t_dst.contains("Angle")){
+			   communicationType="a";
+		   }else{
+			   if(t_src.contains("Task_") && t_dst.contains("Task_")){
+				   int t1=Integer.parseInt(t_src.replace("Task_","").replace("ms",""));
+				   int t2=Integer.parseInt(t_dst.replace("Task_","").replace("ms",""));
+				   if(t1>t2){
+					   int mod=t1%t2;
+					   if(mod!=0)
+						   communicationType="nh";
+				   }else{
+					   int mod=t2%t1;
+					   if(mod!=0)
+						   communicationType="nh";
+				   }
+		   	   }else{
+		   		   communicationType="nh";
+		   	   }
+		   }
+		   return communicationType;
+	   }
+
+//here we pay in function of where source core and LRAM dest location
+   private static int calculateCostTransaction_LET(String label_src_allocation,String core_source) {
+	   int cost=9;
+	   if(label_src_allocation.substring(label_src_allocation.length() - 1).equals(core_source.substring(core_source.length() - 1)))
+		   cost=1;
+	   
+	   return cost;
+   }
    
+   private static int calculateCostCopyIn_IMPLICIT(String label_src_allocation, String core_source) {
+	   int cost=9;
+	   if(label_src_allocation.substring(label_src_allocation.length() - 1).equals(core_source.substring(core_source.length() - 1)))
+		   cost=1;
+	   
+	   return cost;
+   }
+   
+   private static int calculateCostCopyOut_IMPLICIT(String label_src_allocation, String core_source) {
+	   int cost=9;
+	   if(label_src_allocation.substring(label_src_allocation.length() - 1).equals(core_source.substring(core_source.length() - 1)))
+		   cost=1;
+	   
+	   return cost;
+   }
+
+   //This function returns in which RAM is allocated the label
+   private static String labelAllocation(String label, Document xmlDocument,XPath xPath) throws XPathExpressionException{
+	   label=label+"?type=sw.Label";
+       String expression = "*/mappingModel/mapping[@abstractElement='" + label + "']/@mem";
+       NodeList labelNodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+       String labelAllocation=labelNodeList.item(0).getFirstChild().getNodeValue().replace("?type=hw.Memory", "");
+       return labelAllocation;
+   }
+   
+
    //This function decreases the utilization of all cores
    public static void increaseWCET(Core core0,Core core1, Core core2, Core core3){
 	   for(int i=0;i<core0.tasks.getLast().runnables.size();i++){ //core 0 last task
@@ -96,6 +271,7 @@ public class Main {
 		   double pR=(wcetR*50)/100;
 		   core0.tasks.getLast().runnables.get(i).executionTime=wcetR-pR;
 	   }
+	   
 	   core0.tasks.getLast().executionTime=core0.tasks.getLast().processInstructions();
 	   
 	   for(int i=0;i<core1.tasks.getLast().runnables.size();i++){ //core 1 last task
@@ -247,6 +423,8 @@ public class Main {
 	   Core core=new Core(coreName.replace("?type=os.TaskScheduler", ""));	   
 	   String expression = "*/mappingModel/processAllocation[@scheduler='" + coreName + "']/@process";
 	   NodeList allTasks = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+	   boolean readDependency=false;
+	   boolean writeDependency=false;
 	   
 	   for (int i = 0; i < allTasks.getLength(); i++) { //get all tasks
 		   String taskName=allTasks.item(i).getFirstChild().getNodeValue().replace("?type=sw.Task", "");
@@ -268,6 +446,31 @@ public class Main {
 		   }
 		   core.addTask(t);
 	   }
+	  
+	   //assign label to tasks
+	   for(Task t: core.tasks){
+		   for(Runnable r: t.runnables){
+			   
+			   String expression_label_name="*/swModel/runnables[@name= '" + r.name + "']/runnableItems/@data";
+			   NodeList allLabels = (NodeList) xPath.compile(expression_label_name).evaluate(xmlDocument, XPathConstants.NODESET); 
+			   
+			   for (int j = 0; j < allLabels.getLength(); j++) {
+				   String label=allLabels.item(j).getFirstChild().getNodeValue();
+				   String expression_access="*/swModel/runnables[@name= '" + r.name + "']/runnableItems[@data= '" + label + "']/@access";
+				   NodeList label_access = (NodeList) xPath.compile(expression_access).evaluate(xmlDocument, XPathConstants.NODESET); 
+				   String access=label_access.item(0).getFirstChild().getNodeValue();
+
+				   if(access.equals("read")){
+					   t.addLabel(label.replace("?type=sw.Label", "")+"_r");
+				   }
+				   else{
+					   t.addLabel(label.replace("?type=sw.Label", "")+"_w");   
+				   }
+			   }
+		   }
+		   
+	   }
+
 	   return core;
    }
 
@@ -326,14 +529,14 @@ public class Main {
 	   return periodTime;
    }
    
-   //This function prints all private&shared labelss between cores
+   //This function prints all private&shared labels between cores
    public static void private_and_shared_labels(Document xmlDocument,XPath xPath) throws XPathExpressionException, FileNotFoundException, UnsupportedEncodingException{
 	   System.out.println("Checking labels...");
-	   int nLabels=10000;
 	   Core c0=new Core("CORE0"),c1=new Core("CORE1"),c2=new Core("CORE2"),c3=new Core("CORE3");
 	   LinkedList<Core> cores=new LinkedList<Core>();
 	   cores.add(c0);cores.add(c1);cores.add(c2);cores.add(c3);
- 
+	   
+	   int nLabels=10000;
 	   for(int z=0;z<nLabels;z++){
 		   LinkedList<String> coreLabel=new LinkedList<String>();
 		   String labelName="Label_"+z;
@@ -349,7 +552,7 @@ public class Main {
 	        	   coreLabel.add(core_of_task(taskName, xmlDocument, xPath).replace("?type=hw.Core", ""));
 	           }
 	       }
-	       
+
 	       //verify if the label is shared or private (TO DO: CLEAN CODE)
     	   int labelSize=size_of_label(labelName, xmlDocument, xPath);
            if(coreLabel.size()>1){ //more than one element could be shared or just private on different tasks
@@ -366,6 +569,7 @@ public class Main {
 		        		   if(cores.get(i).name.equals(coreLabel.get(k))){
 		        			   cores.get(i).nSharedLabels++;
 		        			   cores.get(i).sizeSharedLabels+=labelSize;
+		        			   cores.get(i).labels.add(labelName);
 		        		   }
 	        		   }
 	        	   }
@@ -374,20 +578,32 @@ public class Main {
 	        		   if(cores.get(p).name.equals(coreLabel.get(0))){
 	        			   cores.get(p).nPrivateLabels++;
 	        			   cores.get(p).sizePrivateLabels+=labelSize;
+	        			   cores.get(p).labels.add(labelName);
 	        		   }
 	        	   }
 	           }
-           }else if(coreLabel.size()==1){ //only one elemento, therefore is private
+           }else if(coreLabel.size()==1){ //only one element, therefore is private
         	   for(int p=0;p<cores.size();p++){
         		   if(cores.get(p).name.equals(coreLabel.get(0))){
         			   cores.get(p).nPrivateLabels++;
-        			   cores.get(p).sizePrivateLabels+=labelSize;   
+        			   cores.get(p).sizePrivateLabels+=labelSize;  
+        			   cores.get(p).labels.add(labelName);
         		   }
         	   }
            }
 	   }
 	   System.out.println("Total shared labels= "+nShared);
+	   PrintWriter writer = new PrintWriter("label_memory_mapping", "UTF-8");
+
 	   for(int i=0;i<cores.size();i++){
+		   for(Core c: cores){
+			   writer.println("CORE"+c.name);
+			   for(String label:c.labels){
+				   writer.println("\t"+label);
+			   }
+		   }
+		   
+		   writer.close();
 		   System.out.println("**************************");
 		   System.out.println("Num. private labels "+cores.get(i).name+": "+cores.get(i).nPrivateLabels+", size of private labels (in bits): "+cores.get(i).sizePrivateLabels);
 		   System.out.println("Num. shared labels "+cores.get(i).name+": "+cores.get(i).nSharedLabels+", size of shared labels (in bits): "+cores.get(i).sizeSharedLabels);
@@ -428,6 +644,64 @@ public class Main {
 	   return result;
    }
    
+   
+ //This function extracts the label-mapping
+   public static void extractLabelMapping(Document xmlDocument,XPath xPath) throws XPathExpressionException, FileNotFoundException, UnsupportedEncodingException{
+	   LinkedList<String> GRAM=new LinkedList<String>();
+	   LinkedList<String> LRAM0=new LinkedList<String>();
+	   LinkedList<String> LRAM1=new LinkedList<String>();
+	   LinkedList<String> LRAM2=new LinkedList<String>();
+	   LinkedList<String> LRAM3=new LinkedList<String>();
+	   for(int i=0;i<10000;i++){
+		   String labelName="Label_"+i+"?type=sw.Label";
+		   String expression = "*/mappingModel/mapping[@abstractElement='" + labelName + "']/@mem";
+		   NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+		   String result=nodeList.item(0).getFirstChild().getNodeValue().replace("?type=hw.Memory", "");  
+		   labelName=labelName.replace("?type=sw.Label", "");
+		   if(result.equals("GRAM")){
+			   GRAM.add(labelName);
+		   }else if(result.equals("LRAM0")){
+			   LRAM0.add(labelName);
+		   }else if(result.equals("LRAM1")){
+			   LRAM1.add(labelName);
+		   }else if(result.equals("LRAM2")){
+			   LRAM2.add(labelName);
+		   }else if(result.equals("LRAM3")){
+			   LRAM3.add(labelName); 
+		   }
+
+		   //System.out.println(result.replace("?type=hw.Memory", "")+ " a " +labelName.replace("?type=sw.Label", ""));
+		   //labels.add(new Label(i,Integer.parseInt(labelAllocation)));
+	   }	
+	   try{
+		   PrintWriter writer = new PrintWriter("label_memory_mapping", "UTF-8");
+		   
+		   writer.println("GRAM Labels: ");
+		   for(String labelName: GRAM){
+			   writer.println("\t"+labelName+" "+Integer.toString(size_of_label(labelName, xmlDocument, xPath)));
+		   }
+		   writer.println("LRAM0 labels: ");
+		   for(String labelName: LRAM0){
+			   writer.println("\t"+labelName+" "+Integer.toString(size_of_label(labelName, xmlDocument, xPath)));
+		   }	   
+		   writer.println("LRAM1 labels: ");
+		   for(String labelName: LRAM1){
+			   writer.println("\t"+labelName+" "+Integer.toString(size_of_label(labelName, xmlDocument, xPath)));
+		   }	   
+		   writer.println("LRAM2 labels: ");
+		   for(String labelName: LRAM2){
+			   writer.println("\t"+labelName+" "+Integer.toString(size_of_label(labelName, xmlDocument, xPath)));
+		   }	   
+		   writer.println("LRAM3 labels: ");
+		   for(String labelName: LRAM3){
+			   writer.println("\t"+labelName+" "+Integer.toString(size_of_label(labelName, xmlDocument, xPath)));
+		   }
+		   writer.close();
+	   } catch (IOException e) {
+			   // do something
+	   }
+   }
+
 }
 
 

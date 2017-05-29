@@ -13,6 +13,11 @@ public class Task implements Comparable<Task> {
 	LinkedList<Runnable> runnables=new LinkedList<Runnable>();
 	double responseTime=0;
 	double executionTime=0; 
+	LinkedList<String> labels = new LinkedList<String>();
+	
+	public void addLabel(String label){
+		labels.add(label);
+	}
 	
 	public void addRunnable(Runnable r){
 		runnables.add(r);
