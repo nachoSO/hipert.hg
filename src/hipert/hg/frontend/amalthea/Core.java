@@ -9,6 +9,7 @@ public class Core {
 	int nSharedLabels;
 	int sizePrivateLabels;
 	int sizeSharedLabels;
+	LinkedList<String> labels=new LinkedList<String>();
 	
 	public Core(String name){
 		this.name=name;
@@ -227,3 +228,4 @@ public class Core {
 	}
 
 }
+

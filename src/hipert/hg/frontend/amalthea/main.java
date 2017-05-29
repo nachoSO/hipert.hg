@@ -5,7 +5,7 @@
  * @version 1.0 25/05/16
  */
 
-package hipert.hg.amaltheaParser;
+package hipert.hg.frontend.amalthea;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -408,7 +408,7 @@ public class main {
 	   Task T2=new Task("Task 2",550.0,8,"preemptive");
 	   T2.addRunnable(r0T2);T2.addRunnable(r1T2);T2.addRunnable(r2T2);
 	   core.addTask(T2);
-	   
+
 	   return core;
    }
    
@@ -703,5 +703,4 @@ public class main {
    }
 
 }
-
 

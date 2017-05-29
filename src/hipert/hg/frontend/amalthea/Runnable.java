@@ -10,7 +10,7 @@ public class Runnable {
 	public Runnable(String name,int nInstructions){
 		this.name=name;
 		this.nInstructions=nInstructions;
-		this.executionTime=(this.nInstructions/300000000.0)*(1000000.0); // (n/f)*usec;
+		this.executionTime=(this.nInstructions/200000000.0)*(1000000.0); // (n/f)*usec;
 		this.responseTime=0;
 	}
 	
