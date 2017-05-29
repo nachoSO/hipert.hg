@@ -8,7 +8,7 @@
  * Contributors:
  *     Dimitrios Kolovos - initial API and implementation
  ******************************************************************************/
-package hipert.hg.modelToCode;
+package hipert.hg.backend.ptask;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -22,7 +22,9 @@ import org.eclipse.epsilon.eol.IEolModule;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 
-public class DagToCode {
+import hipert.hg.backend.IBackend;
+
+public class DagToCode implements IBackend {
 	
 	protected IEolModule module;
 	
@@ -32,22 +34,6 @@ public class DagToCode {
 	public DagToCode() {
 	}
 
-	public void GenerateCode(ArrayList<String> fileNames) {
-		try {
-			EglTemplateFactoryModuleAdapter module = new EglTemplateFactoryModuleAdapter(new EglFileGeneratingTemplateFactory()); 
-			module.parse(new File("modelToCode/driver.egl"));
-
-			
-			module.getContext().getModelRepository().addModel(
-					createEmfModel("Model", "./modelToCode/dagParsed.model", "./metamodel/graphMetamodel.ecore", true, true));
-			result = module.execute();
-			module.getContext().getModelRepository().dispose();
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	protected EmfModel createEmfModel(String name, String model, 
 			String metamodel, boolean readOnLoad, boolean storeOnDisposal) 
@@ -62,6 +48,32 @@ public class DagToCode {
 				storeOnDisposal + "");
 		emfModel.load(properties, (IRelativePathResolver) null);
 		return emfModel;
+	}
+	
+	/* Inherited by IBackend */
+	
+	@Override
+	public void GenerateCode(String modelFileName) {
+		try {
+			EglTemplateFactoryModuleAdapter module = new EglTemplateFactoryModuleAdapter(new EglFileGeneratingTemplateFactory()); 
+			module.parse(new File("modelToCode/driver.egl"));
+
+			
+			module.getContext().getModelRepository().addModel(
+					createEmfModel("Model", modelFileName, "./metamodel/graphMetamodel.ecore", true, true));
+			result = module.execute();
+			module.getContext().getModelRepository().dispose();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void Post(ArrayList<String> fileNames) {
+		// Nothing...
+		
 	}
 
 }

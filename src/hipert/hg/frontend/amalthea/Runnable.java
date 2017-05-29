@@ -1,19 +1,16 @@
-package hipert.hg.amaltheaParser;
-
-import java.util.LinkedList;
+package hipert.hg.frontend.amalthea;
 
 public class Runnable {
 	String name;
 	int nInstructions;
 	double executionTime;
 	double responseTime; //reaction
-	LinkedList<Integer> readLabels=new LinkedList<Integer>();
+
 	
-	//CAMBIAR CORE FREQUENCY
 	public Runnable(String name,int nInstructions){
 		this.name=name;
 		this.nInstructions=nInstructions;
-		this.executionTime=(this.nInstructions/200000000.0)*(1000000.0); // (n/f)*usec;
+		this.executionTime=(this.nInstructions/300000000.0)*(1000000.0); // (n/f)*usec;
 		this.responseTime=0;
 	}
 	
@@ -22,4 +19,3 @@ public class Runnable {
 	}
 	
 }
-

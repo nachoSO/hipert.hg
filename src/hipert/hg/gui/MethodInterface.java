@@ -17,8 +17,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 
-import hipert.hg.XMLParser.XMLGenerator;
-import hipert.hg.modelToCode.DagToCode;
+import hipert.hg.backend.ptask.DagToCode;
+import hipert.hg.frontend.rtdot.XMLGenerator;
 
 public class MethodInterface extends JDialog {
 	
