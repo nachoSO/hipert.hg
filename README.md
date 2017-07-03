@@ -1,7 +1,7 @@
 # Work in progress 
 
 
-<table style="width:100%" border="no">
+<table style="width:100%" border="0">
   <tr>
     <th>
       <p align="center">
@@ -20,3 +20,5 @@
     </th>
      </tr>
     </table>
+
+
