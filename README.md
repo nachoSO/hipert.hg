@@ -5,12 +5,12 @@ HGT
   <tr>
     <th>
       <p align="center">
-           <img src="./imgs/LogoHGT.png" width="70%" height="70%">
+           <img src="./imgs/LogoHGT.png" width="50%" height="50%">
       </p>
     </th>
       <th>
       <p align="center">
-           <img src="./imgs/hipert-logo-avatar.jpg" width="70%" height="70%">
+           <img src="./imgs/hipert-logo-avatar.jpg" width="50%" height="50%">
       </p>
      </tr>
     </table>
