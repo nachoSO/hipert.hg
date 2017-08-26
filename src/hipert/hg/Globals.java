@@ -9,13 +9,19 @@ package hipert.hg;
  */
 public class Globals {
 	
+	/* Useful */
 	public static String Separator = "!";
 	
-	/* Location of the HGR backend */
-	public static String GenFilesDir = "./gen";
+	public static String GenFilesDir = "./gen"; // FIXME
+	
 	/* Filename of the TDG table */
 	public static String PsocTableFileName  = "psocrates_tdg.c";
-	public static String defaultOutputDir   = "C:/Users/LPC/Dropbox/CodeGen/hipert.hg.v2/runtime/src/";
-	public static String defaultRuntimeDir  = "C:/Users/LPC/Dropbox/CodeGen/hipert.hg.v2/runtime/src/";
-	public static String defaultGraphvizDir = "C:/Users/LPC/Dropbox/CodeGen/hipert.hg.v2/runtime/lib/graphviz/";
+	public static String HGTDir = Config.DefaultHGTDir;
+	public static String OutputDir = Config.DefaultHGTDir + Config.DefaultOutputDir;
+	public static String RuntimeDir  = Config.DefaultHGTDir + Config.DefaultRuntimeSrcDir;
+	public static String GraphvizDir = Config.DefaultHGTDir + Config.DefaultGraphvizDir;
+
+
+	/* General */
+	public static String ProgramVersion = "0.2";
 }

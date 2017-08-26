@@ -15,3 +15,5 @@ Require-Bundle: org.eclipse.epsilon.eol.engine,
  org.eclipse.epsilon.ewl.engine,
  org.eclipse.uml2.uml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: .,
+ swing2swt.jar

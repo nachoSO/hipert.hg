@@ -65,9 +65,9 @@ public class hgGUI extends javax.swing.JFrame {
         bOutput.setEnabled(false);
 
         
-    	txtOutput.setText(Globals.defaultOutputDir); 
-    	txtRuntime.setText(Globals.defaultRuntimeDir);
-    	txtGraphviz.setText(Globals.defaultGraphvizDir); 
+    	txtOutput.setText(Globals.OutputDir); 
+    	txtRuntime.setText(Globals.RuntimeDir);
+    	txtGraphviz.setText(Globals.GraphvizDir); 
     	
 		ActionListener enablerListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {

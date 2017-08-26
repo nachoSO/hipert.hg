@@ -29,6 +29,7 @@ public class SwtPropertyPage extends Shell {
 	private Text outputFolderText;
 	private Text runtimePathText;
 	private Text grapvizText;
+	
 	public static void Show(SwtGui mainShell) {
 		try {
 			Display display = Display.getDefault();
@@ -110,7 +111,7 @@ public class SwtPropertyPage extends Shell {
 		
 		Label graphvizLabel = new Label(graphvizComposite, SWT.NONE);
 		graphvizLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		graphvizLabel.setText("Graphviz");
+		graphvizLabel.setText("Graphviz path");
 		
 		grapvizText = new Text(graphvizComposite, SWT.BORDER);
 		grapvizText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -159,43 +160,36 @@ public class SwtPropertyPage extends Shell {
 		btnClose.setLayoutData(fd_btnClose);
 		btnClose.setText("Close");
 		createContents();
-		updateText();
+		
+		this.outputFolderText.setText(Globals.OutputDir);
+		this.runtimePathText.setText(Globals.RuntimeDir);
+		this.grapvizText.setText(Globals.GraphvizDir);		
 	}
-	
-	protected void updateText()
+		
+	protected void selectPath(Text text)
 	{
-		this.outputFolderText.setText(Globals.defaultOutputDir);
-		this.runtimePathText.setText(Globals.defaultRuntimeDir);
-		this.grapvizText.setText(Globals.defaultGraphvizDir);		
-	}
-	
-	protected String selectPath(String var)
-	{
-		String folder = System.getProperty("user.dir"); // Current
 		DirectoryDialog dialog = new DirectoryDialog(shell);
 		String result = dialog.open();
 		if(result != null)
-			var = result;
-		return var;
+			text.setText(result);
 	}
 
 	protected void selectOutputFolder() {
-		selectPath(Globals.defaultOutputDir);
-		updateText();
+		selectPath(this.outputFolderText);
 	}
 
 	protected void selectRuntimePath() {
-		selectPath(Globals.defaultRuntimeDir);
-		updateText();
+		selectPath(this.runtimePathText);
 	}
 
 	protected void selectGraphvizPath() {
-		selectPath(Globals.defaultGraphvizDir);
-		updateText();
+		selectPath(this.grapvizText);
 	}
 
 	protected void savePreferences() {
-		
+		Globals.OutputDir = this.outputFolderText.getText();
+		Globals.RuntimeDir = this.runtimePathText.getText();
+		Globals.GraphvizDir = this.grapvizText.getText();		
 	}
 
 	/**
