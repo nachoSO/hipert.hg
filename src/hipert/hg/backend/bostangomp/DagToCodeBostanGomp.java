@@ -26,5 +26,10 @@ public class DagToCodeBostanGomp extends DagToCode {
 			throw ule;
 		}
 	}
+	
+	@Override
+	public String getFriendlyName() {
+		return "Bostan Gomp";
+	}
 
 }

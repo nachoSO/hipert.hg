@@ -76,4 +76,11 @@ public class DagToCode implements IBackend {
 		
 	}
 
+
+	@Override
+	public String getFriendlyName() {
+		return "PTask/PThreads";
+		
+	}
+
 }

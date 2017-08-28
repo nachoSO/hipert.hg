@@ -1,60 +1,87 @@
 package hipert.hg.gui;
 
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Label;
-
-import java.awt.Color;
-import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import swing2swt.layout.BorderLayout;
-import org.eclipse.swt.widgets.Text;
-
-import hipert.hg.Globals;
-
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.wb.swt.SWTResourceManager;
-import org.omg.CORBA.Environment;
-import org.eclipse.swt.graphics.Device;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.TouchListener;
-import org.eclipse.swt.events.TouchEvent;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
+
+import hipert.hg.Globals;
+import hipert.hg.backend.IBackend;
+import hipert.hg.backend.bostangomp.DagToCodeBostanGomp;
+import hipert.hg.backend.ptask.DagToCode;
+import hipert.hg.core.RTDag;
+import hipert.hg.core.Tools;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.ModifyEvent;
 
 public class SwtGui {
+	private static class ContentProvider implements IStructuredContentProvider {
+		public Object[] getElements(Object inputElement) {
+			return new Object[0];
+		}
+		public void dispose() {
+		}
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		}
+	}
 
 	protected Shell shell;
 	private Text statusText;
 
 	static SwtGui window = null;
+
+	Group grpOutput = null;
+	TableViewer tableViewer = null;
+	Button btnGenerate = null;
+	Combo backendsCombo = null;
+	Group grpPattern = null;
+	Button btnPrem = null;
+	Button btnSparse = null;
+	
+	List<IBackend> backends = new ArrayList<IBackend>();
+	
 	/**
 	 * Launch the application.
 	 * @param args
@@ -68,7 +95,14 @@ public class SwtGui {
 		}
 	}
 	
-	
+	public SwtGui()
+	{
+		// Load frontends
+		// Load backends
+		this.backends.add(new DagToCode());
+		this.backends.add(new DagToCodeBostanGomp());
+		
+	}
 
 	/**
 	 * Open the window.
@@ -85,8 +119,6 @@ public class SwtGui {
 			}
 		}
 	}
-	Group grpOutput = null;
-	private Table table;
 	
 	/**
 	 * Create contents of the window.
@@ -100,8 +132,8 @@ public class SwtGui {
 			}
 		});
 		shell.setMinimumSize(new Point(800, 400));
-		shell.setImage(SWTResourceManager.getImage(SwtGui.class, "/hipert/hg/res/LogoHGT32x32.png"));
-		shell.setSize(814, 469);
+		shell.setImage(SWTResourceManager.getImage(SwtGui.class, "/hipert/hg/res/LogoHGT_Icon.png"));
+		shell.setSize(1084, 588);
 		shell.setText("HiPeRT Generator Tool v" + Globals.ProgramVersion);
 		shell.setLayout(new GridLayout(1, false));
 		
@@ -119,6 +151,17 @@ public class SwtGui {
 		
 		new MenuItem(menu_1, SWT.SEPARATOR);
 		
+		MenuItem mntmGenerate = new MenuItem(menu_1, SWT.NONE);
+		mntmGenerate.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				WarnNotImplemented("Random RT-task generation");
+			}
+		});
+		mntmGenerate.setText("Generate random");
+		
+		new MenuItem(menu_1, SWT.SEPARATOR);
+		
 		MenuItem mntmExit = new MenuItem(menu_1, SWT.NONE);
 		mntmExit.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -129,11 +172,11 @@ public class SwtGui {
 		});
 		mntmExit.setText("Exit");	
 		
-		MenuItem mntmTools = new MenuItem(menu, SWT.CASCADE);
-		mntmTools.setText("Tools");
+		MenuItem mntmEdit = new MenuItem(menu, SWT.CASCADE);
+		mntmEdit.setText("Edit");
 		
-		Menu menu_3 = new Menu(mntmTools);
-		mntmTools.setMenu(menu_3);
+		Menu menu_3 = new Menu(mntmEdit);
+		mntmEdit.setMenu(menu_3);
 		
 		MenuItem mntmPreferences = new MenuItem(menu_3, SWT.NONE);
 		mntmPreferences.addSelectionListener(new SelectionAdapter() {
@@ -160,25 +203,25 @@ public class SwtGui {
 		mntmAboutHgt.setText("About HGT");
 		
 		Composite composite = new Composite(shell, SWT.NONE);
-		composite.setLayout(new GridLayout(1, false));
-		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1);
-		gd_composite.heightHint = 269;
+		composite.setLayout(new GridLayout(2, false));
+		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_composite.heightHint = 363;
 		composite.setLayoutData(gd_composite);
 		
-		Composite btnComposite = new Composite(composite, SWT.NONE);
-		btnComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
+		Composite topLeftCompositeComposite = new Composite(composite, SWT.NONE);
+		topLeftCompositeComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		
-		Button btnAddDag = new Button(btnComposite, SWT.NONE);
+		Button btnAddDag = new Button(topLeftCompositeComposite, SWT.NONE);
 		btnAddDag.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				showFileExplorer();				
+				addDags();				
 			}
 		});
 		btnAddDag.setText("Add DAG");
 		btnAddDag.setImage(SWTResourceManager.getImage(SwtGui.class, "/hipert/hg/res/icon_plus.png"));
 		
-		Button btnClearList = new Button(btnComposite, SWT.NONE);
+		Button btnClearList = new Button(topLeftCompositeComposite, SWT.NONE);
 		btnClearList.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -188,41 +231,271 @@ public class SwtGui {
 		btnClearList.setText("Clear");
 		btnClearList.setImage(SWTResourceManager.getImage(SwtGui.class, "/hipert/hg/res/icon_del.png"));
 		
-		Button btnTest = new Button(btnComposite, SWT.NONE);
-		btnTest.addSelectionListener(new SelectionAdapter() {
+		Composite topRightComposite = new Composite(composite, SWT.NONE);
+		topRightComposite.setLayout(new GridLayout(2, false));
+		topRightComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
+		
+		Label lblSelectBackend = new Label(topRightComposite, SWT.NONE);
+		lblSelectBackend.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblSelectBackend.setText("Available backends");
+		
+		ComboViewer comboViewer = new ComboViewer(topRightComposite, SWT.READ_ONLY);
+		backendsCombo = comboViewer.getCombo();
+		backendsCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				onBtnTestClicked("CIAO");
+				enableGUIComponents();
+				if(backendsCombo.getSelectionIndex() == 1) // Bostan
+				{
+					WarnNotImplemented("Bostan backend");
+				}
+				enableGUIComponents();
 			}
 		});
-		btnTest.setText("TEST");
 		
-		table = new Table(composite, SWT.FULL_SELECTION | SWT.MULTI);
-		table.setEnabled(false);
-		table.setLinesVisible(true);
-		GridData gd_table = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
-		gd_table.widthHint = 388;
-		table.setLayoutData(gd_table);
-		table.setBounds(0, 0, 89, 51);
-		table.setHeaderVisible(true);
-//		Device device = Display.getCurrent ();
-//		table.setBackground(new org.eclipse.swt.graphics.Color(device, 255, 255, 255));
+		String []backendsFriendlyName = new String[this.backends.size()];
+		int i = 0;
+		for (Iterator iterator = backends.iterator(); iterator.hasNext();) {
+			IBackend iBackend = (IBackend) iterator.next();
+			backendsFriendlyName[i++] = iBackend.getFriendlyName();
+		}
+		backendsCombo.setItems(backendsFriendlyName);
+		backendsCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		backendsCombo.select(0);
 		
-		TableColumn tblclmnFile = new TableColumn(table, SWT.NONE);
-		tblclmnFile.setWidth(265);
-		tblclmnFile.setText("DAG file");
+		Composite centerLeftComposite = new Composite(composite, SWT.NONE);
+		centerLeftComposite.setLayout(new GridLayout(1, false));
+		GridData gd_centerLeftComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_centerLeftComposite.heightHint = 271;
+		centerLeftComposite.setLayoutData(gd_centerLeftComposite);
 		
-		TableColumn tblclmnType = new TableColumn(table, SWT.NONE);
-		tblclmnType.setWidth(57);
+		tableViewer = new TableViewer(centerLeftComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		dagsTableViewer = tableViewer.getTable();
+		GridData gd_dagsTableViewer = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_dagsTableViewer.heightHint = 353;
+		dagsTableViewer.setLayoutData(gd_dagsTableViewer);
+		dagsTableViewer.setTouchEnabled(true);
+		dagsTableViewer.setLinesVisible(true);
+		dagsTableViewer.setHeaderVisible(true);
+		
+		TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+			public Image getImage(Object element) {
+				return null;
+			}
+			public String getText(Object element) {
+				RTDag dag = (RTDag) element;
+				return dag.getFileName();
+			}
+		});
+		TableColumn tblclmnDagFile = tableViewerColumn.getColumn();
+		tblclmnDagFile.setWidth(100);
+		tblclmnDagFile.setText("DAG file");
+		
+		TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(tableViewer, SWT.NONE);
+		tableViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
+			public Image getImage(Object element) {
+				return null;
+			}
+			public String getText(Object element) {
+				RTDag dag = (RTDag) element;
+				return dag.getType();
+			}
+		});
+		TableColumn tblclmnType = tableViewerColumn_1.getColumn();
+		tblclmnType.setWidth(100);
 		tblclmnType.setText("Type");
 		
-		TableColumn tblclmnEdit = new TableColumn(table, SWT.NONE);
-		tblclmnEdit.setWidth(85);
-		tblclmnEdit.setText("Actions");
+		TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(tableViewer, SWT.NONE);
+		tableViewerColumn_2.setLabelProvider(new ColumnLabelProvider() {
+			public Image getImage(Object element) {
+				return null;
+			}
+			public String getText(Object element) {
+				RTDag dag = (RTDag) element;
+				return dag.getFileFolder();
+			}
+		});
+		TableColumn tblclmnPath = tableViewerColumn_2.getColumn();
+		tblclmnPath.setWidth(217);
+		tblclmnPath.setText("Path");
+		
+		TableViewerColumn tableViewerColumnView = new TableViewerColumn(tableViewer, SWT.NONE);
+		tableViewerColumnView.setEditingSupport(new EditingSupport(tableViewer) {
+			protected boolean canEdit(Object element) {
+				RTDag dag = (RTDag) element;
+				showDagImage(dag);
+				
+				return false;
+			}
+
+			protected CellEditor getCellEditor(Object element) {
+			    return new TextCellEditor(tableViewer.getTable());
+			}
+			protected Object getValue(Object element) {
+				return "";
+			}
+			protected void setValue(Object element, Object value) {
+			}
+		});
+		tableViewerColumnView.setLabelProvider(new ColumnLabelProvider() {
+			public Image getImage(Object element) {
+				return SWTResourceManager.getImage(SwtGui.class, "/hipert/hg/res/icon_eye.png");
+			}
+			public String getText(Object element) {
+				return "";
+			}
+		});
+		TableColumn tableColumnView = tableViewerColumnView.getColumn();
+		tableColumnView.setWidth(37);
+		
+		TableViewerColumn tableViewerColumnDelete = new TableViewerColumn(tableViewer, SWT.NONE);
+		tableViewerColumnDelete.setEditingSupport(new EditingSupport(tableViewer) {
+			protected boolean canEdit(Object element) {
+				dags.remove((RTDag) element);
+				tableViewer.refresh();
+				return false;
+			}
+			protected CellEditor getCellEditor(Object element) {
+			    return new TextCellEditor(tableViewer.getTable());
+			}
+			protected Object getValue(Object element) {
+				return "";
+			}
+			protected void setValue(Object element, Object value) {
+			}
+		});
+		tableViewerColumnDelete.setLabelProvider(new ColumnLabelProvider() {
+			public Image getImage(Object element) {
+				 return SWTResourceManager.getImage(SwtGui.class, "/hipert/hg/res/icon_del.png");
+			}
+			public String getText(Object element) {
+				return "";
+			}
+		});
+		TableColumn tblclmnDelete = tableViewerColumnDelete.getColumn();
+		tblclmnDelete.setWidth(34);
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
+		
+		tableViewer.setInput(dags);
+		
+		Composite centerRightComposite = new Composite(composite, SWT.NONE);
+		GridData gd_centerRightComposite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_centerRightComposite.heightHint = 307;
+		centerRightComposite.setLayoutData(gd_centerRightComposite);
+		centerRightComposite.setLayout(new GridLayout(1, false));
+		
+		Group grpThreading = new Group(centerRightComposite, SWT.NONE);
+		grpThreading.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		grpThreading.setText("Threading");
+		grpThreading.setLayout(new GridLayout(2, false));
+		
+		Label lblScheduling = new Label(grpThreading, SWT.NONE);
+		lblScheduling.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+		lblScheduling.setText("Scheduling");
+		
+		ComboViewer comboViewer_1 = new ComboViewer(grpThreading, SWT.READ_ONLY);
+		Combo schedulingCombo = comboViewer_1.getCombo();
+		schedulingCombo.setItems(new String[] {"SCHED_FIFO", "SCHED_RR", "SCHED_OTHER"});
+		schedulingCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		schedulingCombo.select(0);
+		
+		Label lblPartitioning = new Label(grpThreading, SWT.NONE);
+		lblPartitioning.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+		lblPartitioning.setText("Partitioning policy");
+		
+		ComboViewer comboViewer_2 = new ComboViewer(grpThreading, SWT.READ_ONLY);
+		Combo comboPartitioning = comboViewer_2.getCombo();
+		comboPartitioning.setItems(new String[] {"GLOBAL", "PARTITIONED"});
+		comboPartitioning.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		comboPartitioning.select(0);
+		
+		Group grpMemory = new Group(centerRightComposite, SWT.NONE);
+		grpMemory.setLayout(new GridLayout(1, false));
+		GridData gd_grpMemory = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
+		gd_grpMemory.heightHint = 139;
+		grpMemory.setLayoutData(gd_grpMemory);
+		grpMemory.setText("Memory");
+		
+		Composite memorySelectComposite = new Composite(grpMemory, SWT.NONE);
+		memorySelectComposite.setLayout(new GridLayout(3, false));
+		memorySelectComposite.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1));
+
+		btnSparse = new Button(memorySelectComposite, SWT.RADIO);
+		btnSparse.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				enableGUIComponents();
+			}
+		});
+		btnSparse.setSelection(true);
+		btnSparse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		btnSparse.setSize(68, 20);
+		btnSparse.setText("Sparse");
+		new Label(memorySelectComposite, SWT.NONE);
+		
+		btnPrem = new Button(memorySelectComposite, SWT.RADIO);
+		btnPrem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				enableGUIComponents();
+			}
+		});
+		btnPrem.setSize(62, 20);
+		btnPrem.setText("PREM");
+		
+		Composite memorySparseComposite = new Composite(grpMemory, SWT.NONE);
+		memorySparseComposite.setLayout(new GridLayout(2, false));
+		GridData gd_memorySparseComposite = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
+		gd_memorySparseComposite.heightHint = 35;
+		memorySparseComposite.setLayoutData(gd_memorySparseComposite);
+		
+		Label lblStep = new Label(memorySparseComposite, SWT.NONE);
+		lblStep.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblStep.setText("Step");
+		
+		ComboViewer comboViewer_3 = new ComboViewer(memorySparseComposite, SWT.READ_ONLY);
+		Combo comboStep = comboViewer_3.getCombo();
+		comboStep.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		comboStep.setItems(new String[] {"char", "int", "double", "long double"});
+		comboStep.select(0);
+		
+		grpPattern = new Group(grpMemory, SWT.NONE);
+		grpPattern.setLayout(new GridLayout(3, false));
+		grpPattern.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+		grpPattern.setText("Pattern");
+		
+		Button btnRadioButton = new Button(grpPattern, SWT.RADIO);
+		btnRadioButton.setSelection(true);
+		btnRadioButton.setText("Sequential");
+		
+		Label lblNewLabel = new Label(grpPattern, SWT.NONE);
+		lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblNewLabel.setText("Stride");
+		
+		ComboViewer comboViewer_4 = new ComboViewer(grpPattern, SWT.READ_ONLY);
+		Combo comboStride = comboViewer_4.getCombo();
+		comboStride.setItems(new String[] {"1", "2", "4", "8", "16", "32", "64", "128", "256"});
+		comboStride.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		comboStride.select(0);
+		
+		Button btnRadioButton_1 = new Button(grpPattern, SWT.RADIO);
+		btnRadioButton_1.setText("Random");
+		new Label(grpPattern, SWT.NONE);
+		new Label(grpPattern, SWT.NONE);
+		
+		btnGenerate = new Button(centerRightComposite, SWT.NONE);
+		btnGenerate.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				generateCode();
+			}
+		});
+		btnGenerate.setText("Generate code");
 		
 		grpOutput = new Group(shell, SWT.NONE);
 		GridData gd_grpOutput = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1);
-		gd_grpOutput.heightHint = 88;
+		gd_grpOutput.heightHint = 71;
 		grpOutput.setLayoutData(gd_grpOutput);
 		grpOutput.addControlListener(new ControlAdapter() {
 			@Override
@@ -234,17 +507,40 @@ public class SwtGui {
 		grpOutput.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		statusText = new Text(grpOutput, SWT.READ_ONLY | SWT.MULTI);
+		
+		enableGUIComponents();
+	}
+	
+	protected void enableGUIComponents() {
+		
+		// Strided memory pattern
+		this.recursiveSetEnabled(this.grpPattern, this.btnSparse.getSelection());
+		
+		// Button to generate code
+		this.btnGenerate.setEnabled(this.dagsTableViewer.getItemCount() != 0);
+	}
 
+	protected void WarnNotImplemented(String what) {
+		if(what != null)
+			MessageDialog.openWarning(shell, "Warning", what + " not implemented yet");
+		else
+			MessageDialog.openWarning(shell, "Warning", "Not implemented yet");		
+	}
+
+	protected void showDagImage(RTDag dag) {
+		String imageFileName;
+		try {
+			imageFileName = Tools.CreateDagImage(dag.getFullFileName());
+			new SwtDagImage(shell, SWT.CLOSE, dag.getName(), imageFileName).open();
+		} catch (Exception e) {
+			onException(e);
+		}	
 	}
 	
 	protected void clearDags() {
-//		int count = this.table.getItemCount();
-//		for(int i=0; i<count; i++)
-//			this.table.remove(count-i-1);
-//		 this.table.redraw();
-		table.setRedraw(true);
-		table.removeAll();
-		table.redraw();
+			this.dags.clear();
+			this.tableViewer.refresh();
+		
 	}
 
 	protected void showPreferencesWindow()
@@ -254,13 +550,15 @@ public class SwtGui {
 	
 	protected void showAboutPage()
 	{
-		SwtAboutDialog dlg = new SwtAboutDialog(this.shell, SWT.CLOSE);
-        dlg.open();
+		new SwtAboutDialog(this.shell, SWT.CLOSE).open();
 	}
 	
-	protected void showFileExplorer() {
+	List<RTDag> dags = new ArrayList<RTDag>();
+	private Table dagsTableViewer;
+	
+	protected void addDags() {
 		String folder = System.getProperty("user.dir"); // Current
-		String [] extensions = new String [] {"*.dot", "*.jpg"}; // TODO ask to the frontends
+		String [] extensions = new String [] {"*.dot"}; // TODO ask to the frontends
 		
 		FileDialog dialog = new FileDialog(shell, SWT.MULTI);
 		dialog.setFilterExtensions(extensions);
@@ -270,51 +568,16 @@ public class SwtGui {
 		{
 			String[] names = dialog.getFileNames();
 			for (int i = 0, n = names.length; i < n; i++) {
-				// Add empty item
-				TableItem newItem = new TableItem(this.table, SWT.NONE);
-				TableItem[] items = this.table.getItems();
-
-				// First column: name
-				TableEditor editor = new TableEditor(table);
-				Text text = new Text(table, SWT.NONE);
-				text.setText(names[i]);
-				editor.grabHorizontal = true;
-				editor.setEditor(text, items[items.length - 1], 0);
-				editor = new TableEditor(table);
-
-				// Second column: ext
-				editor = new TableEditor(table);
-				text = new Text(table, SWT.NONE);
-				String []split = names[i].split("\\.");
-				text.setText(split[split.length - 1]);
-				editor.grabHorizontal = true;
-				editor.setEditor(text, items[items.length - 1], 1);
-				editor = new TableEditor(table);
 				
-				// Third column: operations
-				editor = new TableEditor(table);
-				Button btn = new Button(table, SWT.NONE);
-				btn.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						//showFileExplorer();
-					}
-				});
-				btn.setImage(SWTResourceManager.getImage(SwtGui.class, "/hipert/hg/res/icon_del.png"));
-				editor.grabHorizontal = true;
-				editor.setEditor(btn, items[items.length - 1], 2);
-				
-//				CCombo combo = new CCombo(table, SWT.NONE);
-//				editor.grabHorizontal = true;
-//				editor.setEditor(combo, items[items.length - 1], 2);
+				RTDag newDag = new RTDag(names[i], dialog.getFilterPath());
+				dags.add(newDag);
 
-				String fullName = folder + File.separator + names[i];
-				showText("Added DAG from file " + fullName);				
+				String fullName = newDag.getFullFileName();
+				showText("Added DAG from file " + fullName);
 			}
-			
-			
+			this.tableViewer.refresh();
 		}
-		
+		enableGUIComponents();
 	}
 
 	public void onShellResized(ControlEvent e)
@@ -327,28 +590,14 @@ public class SwtGui {
 //		}
 	}
 	
-	protected void disposeEverything() {
+	protected void disposeEverything()
+	{
 		
 	}
-	
-	protected void onBtnTestClicked(String fileName)
+		
+	protected void generateCode()
 	{
-		// Add empty item
-		TableItem newItem = new TableItem(this.table, SWT.NONE);
-				
-		TableItem[] items = this.table.getItems();
-		TableEditor editor = new TableEditor(table);
-		
-		Text text = new Text(table, SWT.NONE);
-		text.setText(fileName);
-		editor.grabHorizontal = true;
-		editor.setEditor(text, items[items.length - 1], 1);
-		editor = new TableEditor(table);
-		
-		CCombo combo = new CCombo(table, SWT.NONE);
-		editor.grabHorizontal = true;
-		editor.setEditor(combo, items[items.length - 1], 0);
-		editor = new TableEditor(table);
+	
 	}
 
 	protected void showText(String text)
@@ -357,8 +606,43 @@ public class SwtGui {
 			statusText.append(text + "\r\n");
 	}
 	
+	private static MultiStatus createMultiStatus(String msg, Throwable t) {
+
+        List<Status> childStatuses = new ArrayList<>();
+        StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
+
+        for (StackTraceElement stackTrace: stackTraces) {
+            Status status = new Status(IStatus.ERROR,
+                    "com.example.e4.rcp.todo", stackTrace.toString());
+            childStatuses.add(status);
+        }
+
+        MultiStatus ms = new MultiStatus("com.example.e4.rcp.todo",
+                IStatus.ERROR, childStatuses.toArray(new Status[] {}),
+                t.toString(), t);
+        return ms;
+    }
+	
 	public void onException(Exception ex)
 	{
-		showText(ex.getMessage());
+		try {
+			// build the error message and include the current stack trace
+			MultiStatus status = createMultiStatus(ex.getLocalizedMessage(), ex);
+			// show error dialog
+			ErrorDialog.openError(shell, "Error", "This is an error", status);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			showText("Impossible to open Error Dialog. Cause: " + e.getLocalizedMessage());
+		}
+		ex.printStackTrace();
 	}
+	public void recursiveSetEnabled(Control ctrl, boolean enabled) {
+		   if (ctrl instanceof Group) {
+			   Group comp = (Group) ctrl;
+		      for (Control c : comp.getChildren())
+		         recursiveSetEnabled(c, enabled);
+		   } else {
+		      ctrl.setEnabled(enabled);
+		   }
+		}
 }

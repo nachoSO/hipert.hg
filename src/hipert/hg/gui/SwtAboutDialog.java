@@ -12,6 +12,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Link;
 
 public class SwtAboutDialog extends Dialog {
 
@@ -50,23 +54,50 @@ public class SwtAboutDialog extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), getStyle());
+		shell.setImage(SWTResourceManager.getImage(SwtAboutDialog.class, "/hipert/hg/res/LogoHGT_Icon.png"));
 		shell.setSize(450, 300);
 		shell.setText(getText());
-		shell.setLayout(new GridLayout(2, false));
+		shell.setLayout(new GridLayout(1, false));
 		
-		Label lblNewLabel = new Label(shell, SWT.NONE);
-		lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, true, 1, 1));
-		lblNewLabel.setImage(SWTResourceManager.getImage(SwtAboutDialog.class, "/hipert/hg/res/LogoHGT_116x128.png"));
+		Label lblLogoHiPeRT = new Label(shell, SWT.NONE);
+		lblLogoHiPeRT.setText("HiPeRT Image");
+		lblLogoHiPeRT.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+		lblLogoHiPeRT.setImage(null);
 		
-		Button btnClose = new Button(shell, SWT.NONE);
-		btnClose.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, false, false, 1, 1));
+		Composite composite = new Composite(shell, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		composite.setLayout(new GridLayout(2, false));
+		
+		Label lblLogoHGT = new Label(composite, SWT.NONE);
+		lblLogoHGT.setSize(116, 128);
+		lblLogoHGT.setImage(SWTResourceManager.getImage(SwtAboutDialog.class, "/hipert/hg/res/LogoHGT_116x128.png"));
+		
+		Composite composite_1 = new Composite(composite, SWT.NONE);
+		composite_1.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true, 1, 1));
+		composite_1.setSize(424, 80);
+		composite_1.setLayout(new GridLayout(1, false));
+		
+		Label lblTitle = new Label(composite_1, SWT.NONE);
+		lblTitle.setText("The HiPeRT Generator Tool");
+		
+		Label lblSpacer = new Label(composite_1, SWT.NONE);
+		
+		Link link = new Link(composite_1, SWT.NONE);
+		link.setText("<a>https://github.com/HiPeRT/HGT</a>");
+		
+		Composite bottomComposite = new Composite(shell, SWT.NONE);
+		bottomComposite.setLayout(new GridLayout(1, false));
+		bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
+		
+		Button btnClose = new Button(bottomComposite, SWT.NONE);
+		btnClose.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
 		btnClose.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				shell.close();
 			}
 		});
 		btnClose.setText("Close");
 
 	}
-
 }

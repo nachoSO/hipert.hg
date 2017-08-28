@@ -11,6 +11,8 @@ import java.util.ArrayList;
  *
  */
 public interface IBackend {
+	public String getFriendlyName();
+	
 	public void GenerateCode(String modelFileName);
 
 	public void Post(ArrayList<String> fileNames);

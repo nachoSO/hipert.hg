@@ -52,7 +52,7 @@ public class SwtPropertyPage extends Shell {
 	 */
 	public SwtPropertyPage(Display display) {
 		super(display, SWT.SHELL_TRIM);
-		setImage(SWTResourceManager.getImage(SwtPropertyPage.class, "/hipert/hg/res/LogoHGT32x32.png"));
+		setImage(SWTResourceManager.getImage(SwtPropertyPage.class, "/hipert/hg/res/LogoHGT_Icon.png"));
 		setLayout(new GridLayout(1, false));
 		
 		Group foldersGroup = new Group(this, SWT.NONE);
@@ -196,7 +196,7 @@ public class SwtPropertyPage extends Shell {
 	 * Create contents of the shell.
 	 */
 	protected void createContents() {
-		setText("Properties");
+		setText("Preferences");
 		setSize(728, 436);
 
 	}
