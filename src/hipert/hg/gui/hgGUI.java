@@ -1035,7 +1035,7 @@ public class hgGUI extends javax.swing.JFrame {
 					fileNames.add(file.getCanonicalPath());
 				}
 				
-				Globals.GenFilesDir=txtOutput.getText();
+				Globals.OutputDir=txtOutput.getText();
 				codeGenerator.GenerateCode(fileDst);
 		        JOptionPane.showMessageDialog(null, "Code Generated", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
 		        

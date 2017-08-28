@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public interface IBackend {
 	public String getFriendlyName();
 	
-	public void GenerateCode(String modelFileName);
+	public void GenerateCode(String modelFileName) throws Exception;
 
-	public void Post(ArrayList<String> fileNames);
+	public boolean Post(ArrayList<String> fileNames);
 }

@@ -17,10 +17,11 @@ import hipert.hg.backend.ptask.DagToCode;
 public class DagToCodeBostanGomp extends DagToCode {
 
 	@Override
-	public void Post(ArrayList<String> fileNames) {
+	public boolean Post(ArrayList<String> fileNames) {
 		
 		try {
-			PsocMapper.GenerateTaskTable(fileNames, Globals.GenFilesDir + "/" + Globals.PsocTableFileName);
+			PsocMapper.GenerateTaskTable(fileNames, Globals.OutputDir + "/" + Globals.PsocTableFileName);
+			return true;
 		}
 		catch (java.lang.UnsatisfiedLinkError ule) {
 			throw ule;

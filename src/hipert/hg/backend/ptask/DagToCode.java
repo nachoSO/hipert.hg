@@ -53,34 +53,28 @@ public class DagToCode implements IBackend {
 	/* Inherited by IBackend */
 	
 	@Override
-	public void GenerateCode(String modelFileName) {
-		try {
+	public void GenerateCode(String modelFileName) throws Exception {
 			EglTemplateFactoryModuleAdapter module = new EglTemplateFactoryModuleAdapter(new EglFileGeneratingTemplateFactory()); 
-			module.parse(new File("modelToCode/driver.egl"));
+		module.parse(new File("modelToCode/driver.egl"));
 
-			
-			module.getContext().getModelRepository().addModel(
-					createEmfModel("Model", modelFileName, "./metamodel/graphMetamodel.ecore", true, true));
-			result = module.execute();
-			module.getContext().getModelRepository().dispose();
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		module.getContext().getModelRepository().addModel(
+				createEmfModel("Model", modelFileName, "./metamodel/graphMetamodel.ecore", true, true));
+		result = module.execute();
+		module.getContext().getModelRepository().dispose();
+		
 	}
 
 	@Override
-	public void Post(ArrayList<String> fileNames) {
+	public boolean Post(ArrayList<String> fileNames) {
 		// Nothing...
-		
+		return false;
 	}
 
 
 	@Override
 	public String getFriendlyName() {
 		return "PTask/PThreads";
-		
 	}
 
 }

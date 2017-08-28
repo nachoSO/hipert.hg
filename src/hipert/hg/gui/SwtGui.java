@@ -1,8 +1,11 @@
 package hipert.hg.gui;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -50,6 +53,11 @@ import hipert.hg.backend.bostangomp.DagToCodeBostanGomp;
 import hipert.hg.backend.ptask.DagToCode;
 import hipert.hg.core.RTDag;
 import hipert.hg.core.Tools;
+import hipert.hg.core.Utils;
+import hipert.hg.frontend.IFrontend;
+import hipert.hg.frontend.rtdot.DAG;
+import hipert.hg.frontend.rtdot.XMLGenerator;
+
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ListViewer;
@@ -73,12 +81,18 @@ public class SwtGui {
 	static SwtGui window = null;
 
 	Group grpOutput = null;
-	TableViewer tableViewer = null;
-	Button btnGenerate = null;
-	Combo backendsCombo = null;
 	Group grpPattern = null;
+	TableViewer tableViewer = null;
+	Combo comboBackends = null;
+	Combo comboStep = null;
+	Combo comboScheduling = null; 
+	Combo comboPartitioning = null;
+	Combo comboStride = null;
 	Button btnPrem = null;
 	Button btnSparse = null;
+	Button btnStrideRandom = null;
+	Button btnStrideSequential = null;
+	Button btnGenerate = null;
 	
 	List<IBackend> backends = new ArrayList<IBackend>();
 	
@@ -240,12 +254,12 @@ public class SwtGui {
 		lblSelectBackend.setText("Available backends");
 		
 		ComboViewer comboViewer = new ComboViewer(topRightComposite, SWT.READ_ONLY);
-		backendsCombo = comboViewer.getCombo();
-		backendsCombo.addSelectionListener(new SelectionAdapter() {
+		comboBackends = comboViewer.getCombo();
+		comboBackends.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				enableGUIComponents();
-				if(backendsCombo.getSelectionIndex() == 1) // Bostan
+				if(comboBackends.getSelectionIndex() == 1) // Bostan
 				{
 					WarnNotImplemented("Bostan backend");
 				}
@@ -259,9 +273,9 @@ public class SwtGui {
 			IBackend iBackend = (IBackend) iterator.next();
 			backendsFriendlyName[i++] = iBackend.getFriendlyName();
 		}
-		backendsCombo.setItems(backendsFriendlyName);
-		backendsCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		backendsCombo.select(0);
+		comboBackends.setItems(backendsFriendlyName);
+		comboBackends.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		comboBackends.select(0);
 		
 		Composite centerLeftComposite = new Composite(composite, SWT.NONE);
 		centerLeftComposite.setLayout(new GridLayout(1, false));
@@ -285,7 +299,8 @@ public class SwtGui {
 			}
 			public String getText(Object element) {
 				RTDag dag = (RTDag) element;
-				return dag.getFileName();
+				String ret = dag.getFileName();
+				return ret;
 			}
 		});
 		TableColumn tblclmnDagFile = tableViewerColumn.getColumn();
@@ -395,17 +410,17 @@ public class SwtGui {
 		lblScheduling.setText("Scheduling");
 		
 		ComboViewer comboViewer_1 = new ComboViewer(grpThreading, SWT.READ_ONLY);
-		Combo schedulingCombo = comboViewer_1.getCombo();
-		schedulingCombo.setItems(new String[] {"SCHED_FIFO", "SCHED_RR", "SCHED_OTHER"});
-		schedulingCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		schedulingCombo.select(0);
+		comboScheduling = comboViewer_1.getCombo();
+		comboScheduling.setItems(new String[] {"SCHED_FIFO", "SCHED_RR", "SCHED_OTHER"});
+		comboScheduling.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		comboScheduling.select(0);
 		
 		Label lblPartitioning = new Label(grpThreading, SWT.NONE);
 		lblPartitioning.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		lblPartitioning.setText("Partitioning policy");
 		
 		ComboViewer comboViewer_2 = new ComboViewer(grpThreading, SWT.READ_ONLY);
-		Combo comboPartitioning = comboViewer_2.getCombo();
+		comboPartitioning = comboViewer_2.getCombo();
 		comboPartitioning.setItems(new String[] {"GLOBAL", "PARTITIONED"});
 		comboPartitioning.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		comboPartitioning.select(0);
@@ -455,7 +470,7 @@ public class SwtGui {
 		lblStep.setText("Step");
 		
 		ComboViewer comboViewer_3 = new ComboViewer(memorySparseComposite, SWT.READ_ONLY);
-		Combo comboStep = comboViewer_3.getCombo();
+		comboStep = comboViewer_3.getCombo();
 		comboStep.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		comboStep.setItems(new String[] {"char", "int", "double", "long double"});
 		comboStep.select(0);
@@ -464,23 +479,23 @@ public class SwtGui {
 		grpPattern.setLayout(new GridLayout(3, false));
 		grpPattern.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
 		grpPattern.setText("Pattern");
-		
-		Button btnRadioButton = new Button(grpPattern, SWT.RADIO);
-		btnRadioButton.setSelection(true);
-		btnRadioButton.setText("Sequential");
+
+		btnStrideSequential = new Button(grpPattern, SWT.RADIO);
+		btnStrideSequential.setSelection(true);
+		btnStrideSequential.setText("Sequential");
 		
 		Label lblNewLabel = new Label(grpPattern, SWT.NONE);
 		lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblNewLabel.setText("Stride");
 		
 		ComboViewer comboViewer_4 = new ComboViewer(grpPattern, SWT.READ_ONLY);
-		Combo comboStride = comboViewer_4.getCombo();
+		comboStride = comboViewer_4.getCombo();
 		comboStride.setItems(new String[] {"1", "2", "4", "8", "16", "32", "64", "128", "256"});
 		comboStride.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		comboStride.select(0);
 		
-		Button btnRadioButton_1 = new Button(grpPattern, SWT.RADIO);
-		btnRadioButton_1.setText("Random");
+		btnStrideRandom = new Button(grpPattern, SWT.RADIO);
+		btnStrideRandom.setText("Random");
 		new Label(grpPattern, SWT.NONE);
 		new Label(grpPattern, SWT.NONE);
 		
@@ -594,9 +609,78 @@ public class SwtGui {
 	{
 		
 	}
+	
+	private DAG[] packDags() {
+		int dagsCount = this.dags.size();
+		DAG dags[] = new DAG[dagsCount]; // FIXME 
+
+		String sched_policy = this.comboScheduling.getItem(this.comboScheduling.getSelectionIndex());
+		String partitioning_policy = this.comboPartitioning.getItem(this.comboPartitioning.getSelectionIndex());
 		
+		for(int i=0; i<dagsCount; i++) {
+			RTDag currDag = this.dags.get(i);
+			String filePath = currDag.getFullFileName();
+
+			String stepString = this.comboStep.getItem(this.comboStep.getSelectionIndex());
+			int step = Utils.CalcStep(stepString);
+			
+			if(btnSparse.getSelection()) {
+				int stride = 0; //random access
+				
+				if(this.btnStrideSequential.getSelection()) {
+					String strideString = this.comboStride.getItem(this.comboStride.getSelectionIndex());
+					stride = Integer.parseInt(strideString);
+				}
+				else if(this.btnStrideRandom.getSelection()) {
+					stride = 0;
+				}
+				else {
+					// Error
+				}
+				
+				dags[i] = new DAG(filePath, "sparse", step, stride, sched_policy, partitioning_policy, Globals.OutputDir);
+			}
+			
+			else if(btnPrem.getSelection()) {
+				dags[i] = new DAG(filePath, "prem", step, sched_policy, partitioning_policy, Globals.OutputDir);
+			}
+		
+		}
+		return dags;
+	}
+	
 	protected void generateCode()
 	{
+	    IFrontend parser = null;
+	    
+	    //if(currentFrontend == Frontend.RtDot)
+		parser = new XMLGenerator();
+		// else
+		//  other frontends
+		
+		//String modelTempFile = Globals.GetTempDir() + Globals.ModelTempFileName;
+		String modelTempFile="./modelToCode/dagParsed.model"; // FIXME
+		parser.Parse(packDags(), modelTempFile);
+
+		IBackend codeGenerator = null;
+		codeGenerator = this.backends.get(this.comboBackends.getSelectionIndex());
+		
+		ArrayList<String> fileNames = new ArrayList<String>();
+		try
+		{
+			for (RTDag dag: this.dags)
+				fileNames.add(dag.getFullFileName());
+			
+			codeGenerator.GenerateCode(modelTempFile);
+
+			MessageDialog.openInformation(shell, "Done", "Code generated");
+			if(codeGenerator.Post(fileNames))			
+				MessageDialog.openInformation(shell, "Done", "Executed post operations");
+		}
+		catch(Exception ex) {
+	        JOptionPane.showMessageDialog(null, ex.getMessage(), "Code Generator", JOptionPane.ERROR_MESSAGE);			
+		}
+		
 	
 	}
 
