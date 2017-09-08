@@ -19,6 +19,7 @@ public class Globals {
 	public static String OutputDir = Config.DefaultHGTDir + Config.DefaultOutputDir;
 	public static String RuntimeDir  = Config.DefaultHGTDir + Config.DefaultRuntimeSrcDir;
 	public static String GraphvizDir = Config.DefaultHGTDir + Config.DefaultGraphvizDir;
+	public static String FrontendsDir = Config.DefaultHGTDir + Config.DefaultFrontendsDir;
 
 	public static String GetTempDir()
 	{

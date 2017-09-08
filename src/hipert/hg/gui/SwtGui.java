@@ -1,15 +1,24 @@
 package hipert.hg.gui;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.swing.JOptionPane;
 
+import org.antlr.runtime.misc.IntArray;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.epsilon.eol.execute.operations.declarative.IAbstractOperationContributor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -95,6 +104,7 @@ public class SwtGui {
 	Button btnGenerate = null;
 	
 	List<IBackend> backends = new ArrayList<IBackend>();
+	List<IFrontend> frontends = new ArrayList<IFrontend>();
 	
 	/**
 	 * Launch the application.
@@ -109,9 +119,67 @@ public class SwtGui {
 		}
 	}
 	
+	protected void loadFrontends() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
+	{
+		File folder = new File(Globals.FrontendsDir);
+		File[] listOfFiles = folder.listFiles();
+
+	    for (int i = 0; i < listOfFiles.length; i++)
+	    {
+	    	if (listOfFiles[i].isFile())
+			{
+	    	  	String pathToJar = listOfFiles[i].getAbsolutePath();
+				JarFile jarFile;
+				
+				jarFile = new JarFile(pathToJar);
+				Enumeration<JarEntry> e = jarFile.entries();
+		
+				URL[] urls = { new URL("jar:file:" + pathToJar+"!/") };
+				URLClassLoader cl = URLClassLoader.newInstance(urls);
+		
+				while (e.hasMoreElements())
+				{
+					JarEntry je = e.nextElement();
+				    if(je.isDirectory() || !je.getName().endsWith(".class"))
+				    {
+				        continue;
+				    }
+				    
+				    // -6 because of .class
+				    String className = je.getName().substring(0,je.getName().length()-6);
+				    className = className.replace('/', '.');
+//				    System.out.println(className);
+				    Class c = cl.loadClass(className);
+				    Class[] interfaces = c.getInterfaces();
+				    for (Class iface : interfaces)
+				    {
+						if(iface.getName().equals(IFrontend.class.getName()))
+				    	{
+//						    System.out.println(interfaces[0].getName());
+						    this.frontends.add((IFrontend) c.newInstance());
+						    break;
+					    }
+					}
+		
+				}
+				jarFile.close();
+			}
+	    }
+	}
+		
+
 	public SwtGui()
 	{
-		// Load frontends
+		try
+		{
+			this.frontends.add(new XMLGenerator());
+			this.loadFrontends();
+		}
+		catch (Exception e)
+		{
+			onException(e);
+		}
+		
 		// Load backends
 		this.backends.add(new DagToCode());
 		this.backends.add(new DagToCodeBostanGomp());
@@ -571,12 +639,20 @@ public class SwtGui {
 	List<RTDag> dags = new ArrayList<RTDag>();
 	private Table dagsTableViewer;
 	
-	protected void addDags() {
+	protected void addDags()
+	{
 		String folder = System.getProperty("user.dir"); // Current
-		String [] extensions = new String [] {"*.dot"}; // TODO ask to the frontends
 		
+		List<String> extensions= new ArrayList<String>();
+		for (IFrontend f: this.frontends)
+		{
+			for (String s : f.getFileExtensions())
+				extensions.add(s);
+		}
+
+		String []filterExtensions = extensions.toArray(new String[0]);
 		FileDialog dialog = new FileDialog(shell, SWT.MULTI);
-		dialog.setFilterExtensions(extensions);
+		dialog.setFilterExtensions(filterExtensions);
 		dialog.setFilterPath(folder);
 		String result = dialog.open();
 		if(result != null)
@@ -649,21 +725,30 @@ public class SwtGui {
 		return dags;
 	}
 	
-	protected void generateCode()
+	protected IFrontend getParser(String fileExt)
 	{
-	    IFrontend parser = null;
-	    
-	    //if(currentFrontend == Frontend.RtDot)
-		parser = new XMLGenerator();
-		// else
-		//  other frontends
-		
+		for (IFrontend ifend : this.frontends)
+			if(Arrays.asList(ifend.getFileExtensions()).contains(fileExt))
+				return ifend;
+		return null;
+	}
+	
+	protected void generateCode()
+	{  
+		// We assume they are all equal!
+	    String ext = this.dags.get(0).getType();		
+	    IFrontend parser = getParser("*." + ext);
+		if(parser == null)
+		{
+			System.out.println("Unable to find a parser for " + ext + " file");
+			return;
+		}
+			
 		//String modelTempFile = Globals.GetTempDir() + Globals.ModelTempFileName;
 		String modelTempFile="./modelToCode/dagParsed.model"; // FIXME
 		parser.Parse(packDags(), modelTempFile);
 
-		IBackend codeGenerator = null;
-		codeGenerator = this.backends.get(this.comboBackends.getSelectionIndex());
+		IBackend codeGenerator = this.backends.get(this.comboBackends.getSelectionIndex());
 		
 		ArrayList<String> fileNames = new ArrayList<String>();
 		try
@@ -690,12 +775,13 @@ public class SwtGui {
 			statusText.append(text + "\r\n");
 	}
 	
-	private static MultiStatus createMultiStatus(String msg, Throwable t) {
-
+	private static MultiStatus createMultiStatus(String msg, Throwable t)
+	{
         List<Status> childStatuses = new ArrayList<>();
         StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
 
-        for (StackTraceElement stackTrace: stackTraces) {
+        for (StackTraceElement stackTrace: stackTraces)
+        {
             Status status = new Status(IStatus.ERROR,
                     "com.example.e4.rcp.todo", stackTrace.toString());
             childStatuses.add(status);
@@ -709,17 +795,21 @@ public class SwtGui {
 	
 	public void onException(Exception ex)
 	{
-		try {
+		try
+		{
 			// build the error message and include the current stack trace
 			MultiStatus status = createMultiStatus(ex.getLocalizedMessage(), ex);
 			// show error dialog
 			ErrorDialog.openError(shell, "Error", "This is an error", status);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			showText("Impossible to open Error Dialog. Cause: " + e.getLocalizedMessage());
 		}
 		ex.printStackTrace();
 	}
+	
 	public void recursiveSetEnabled(Control ctrl, boolean enabled) {
 		   if (ctrl instanceof Group) {
 			   Group comp = (Group) ctrl;

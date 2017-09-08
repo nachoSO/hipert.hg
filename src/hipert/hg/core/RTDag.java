@@ -17,7 +17,10 @@ public class RTDag {
 	
 	public String getType()
 	{
-		return "dot";		
+		int i = fileName.lastIndexOf('.');
+		if (i > 0)
+		    return fileName.substring(i+1);
+		return "???";		
 	}
 	
 	public String getFullFileName()

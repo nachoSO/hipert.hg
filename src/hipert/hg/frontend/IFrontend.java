@@ -10,4 +10,6 @@ import hipert.hg.frontend.rtdot.DAG;
 public interface IFrontend {
 
 	 public void Parse(DAG dagsParam[], String fileDst);
+	 
+	 public String []getFileExtensions();
 }

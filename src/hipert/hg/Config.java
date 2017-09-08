@@ -10,5 +10,6 @@ public class Config {
 	public static String DefaultToolsDir = "tools" + File.separator;
 	public static String DefaultOutputDir   = "gen" + File.separator;
 	public static String DefaultGraphvizDir = DefaultToolsDir + "graphviz" + File.separator;
+	public static String DefaultFrontendsDir = "lib" + File.separator + "Frontends";
 
 }

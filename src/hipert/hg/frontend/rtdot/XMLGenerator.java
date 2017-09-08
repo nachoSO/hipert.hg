@@ -216,5 +216,10 @@ public class XMLGenerator implements IFrontend {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public String[] getFileExtensions() {
+		return new String[] {"*.dot" };
+	}
 }
 
