@@ -23,6 +23,8 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 
+import com.upscale.PsocMapper;
+
 import hipert.hg.Globals;
 import hipert.hg.backend.IBackend;
 import hipert.hg.backend.bostangomp.DagToCodeBostanGomp;
@@ -63,9 +65,9 @@ public class hgGUI extends javax.swing.JFrame {
         bOutput.setEnabled(false);
 
         
-    	txtOutput.setText(Globals.defaultOutputDir); 
-    	txtRuntime.setText(Globals.defaultRuntimeDir);
-    	txtGraphviz.setText(Globals.defaultGraphvizDir); 
+    	txtOutput.setText(Globals.OutputDir); 
+    	txtRuntime.setText(Globals.RuntimeDir);
+    	txtGraphviz.setText(Globals.GraphvizDir); 
     	
 		ActionListener enablerListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -1033,7 +1035,7 @@ public class hgGUI extends javax.swing.JFrame {
 					fileNames.add(file.getCanonicalPath());
 				}
 				
-				Globals.GenFilesDir=txtOutput.getText();
+				Globals.OutputDir=txtOutput.getText();
 				codeGenerator.GenerateCode(fileDst);
 		        JOptionPane.showMessageDialog(null, "Code Generated", "Code Generator", JOptionPane.INFORMATION_MESSAGE);
 		        
