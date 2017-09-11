@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ASCII"?>
+<GraphMetamodel:DagSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:GraphMetamodel="GraphMetamodel" xsi:schemaLocation="GraphMetamodel ./metamodel/graphMetamodel.ecore" xmi:id="dagPSocrates" partitioning_policy="PARTITIONED" semaphore_protocol="PRIO_CEILING" sched_alg="SCHED_OTHER">
+  <dagCollection xmi:id="G1" name="G1" period="1000" priority="50" deadline="1000">
+    <node xmi:id="G1_1" name="G1_1" miet="10.41" meet="10.38" maet="10.75" comment="1 [miet=&quot;10.38&quot;, meet=&quot;10.41&quot;, maet=&quot;10.75&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <node xmi:id="G1_2" name="G1_2" miet="10.0" meet="10.98" maet="10.92" comment="2 [miet=&quot;10.98&quot;, meet=&quot;10.00&quot;, maet=&quot;10.92&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <node xmi:id="G1_3" name="G1_3" miet="10.53" meet="10.85" maet="10.66" comment="3 [miet=&quot;10.85&quot;, meet=&quot;10.53&quot;, maet=&quot;10.66&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <edge xmi:id="G1_1_2" name="G1_1_2" src="G1_1" trg="G1_2"/>
+    <edge xmi:id="G1_1_3" name="G1_1_3" src="G1_1" trg="G1_3"/>
+  </dagCollection>
+  <dagCollection xmi:id="G2" name="G2" period="2000" priority="60" deadline="2000" processor="1">
+    <node xmi:id="G2_1" name="G2_1" miet="10.65" meet="10.48" maet="10.63" comment="1 [miet=&quot;10.48&quot;, meet=&quot;10.65&quot;, maet=&quot;10.63&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <node xmi:id="G2_2" name="G2_2" miet="10.91" meet="10.21" maet="10.34" comment="2 [miet=&quot;10.21&quot;, meet=&quot;10.91&quot;, maet=&quot;10.34&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <node xmi:id="G2_3" name="G2_3" miet="10.82" meet="10.42" maet="10.66" comment="3 [miet=&quot;10.42&quot;, meet=&quot;10.82&quot;, maet=&quot;10.66&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <node xmi:id="G2_4" name="G2_4" miet="10.12" meet="10.38" maet="10.89" comment="4 [miet=&quot;10.38&quot;, meet=&quot;10.12&quot;, maet=&quot;10.89&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <node xmi:id="G2_5" name="G2_5" miet="10.86" meet="10.84" maet="10.21" comment="5 [miet=&quot;10.84&quot;, meet=&quot;10.86&quot;, maet=&quot;10.21&quot;, mem=&quot;100&quot;, unit=&quot;b&quot;]" mem_access="100"/>
+    <edge xmi:id="G2_1_2" name="G2_1_2" src="G2_1" trg="G2_2"/>
+    <edge xmi:id="G2_1_3" name="G2_1_3" src="G2_1" trg="G2_3"/>
+    <edge xmi:id="G2_2_4" name="G2_2_4" src="G2_2" trg="G2_4"/>
+    <edge xmi:id="G2_3_4" name="G2_3_4" src="G2_3" trg="G2_4"/>
+    <edge xmi:id="G2_5_4" name="G2_5_4" src="G2_5" trg="G2_4"/>
+  </dagCollection>
+</GraphMetamodel:DagSet>

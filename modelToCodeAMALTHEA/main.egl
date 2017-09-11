@@ -1,0 +1,42 @@
+[%
+	var ds: DagSet := DagSet.allInstances().at(0);
+	var i: Integer;
+%]
+#include <stdio.h>
+#include "hgr.h"
+#include "syntethicTask.h"
+#include <errno.h>
+//#define PARAM_SIZE 7
+//#define TEST_SIZE 1
+//double FREQUENCY=0;
+
+
+int gen_main(int argc, char *argv[]){
+	int index=0;
+
+	hgr_init([%=ds.sched_alg%], [%=ds.partitioning_policy%], [%=ds.semaphore_protocol%]);
+ 	//period,deadline,priority,proccessor,task_name
+	[%i=1; for (g in ds.dagCollection){
+		var file: String;
+		if(g.mem_type.name="explicit")
+			file='taskExplicit.egl';
+		else if(g.mem_type.name="implicit")
+			file='taskImplicit.egl';
+		else if(g.mem_type.name="let")				
+			file='taskLET.egl';
+			
+		var task: Template := TemplateFactory.load(file);
+		
+		task.populate("DAG_ID",i-1);
+		task.generate(ds.output_dir+'syntethicTask'+i+'.c'); //SISTEMARE
+	%]
+	index=hgr_task_creator([%=i-1%],tspec_from([%=g.period%], MILLI),tspec_from([%=g.deadline%], MILLI),[%=g.priority%],[%=g.processor%],NOW,[%=g.name%]);
+	[%i++;}%]
+	
+	hgr_task_joinPTask(index);
+	
+	hgr_destroy();
+	return 0;
+}	
+
+

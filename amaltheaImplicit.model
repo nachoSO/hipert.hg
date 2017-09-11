@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ASCII"?>
+<GraphMetamodel:DagSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:GraphMetamodel="GraphMetamodel" xmi:id="dagAMALTHEA" partitioning_policy="PARTITIONED" semaphore_protocol="PRIO_CEILING" sched_alg="SCHED_OTHER" output_dir="C:/Users/LPC/Dropbox/CodeGen/hipert.hg.v2/modelToCodeAMALTHEA/">
+  <dagCollection xmi:id="Task_1ms" name="Task_1ms" period="1000" priority="15" deadline="1000" processor="1" mem_type="implicit" stride="2688">
+    <node xmi:id="Task_1ms_Copy_In" name="Task_1ms_Copy_In" maet="0.0" comment="" mem_access="2688"/>
+    <node xmi:id="Runnable_1ms_0" name="Runnable_1ms_0" miet="7.463333333333334" meet="18.50333333333333" maet="11.176666666666668" comment=""/>
+    <node xmi:id="Runnable_1ms_1" name="Runnable_1ms_1" miet="2.0933333333333337" meet="3.2233333333333336" maet="2.3733333333333335" comment=""/>
+    <node xmi:id="Runnable_1ms_2" name="Runnable_1ms_2" miet="3.5066666666666664" meet="5.503333333333332" maet="3.8633333333333333" comment=""/>
+    <node xmi:id="Runnable_1ms_3" name="Runnable_1ms_3" miet="3.3833333333333333" meet="28.443333333333335" maet="16.720000000000002" comment=""/>
+    <node xmi:id="Runnable_1ms_4" name="Runnable_1ms_4" miet="10.35666666666667" meet="45.539999999999985" maet="33.45999999999999" comment=""/>
+    <node xmi:id="Runnable_1ms_5" name="Runnable_1ms_5" miet="1.38" meet="4.880000000000001" maet="3.893333333333333" comment=""/>
+    <node xmi:id="Runnable_1ms_6" name="Runnable_1ms_6" miet="4.556666666666667" meet="17.369999999999997" maet="13.323333333333334" comment=""/>
+    <node xmi:id="Runnable_1ms_7" name="Runnable_1ms_7" miet="10.10666666666667" meet="14.663333333333336" maet="12.833333333333334" comment=""/>
+    <node xmi:id="Runnable_1ms_8" name="Runnable_1ms_8" miet="4.543333333333334" meet="6.956666666666667" maet="5.096666666666668" comment=""/>
+    <node xmi:id="Task_1ms_Copy_Out" name="Task_1ms_Copy_Out" maet="0.0" comment="" mem_access="2688"/>
+    <edge xmi:id="Task_1ms_0_1" name="Task_1ms_0_1" src="Task_1ms_Copy_In" trg="Runnable_1ms_0"/>
+    <edge xmi:id="Task_1ms_1_2" name="Task_1ms_1_2" src="Runnable_1ms_0" trg="Runnable_1ms_1"/>
+    <edge xmi:id="Task_1ms_2_3" name="Task_1ms_2_3" src="Runnable_1ms_1" trg="Runnable_1ms_2"/>
+    <edge xmi:id="Task_1ms_3_4" name="Task_1ms_3_4" src="Runnable_1ms_2" trg="Runnable_1ms_3"/>
+    <edge xmi:id="Task_1ms_4_5" name="Task_1ms_4_5" src="Runnable_1ms_3" trg="Runnable_1ms_4"/>
+    <edge xmi:id="Task_1ms_5_6" name="Task_1ms_5_6" src="Runnable_1ms_4" trg="Runnable_1ms_5"/>
+    <edge xmi:id="Task_1ms_6_7" name="Task_1ms_6_7" src="Runnable_1ms_5" trg="Runnable_1ms_6"/>
+    <edge xmi:id="Task_1ms_7_8" name="Task_1ms_7_8" src="Runnable_1ms_6" trg="Runnable_1ms_7"/>
+    <edge xmi:id="Task_1ms_8_9" name="Task_1ms_8_9" src="Runnable_1ms_7" trg="Runnable_1ms_8"/>
+    <edge xmi:id="Task_1ms_9_10" name="Task_1ms_9_10" src="Runnable_1ms_8" trg="Task_1ms_Copy_Out"/>
+  </dagCollection>
+  <dagCollection xmi:id="Angle_Sync" name="Angle_Sync" period="6660" priority="14" deadline="6660" processor="1" mem_type="implicit" stride="7704">
+    <node xmi:id="Angle_Sync_Copy_In" name="Angle_Sync_Copy_In" maet="0.0" comment="" mem_access="7704"/>
+    <node xmi:id="Runnable_6660us_0" name="Runnable_6660us_0" miet="1.9400000000000008" meet="6.373333333333332" maet="3.6966666666666663" comment=""/>
+    <node xmi:id="Runnable_6660us_1" name="Runnable_6660us_1" miet="13.75666666666667" meet="24.496666666666666" maet="15.540000000000006" comment=""/>
+    <node xmi:id="Runnable_6660us_2" name="Runnable_6660us_2" miet="1.5066666666666666" meet="2.0666666666666664" maet="1.8966666666666667" comment=""/>
+    <node xmi:id="Runnable_6660us_3" name="Runnable_6660us_3" miet="4.4099999999999975" meet="38.39999999999998" maet="24.206666666666667" comment=""/>
+    <node xmi:id="Runnable_6660us_4" name="Runnable_6660us_4" miet="2.6799999999999993" meet="4.7399999999999975" maet="3.1199999999999997" comment=""/>
+    <node xmi:id="Runnable_6660us_5" name="Runnable_6660us_5" miet="5.559999999999998" meet="108.69000000000003" maet="27.306666666666672" comment=""/>
+    <node xmi:id="Runnable_6660us_6" name="Runnable_6660us_6" miet="2.633333333333334" meet="4.866666666666662" maet="3.9200000000000004" comment=""/>
+    <node xmi:id="Runnable_6660us_7" name="Runnable_6660us_7" miet="14.596666666666671" meet="51.09666666666666" maet="41.00999999999999" comment=""/>
+    <node xmi:id="Runnable_6660us_8" name="Runnable_6660us_8" miet="4.236666666666665" meet="17.119999999999997" maet="13.340000000000002" comment=""/>
+    <node xmi:id="Runnable_6660us_9" name="Runnable_6660us_9" miet="2.276666666666667" meet="2.8033333333333332" maet="2.683333333333333" comment=""/>
+    <node xmi:id="Angle_Sync_Copy_Out" name="Angle_Sync_Copy_Out" maet="0.0" comment="" mem_access="7704"/>
+    <edge xmi:id="Angle_Sync_0_1" name="Angle_Sync_0_1" src="Angle_Sync_Copy_In" trg="Runnable_6660us_0"/>
+    <edge xmi:id="Angle_Sync_1_2" name="Angle_Sync_1_2" src="Runnable_6660us_0" trg="Runnable_6660us_1"/>
+    <edge xmi:id="Angle_Sync_2_3" name="Angle_Sync_2_3" src="Runnable_6660us_1" trg="Runnable_6660us_2"/>
+    <edge xmi:id="Angle_Sync_3_4" name="Angle_Sync_3_4" src="Runnable_6660us_2" trg="Runnable_6660us_3"/>
+    <edge xmi:id="Angle_Sync_4_5" name="Angle_Sync_4_5" src="Runnable_6660us_3" trg="Runnable_6660us_4"/>
+    <edge xmi:id="Angle_Sync_5_6" name="Angle_Sync_5_6" src="Runnable_6660us_4" trg="Runnable_6660us_5"/>
+    <edge xmi:id="Angle_Sync_6_7" name="Angle_Sync_6_7" src="Runnable_6660us_5" trg="Runnable_6660us_6"/>
+    <edge xmi:id="Angle_Sync_7_8" name="Angle_Sync_7_8" src="Runnable_6660us_6" trg="Runnable_6660us_7"/>
+    <edge xmi:id="Angle_Sync_8_9" name="Angle_Sync_8_9" src="Runnable_6660us_7" trg="Runnable_6660us_8"/>
+    <edge xmi:id="Angle_Sync_9_10" name="Angle_Sync_9_10" src="Runnable_6660us_8" trg="Runnable_6660us_9"/>
+    <edge xmi:id="Angle_Sync_10_11" name="Angle_Sync_10_11" src="Runnable_6660us_9" trg="Angle_Sync_Copy_Out"/>
+  </dagCollection>
+</GraphMetamodel:DagSet>

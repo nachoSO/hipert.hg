@@ -1,0 +1,145 @@
+[%
+var gs: DagSet := DagSet.allInstances().at(0);
+var mutexTask: String;
+var NUM_THREADS: Integer;
+var i: Integer;
+var mutex: String;
+var lastNode: Integer;
+mutex=""; 
+
+for (dag in gs.dagCollection.at(DAG_ID)){ 
+	for (edge in dag.edge){ 
+		mutex=mutex+edge.name;
+	if (hasMore)
+		mutex=mutex+",";
+	}
+
+%]
+//Explicit task
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include "hgr.h"
+#include "hgr_dependencies.h"
+
+hgr_dependency_t [%=mutex%],lock_start_[%=dag.name%];
+PREM_node_t *[%=dag.name%]_data[[%=dag.node.size()%]];
+
+volatile long int var_condition_[%=dag.name%]=0;
+long double wcet_per_task[[%=dag.node.size()%]];
+
+void [%=dag.name%]_pre_load_tasks(double FREQUENCY){
+	int granularity=[%=dag.step%];
+	[%i=0;for (task in dag.node){%] 	
+	
+	wcet_per_task[[%=i%]]=[%=task.miet%];
+	[%=dag.name%]_data[[%=i%]]=hgr_load_PREM_node([%=task.mem_access%],"[%=task.mem_unit%]",granularity,wcet_per_task[[%=i%]],FREQUENCY,[%=i%]);
+	[%i++;}%]
+	
+}
+
+void [%=dag.name%]_create_dependency(){	
+	[%for (edge in dag.edge){%]
+	hgr_init_dependency(&[%=edge.name%],NULL);
+	hgr_wait_dependency(&[%=edge.name%]);	
+	[%}%]
+	hgr_init_dependency(&lock_start_[%=dag.name%],NULL);
+	hgr_wait_dependency(&lock_start_[%=dag.name%]);
+}
+
+void [%=dag.name%]_destroy_dependency(){
+	[%for (edge in dag.edge){%]
+	hgr_destroy_dependency(&[%=edge.name%]);
+	[%}%]
+	hgr_destroy_dependency(&lock_start_[%=dag.name%]);
+}
+
+void *[%=dag.name%]_wait_finish() {
+	while(var_condition_[%=dag.name%]!=[%=dag.node.size()%])
+		; 
+	return 0;
+}
+
+void [%=dag.name%]_start() {
+	hgr_release_dependency(&lock_start_[%=dag.name%]);
+}
+
+void [%=dag.name%]_finish() {
+	finish_work([%=dag.name%]_wait_finish);
+}
+
+[%i=0;for (task in dag.node){%]
+void *[%=task.name%](){
+	[%var mutexTask:String;%]
+	//printf("Hi im the node [%=task.name%]\n");  //[%=task.comment%]
+	
+	pthread_mutex_trylock(&lock_start_[%=dag.name%]);
+ 	volatile char *ptr_dst = (char *)malloc([%=dag.name%]_data[[%=i%]]->data_size);
+		
+	[%for (edge in dag.edge){
+		if(edge.trg.name=task.name){
+			mutexTask=edge.name;%]
+	hgr_wait_dependency(&[%=mutexTask%]);
+		[%}%]
+	[%}%]
+	hgr_PREM_compute_node([%=dag.name%]_data[[%=i%]],ptr_dst); //Mem+Computation phase
+	[%for (edge in dag.edge){
+		if(edge.src.name=task.name){
+			mutexTask=edge.name;%]
+	hgr_release_dependency(&[%=mutexTask%]);
+		[%}%]
+	[%}%]
+	
+	var_condition_[%=dag.name%]++;
+ 	free(ptr_dst);
+	hgr_exit();
+
+	return 0;
+}
+[%i++;}%]
+
+void [%=dag.name%](){
+	struct timespec tstart={0,0}, tend={0,0};
+	double timeTaken;
+	double FREQUENCY=(double)(mhz()/1000.0);
+
+	printf("FREQ: %f \n",FREQUENCY);
+	[%=dag.name%]_pre_load_tasks(FREQUENCY);
+	hgr_prepare_task([%=DAG_ID%],[%=dag.node.size()%]);
+
+	while(1){
+		var_condition_[%=dag.name%]=0;
+		[%=dag.name%]_create_dependency();
+
+		[%i=0;
+		for (node in dag.node){%]
+		
+		hgr_thread_create([%=DAG_ID%],[%=i%], NULL, &[%=node.name%], (void *)[%=i%]);[%i++;}%]  
+ 		clock_gettime(CLOCK_MONOTONIC, &tstart);	
+
+		[%=dag.name%]_start();
+		[%=dag.name%]_finish();
+		
+ 		clock_gettime(CLOCK_MONOTONIC, &tend);
+ 		timeTaken=(( ((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec)))*1000;
+ 		printf("Total execution time TASK [%=dag.name%]: %f miliseconds\n",timeTaken);
+		
+		hgr_release_dependency(&lock_start_[%=dag.name%]);
+		
+		[%i=0;
+		for (node in dag.node){%]  
+		hgr_thread_join([%=DAG_ID%],[%=i%]);[%i++;}
+		%]
+		
+		//hgr_free_task(0);
+		[%=dag.name%]_destroy_dependency();
+		hgr_wait_for_period([%=DAG_ID%]);
+	}
+}
+
+[%}%]
+
+
+
+
+

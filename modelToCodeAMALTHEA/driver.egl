@@ -1,0 +1,16 @@
+[%
+	"Code Generated".println();
+
+	var main: Template := TemplateFactory.load('main.egl');
+	var makefile: Template := TemplateFactory.load('makefile.egl');
+	var task_header: Template := TemplateFactory.load('task_header.egl');
+	var runtime: Template := TemplateFactory.load('hgr.egl');
+	var runtime_computation: Template := TemplateFactory.load('hgr_computation.egl');
+	var runtime_header_header: Template := TemplateFactory.load('hgr_header.egl');
+	var ds: DagSet := DagSet.allInstances().at(0);
+	
+	main.generate(ds.output_dir+'main.c');
+	makefile.generate(ds.output_dir+'Makefile');
+	task_header.generate(ds.output_dir+'syntethicTask.h');
+	
+%]
