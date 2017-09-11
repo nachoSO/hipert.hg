@@ -78,7 +78,7 @@ void *[%=task.name%](){
 		
 	[%for (edge in dag.edge){
 		if(edge.trg.name=task.name){
-			mutexTask=edge.name;%]
+			mutexTask=edge.name;%] 
 	hgr_wait_dependency(&[%=mutexTask%]);
 		[%}%]
 	[%}%]
