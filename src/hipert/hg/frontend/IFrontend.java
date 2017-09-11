@@ -1,6 +1,9 @@
 package hipert.hg.frontend;
 
-import hipert.hg.frontend.rtdot.DAG;
+import java.util.List;
+
+import hipert.hg.core.IGui;
+import hipert.hg.core.RTDag;
 
 /**
  * Every frontend must implement this
@@ -9,5 +12,7 @@ import hipert.hg.frontend.rtdot.DAG;
  */
 public interface IFrontend {
 
-	 public void Parse(DAG dagsParam[], String fileDst);
+	 public void Parse(List<RTDag> dags, String fileDst, IGui gui);
+	 
+	 public String []getFileExtensions();
 }

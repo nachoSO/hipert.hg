@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="ASCII"?>
-<GraphMetamodel:DagSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:GraphMetamodel="GraphMetamodel" xmi:id="dagPSocrates" semaphore_protocol="PRIO_CEILING" output_dir="C:/Users/LPC/Dropbox/CodeGen/hipert.hg.v2/runtime/src//">
-  <dagCollection xmi:id="G1" name="G1" period="500" priority="50" deadline="1000" step="1">
+<GraphMetamodel:DagSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:GraphMetamodel="GraphMetamodel" xsi:schemaLocation="GraphMetamodel ./metamodel/graphMetamodel.ecore" xmi:id="dagPSocrates" semaphore_protocol="PRIO_CEILING" output_dir="D:\UniMoRe\Workspace\hipert.hg\gen\/">
+  <dagCollection xmi:id="G1" name="G1" period="500" priority="50" deadline="1000" mem_type="sparse" step="1" stride="1">
     <node xmi:id="G1_1" name="G1_1" miet="10.381" meet="10.381" maet="10.75" comment="1 [miet=&quot;10.381&quot;, meet=&quot;10.381&quot;, maet=&quot;10.75&quot;, mem=&quot;1&quot;, unit=&quot;mb&quot;]" mem_access="1"/>
     <node xmi:id="G1_2" name="G1_2" miet="10.98" meet="10.0" maet="10.92" comment="2 [miet=&quot;10.98&quot;, meet=&quot;10.0&quot;, maet=&quot;10.92&quot;, mem=&quot;1&quot;, unit=&quot;mb&quot;]" mem_access="1"/>
     <node xmi:id="G1_3" name="G1_3" miet="10.85" meet="10.53" maet="10.66" comment="3 [miet=&quot;10.85&quot;, meet=&quot;10.53&quot;, maet=&quot;10.66&quot;, mem=&quot;1&quot;, unit=&quot;mb&quot;]" mem_access="1"/>
-    <node xmi:id="G1_4" name="G1_4" miet="10.85" meet="10.53" maet="10.66" comment="4 [miet=&quot;10.85&quot;, meet=&quot;10.53&quot;, maet=&quot;10.66&quot;, mem=&quot;1&quot;, unit=&quot;mb&quot;]" mem_access="1"/>
     <edge xmi:id="G1_1_2" name="G1_1_2" src="G1_1" trg="G1_2"/>
     <edge xmi:id="G1_1_3" name="G1_1_3" src="G1_1" trg="G1_3"/>
-    <edge xmi:id="G1_2_4" name="G1_2_4" src="G1_2" trg="G1_4"/>
-    <edge xmi:id="G1_3_4" name="G1_3_4" src="G1_3" trg="G1_4"/>
   </dagCollection>
-  <dagCollection xmi:id="_z7rQsIw9EeeHb9XzDwfX0Q" name="asasd" mem_type="sparse"/>
 </GraphMetamodel:DagSet>

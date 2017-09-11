@@ -1,9 +1,14 @@
 package hipert.hg.frontend.rtdot;
 import java.io.*;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.epsilon.common.util.StringUtil;
 
+import hipert.hg.Globals;
+import hipert.hg.core.IGui;
+import hipert.hg.core.RTDag;
+import hipert.hg.core.Utils;
 import hipert.hg.frontend.IFrontend;
 
 public class XMLGenerator implements IFrontend {
@@ -14,21 +19,10 @@ public class XMLGenerator implements IFrontend {
 	
 	private String filename = null;
 
-//	// _POL_ for debug purposes
-//	public void setFilename(String filename) {
-//		this.filename = filename;
-//	}
-
 	public String getFilename() {
 		return filename;
 	}
 
-	private String dagMemAccess="prem";
-	
-	public void setDagMemAccess(String dagMemAccess){
-		this.dagMemAccess=dagMemAccess;
-	}
-	
 	public LinkedList<DAG> getDags(){
 		return this.dags;
 	}
@@ -171,9 +165,52 @@ public class XMLGenerator implements IFrontend {
 
 	 }
 
-	 public void Parse(DAG dagsParam[], String fileDst) {    
-		this.dagMemAccess=dagMemAccess;
-		createModelFile(fileDst,dagsParam[0]);
+	private DAG[] packDags() {
+		int dagsCount = this.rtdags.size();
+		DAG dags[] = new DAG[dagsCount]; // FIXME 
+
+		String sched_policy = this.theGui.getScheduling();
+		String partitioning_policy = this.theGui.getPartitioning();
+		
+		for(int i=0; i<dagsCount; i++) {
+			RTDag currDag = this.rtdags.get(i);
+			String filePath = currDag.getFullFileName();
+
+			String stepString = this.theGui.getStep();
+			int step = Utils.CalcStep(stepString);
+			
+			if(this.theGui.getMemoryPattern().equals("sparse")) {
+				int stride = 0; //random access
+				
+				if(this.theGui.getMemoryStrideType().equals("sequential")) {
+					String strideString = this.theGui.getMemoryStride();
+					stride = Integer.parseInt(strideString);
+				}
+				else if(this.theGui.getMemoryStrideType().equals("random")) {
+					stride = 0;
+				}
+				else {
+					// Error
+				}
+				
+				dags[i] = new DAG(filePath, "sparse", step, stride, sched_policy, partitioning_policy, Globals.OutputDir);
+			}
+			
+			else if(this.theGui.getMemoryPattern().equals("prem")) {
+				dags[i] = new DAG(filePath, "prem", step, sched_policy, partitioning_policy, Globals.OutputDir);
+			}
+		
+		}
+		return dags;
+	}
+	List<RTDag> rtdags = null;
+	IGui theGui = null;
+ 
+	 public void Parse(List<RTDag> rtdags, String fileDst, IGui gui) {
+		this.rtdags = rtdags;
+		this.theGui = gui;
+		DAG[] dagsParam = packDags();
+		createModelFile(fileDst,dagsParam [0]);
 		int index=0;
 		for (DAG dag : dagsParam){
 			nodes.clear();
@@ -215,6 +252,11 @@ public class XMLGenerator implements IFrontend {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public String[] getFileExtensions() {
+		return new String[] {"*.dot" };
 	}
 }
 
