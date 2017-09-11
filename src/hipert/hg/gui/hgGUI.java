@@ -23,8 +23,6 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 
-import com.upscale.PsocMapper;
-
 import hipert.hg.Globals;
 import hipert.hg.backend.IBackend;
 import hipert.hg.backend.bostangomp.DagToCodeBostanGomp;
