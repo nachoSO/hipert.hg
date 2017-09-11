@@ -14,6 +14,58 @@ void set_max_priority(){
 }
 
 
+inline void hgr_IMPLICIT_execution_node(PREM_node_t *node, void *ptr_dst){
+	//set_max_priority();
+
+	//printf("ds: %ld | c_s %d | round up: %d| div: %d \n ",(*node).data_size,CACHE_SIZE,ROUND_UP((*node).data_size,CACHE_SIZE),(*node).data_size/CACHE_SIZE);
+	struct timespec t_start={0,0}, t_end={0,0};
+	long double timeTaken=0;
+	int num_copies=(*node).num_copies;
+	long int *data_size_pointer=(*node).data_size_pointer;
+	clock_gettime(CLOCK_MONOTONIC, &t_start);
+
+	while(num_copies--){
+
+		//Execution phase
+		__asm__ __volatile__
+		("loopI:;"
+		"dec %0;"
+		"jnz loopI;"
+		:
+		: "b" ((*node).wcet_per_cycle)
+		);
+	}
+
+	clock_gettime(CLOCK_MONOTONIC, &t_end);
+
+	timeTaken=(( ((double)t_end.tv_sec + 1.0e-9*t_end.tv_nsec) - ((double)t_start.tv_sec + 1.0e-9*t_start.tv_nsec)))*1000;
+	printf("P | C Phase: %Lf | Node: %d \n",timeTaken,(*node).nodeID);
+}
+
+inline void hgr_IMPLICIT_memory_node(PREM_node_t *node, void *ptr_dst){
+	//set_max_priority();
+
+	//printf("ds: %ld | c_s %d | round up: %d| div: %d \n ",(*node).data_size,CACHE_SIZE,ROUND_UP((*node).data_size,CACHE_SIZE),(*node).data_size/CACHE_SIZE);
+	struct timespec t_start={0,0}, t_end={0,0};
+	long double timeTaken=0;
+	clock_gettime(CLOCK_MONOTONIC, &t_start);
+	int num_copies=(*node).num_copies;
+	long int *data_size_pointer=(*node).data_size_pointer;
+	while(num_copies--){
+		//Mem phase
+		hgr_wait_dependency(&premMutex);
+		memcpy(ptr_dst, (*node).char_data_ptr, *(data_size_pointer++));
+		hgr_release_dependency(&premMutex);
+
+	}
+
+	clock_gettime(CLOCK_MONOTONIC, &t_end);
+
+	timeTaken=(( ((double)t_end.tv_sec + 1.0e-9*t_end.tv_nsec) - ((double)t_start.tv_sec + 1.0e-9*t_start.tv_nsec)))*1000;
+	printf("P | M Phase: %Lf | Node: %d \n",timeTaken,(*node).nodeID);
+}
+
+
 //cat /sys/devices/system/cpu/cpu0/cache/index2/size
 //PREM: Memory phase (ASM implementation)
 inline void hgr_PREM_compute_node(PREM_node_t *node, void *ptr_dst){

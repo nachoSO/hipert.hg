@@ -64,5 +64,8 @@
   <eClassifiers xsi:type="ecore:EEnum" name="MEM_TYPE">
     <eLiterals name="prem"/>
     <eLiterals name="sparse" value="1"/>
+    <eLiterals name="explicit" value="2"/>
+    <eLiterals name="implicit" value="3"/>
+    <eLiterals name="let" value="4" literal=""/>
   </eClassifiers>
 </ecore:EPackage>

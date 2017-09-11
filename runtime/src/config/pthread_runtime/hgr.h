@@ -61,6 +61,8 @@ void hgr_load_computation(double wcet_per_task[],int nElements,long int cycle_pe
 //This function loads all the information into the structure
 PREM_node_t * hgr_load_PREM_node(long int data_size, char *data_granularity,int granularity,long double wcet,double FREQUENCY,int nodeID);
 SPARSE_node_t * hgr_load_SPARSE_node(long int data_size, char *data_granularity,int granularity,int stride,long double wcet,double FREQUENCY,int nodeID);
+void hgr_IMPLICIT_execution_node(PREM_node_t *node, void *ptr_dst);
+void hgr_IMPLICIT_memory_node(PREM_node_t *node, void *ptr_dst);
 
 //PREM: Memory & Computation phase
 void hgr_PREM_compute_node (PREM_node_t *node, void *ptr_dst);

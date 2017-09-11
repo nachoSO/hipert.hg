@@ -1,8 +1,10 @@
 package hipert.hg.frontend.amalthea;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Core {
+
+public class Core implements Serializable{
 	LinkedList<Task> tasks=new LinkedList<Task>();
 	String name;
 	int nPrivateLabels;
@@ -39,9 +41,17 @@ public class Core {
 	//This function calculate the response time of a preemptive task
 	public void responseTimePreemptiveTask(int taskNum){
 		double response_n_accum=0;
+		double best_accum=0;
 		for(int i=0;i<tasks.get(taskNum).runnables.size();i++){
 			double response=0;
-			response_n_accum+=tasks.get(taskNum).runnables.get(i).executionTime;
+			response_n_accum+=tasks.get(taskNum).runnables.get(i).WCET;
+			
+			if(i>0)
+				best_accum+=tasks.get(taskNum).runnables.get(i-1).BCET;
+			else
+				best_accum=0;
+			
+			tasks.get(taskNum).runnables.get(i).BCST=best_accum;
 			double response_n=response_n_accum;
 			do{
 				response=response_n;
@@ -50,8 +60,11 @@ public class Core {
 					response_n+=myCeil(response, tasks.get(j).period)*tasks.get(j).executionTime;
 				}
 			}while(response_n>response);
-			tasks.get(taskNum).runnables.get(i).responseTime=response_n;
+			tasks.get(taskNum).runnables.get(i).WCRT=response_n;
 			tasks.get(taskNum).responseTime=response_n;
+			
+			tasks.get(taskNum).runnables.get(i).WCST=blocking(taskNum) + (tasks.get(taskNum).runnables.get(i).WCET);
+
 		}
 		//check deadline miss
 		for(int j=0;j<tasks.size();j++){
@@ -63,17 +76,17 @@ public class Core {
 	//This function calculate the response time of a deadline miss task
 	public void RTADeadlineMiss(int taskNum){
 		double executionTimeRunnableAcum=0.0;
-		System.out.println(tasks.get(taskNum).responseTime);
+		//System.out.println(tasks.get(taskNum).responseTime);
 
 		for(int i=0;i<tasks.get(taskNum).runnables.size();i++){
-			executionTimeRunnableAcum+=tasks.get(taskNum).runnables.get(i).executionTime;
+			executionTimeRunnableAcum+=tasks.get(taskNum).runnables.get(i).WCET;
 			int K= (int)myCeil(busy_period(taskNum), tasks.get(taskNum).period); //K
 			double jobR=0.0,response=0.00;
 			for (int k=1; k<=K; k++) {
 				jobR = job_finishDM(taskNum,k,executionTimeRunnableAcum,i) - (k-1)*tasks.get(taskNum).period;
 				response = (response>jobR ? response : jobR);
 			} 
-			tasks.get(taskNum).runnables.get(i).responseTime=response;
+			tasks.get(taskNum).runnables.get(i).WCRT=response;
 			tasks.get(taskNum).responseTime=response;
 		}
 
@@ -98,9 +111,17 @@ public class Core {
 	//This function calculate the response time of a cooperative task
 	public void responseTimeCooperativeTask(int taskNum){
 		double executionTimeRunnableAcum=0.0;
-
+		double best_accum=0;
 		for(int i=0;i<tasks.get(taskNum).runnables.size();i++){
-			executionTimeRunnableAcum+=tasks.get(taskNum).runnables.get(i).executionTime;
+			executionTimeRunnableAcum+=tasks.get(taskNum).runnables.get(i).WCET;
+
+			if(i>0)
+				best_accum+=tasks.get(taskNum).runnables.get(i-1).BCET;
+			else
+				best_accum=0;
+			
+			tasks.get(taskNum).runnables.get(i).BCST=best_accum;
+			
 			//int num= (int)myCeil(busy_period(taskNum,executionTimeRunnableAcum), tasks.get(taskNum).period);
 			int K= (int)myCeil(busy_period(taskNum), tasks.get(taskNum).period); //K
 
@@ -109,8 +130,9 @@ public class Core {
 				jobR = job_finish(taskNum,k,executionTimeRunnableAcum,i) - (k-1)*tasks.get(taskNum).period;
 				response = (response>jobR ? response : jobR);
 			} 
+						
 
-			tasks.get(taskNum).runnables.get(i).responseTime=response;
+			tasks.get(taskNum).runnables.get(i).WCRT=response;
 			tasks.get(taskNum).responseTime=response;
 		}
 	}	
@@ -128,7 +150,7 @@ public class Core {
 		}else{
 			for(int i=taskNum+1;i<tasks.size();i++){
 				for(int j=0;j<tasks.get(i).runnables.size();j++){
-					maxAux=tasks.get(i).runnables.get(j).executionTime;
+					maxAux=tasks.get(i).runnables.get(j).WCET;
 					maxB=(maxAux>maxB ? maxAux : maxB);
 				}
 			}
@@ -163,7 +185,9 @@ public class Core {
 		double init, finish, finishNew, start;
 		start = job_start(taskIndex, k,executionTimeRunnableAcum, jobIndex);
 		
-		init = finishNew = start + tasks.get(taskIndex).runnables.get(jobIndex).executionTime;
+		tasks.get(taskIndex).runnables.get(jobIndex).WCST=start;
+		
+		init = finishNew = start + tasks.get(taskIndex).runnables.get(jobIndex).WCET;
 		do {
 			finish = finishNew;
 			finishNew = init;
@@ -185,7 +209,7 @@ public class Core {
 	{
 		double init, start, startNew;
 		//error
-		init = startNew = blocking(taskIndex) + ((k-1)*tasks.get(taskIndex).executionTime) + (executionTimeRunnableAcum-tasks.get(taskIndex).runnables.get(jobIndex).executionTime);
+		init = startNew = blocking(taskIndex) + ((k-1)*tasks.get(taskIndex).executionTime) + (executionTimeRunnableAcum-tasks.get(taskIndex).runnables.get(jobIndex).WCET);
 		do {
 			start = startNew;
 			startNew = init;
@@ -207,7 +231,7 @@ public class Core {
 	
 	//This function computes the TASK response time
 	public void RTAcore_per_task(){
-		System.out.println("Starting RTA...");
+		//System.out.println("Starting RTA...");
 
 		//response time task n
 		for(int z=0;z<tasks.size();z++){
@@ -224,8 +248,7 @@ public class Core {
 			tasks.get(z).responseTime=response_n;
 		}
 		
-		System.out.println("RTA Finished");
+		//System.out.println("RTA Finished");
 	}
 
 }
-

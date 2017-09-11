@@ -1023,7 +1023,7 @@ public class hgGUI extends javax.swing.JFrame {
     		parser.Parse(packDags(), fileDst);
 
 			IBackend codeGenerator = null;
-			if(false) // current backend == Backend.PTasks
+			if(true) // current backend == Backend.PTasks
 				codeGenerator = new DagToCode();
 			else // if current backend == Backend.BostanGomp
 				codeGenerator = new DagToCodeBostanGomp();
