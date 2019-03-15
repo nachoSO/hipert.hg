@@ -18,8 +18,12 @@ HGT
 Introduction
 ------------
 
+With the increasing complexity of multi/many-core architectures, academy-industry research collaborations on this topic are today intensifying. In this sense, the characterization of industrial applications is still a big challenge, due to industry’s reluctance to share application code details. Luckily, this trend is partly changing, and today several industrial partners can disclose high-level details of their software suites, e.g., the timing constraints or even the memory footprint and access patterns, to perform a better application characterization. However, it is still extremely cumbersome to reproduce the behavior of real applications in their actual environment, due to IPR on source code.
+
 HiPeRT Generator Tool is an open-source software framework that helps researchers creating synthetic yet realistic test cases, using a variety of techniques based on the model-driven development approach.
 The tool generates ready to use ANSI C code from high-level behavioral description of an application represented with a Directed acyclic graph (DAG).
+
+
 
 Hardware requirements
 -----------------------------------
@@ -29,7 +33,7 @@ Hardware requirements
   - Intel system:
   
 #### ARM architecture:
-  - A
+  - A53
   
 Build & Installation
 --------------------
